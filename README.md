@@ -41,7 +41,10 @@ every order and the contact) · ask watar (`watar.html`: a conversation with Wat
 rules from the demo world; every action Watar drafts waits in the dashed grey pen for a person; `?as=`, and `?q=`
 asks once on arrival) · settings (`settings.html#team|channels|organization|billing`: the team and its invitations,
 the ways the line reaches clients with a preview of each message, the organization's name and mark, and billing;
-every change applies on its own with Undo, in page memory; `?as=reem` shows a member's read-only view). All read
+every change applies on its own with Undo, in page memory; `?as=reem` shows a member's read-only view) · quote
+(`quote.html?q=0030`: the client's link at sufra.iqaa.app/q/0030, opened without an account; Sufra's quote with
+Approve and Ask for a change, then the order's steps that reach the client until the invoice; `?q=0035|0028|0027|0026`
+show the other moments, and the answer is kept for the visit under `iqaa-answers`). All read
 the Sufra demo world from `assets/js/sufra.js`, and every time comes from the one clock in `assets/js/jobs.js`.
 `research/qa-line.html`, `research/qa-today.html` and `research/qa-watar.html` (`?w=&h=&do=`) drive the screens
 through a scenario for headless captures.

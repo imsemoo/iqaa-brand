@@ -214,7 +214,7 @@ ${draft}${asked}<div data-act>${actions(j)}</div>
   // ---------- contact: who the line writes to, and how ----------
   const bracket = (v) => `${esc(v)}${/^\[/.test(v) ? '<span class="sr"> not added yet</span>' : ''}`;
   const row = (icon, dt, dd) => `<div><dt>${IQ.icon(icon, 16)}<span>${dt}</span></dt><dd>${dd}</dd></div>`;
-  const link = c.soon ? `<div class="cp-their"><p class="cp-lk">${IQ.icon('Link', 16)}<span>Their link</span></p><p><code>sufra.iqaa.app/q/${c.soon.code.slice(-4)}</code></p><p class="hint">${esc(C)} approves or asks for a change from this link, without an account.</p></div>` : '';
+  const link = c.soon ? `<div class="cp-their"><p class="cp-lk">${IQ.icon('Link', 16)}<span>Their link</span></p><p><a href="quote.html?q=${c.soon.code.slice(-4)}"><code>sufra.iqaa.app/q/${c.soon.code.slice(-4)}</code></a></p><p class="hint">${esc(C)} approves or asks for a change from this link, without an account. Open it to see what ${esc(C)} sees.</p></div>` : '';
   $('[data-contact]').innerHTML = `<section class="od-card cp-card"><h2 id="ct-h">${IQ.icon('Contact', 18)}<span>Contact</span></h2>
 <dl class="cp-dl">${c.private ? '' : row('Clients', 'Name', esc(c.contact)) + row('Company', 'Company', esc(c.name))}${row('Phone', c.by === 'WhatsApp' ? 'WhatsApp' : 'Phone', bracket(c.phone))}${row('Email', 'Email', esc(c.email))}${row('Place', 'Delivers to', bracket(c.address))}</dl>
 <p class="hint">Quotes, reminders and arrival times go to ${esc(C)} by ${channel}.</p>${link}

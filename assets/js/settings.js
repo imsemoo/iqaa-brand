@@ -558,7 +558,7 @@ ${invs.length ? `<ul class="se-pl" aria-label="Invited">${invs.join('')}</ul>` :
     const to = `to ${j.client}${/^a /.test(j.of) ? '' : `, ${j.of}`}`;
     const sw = wa ? `<div class="se-sw" role="group" aria-label="Show it as">${[['email', 'Email', 'Email'], ['whatsapp', 'WhatsApp', 'Phone']].map(([v, n, i]) => `<button type="button" data-view="${v}" aria-pressed="${view === v}">${ico(i, 16)}<span>${n}</span></button>`).join('')}</div>` : '';
     const mail = `<div class="se-mail"><div class="se-mh"><span class="se-sm">${markHtml(28)}</span><span><b>${bdi(sender())}</b><small>${esc(to)}</small></span></div>
-<div class="se-mb"><p class="se-sj">${esc(fill(m.subject || '', j))}</p><p>${esc(body)}</p>${m.button ? `<div class="se-lk"><span class="se-fbtn">${esc(m.button)}</span><code>${quote(j)}</code></div>` : ''}
+<div class="se-mb"><p class="se-sj">${esc(fill(m.subject || '', j))}</p><p>${esc(body)}</p>${m.button ? `<div class="se-lk"><a class="se-fbtn" href="quote.html?q=${j.code.slice(-4)}">${esc(m.button)}</a><code>${quote(j)}</code></div>` : ''}
 <p class="se-ol">Order <code>${j.code}</code> · ${esc(j.due)} · ${j.people} people</p></div>
 <div class="se-mf">${RUNS}<span>You receive this because ${bdi(orgName())} is preparing your order.</span></div></div>`;
     const chat = `<div class="se-chat"><div class="se-ct"><span class="se-sm se-circ">${markHtml(28)}</span><span><b>${bdi(orgName())}</b><small>Business account</small></span></div>

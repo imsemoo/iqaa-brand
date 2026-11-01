@@ -92,6 +92,21 @@
   };
   jobs.forEach((j) => { const l = logs[j.code.slice(-4)]; if (l) j.log = l; });
 
+  // the quote each client saw, once Reem sent it (the client's link, quote.html, shows it); prices are not set in
+  // the demo, so every total stays in brackets
+  const quotes = {
+    '0023': { items: ['Chicken shawarma platters', 'Rice with vermicelli', 'Two salads', 'Lemon-mint juice'], note: 'Delivered at 12:15, with plates and cutlery for 35.' },
+    '0024': { items: ['Mixed grill', 'Hummus and mutabbal', 'Fattoush', 'Birthday cake'], note: 'Served at 20:00; Sufra sets up and clears.' },
+    '0025': { items: ['Chicken and rice', 'Lentil soup', 'Two salads', 'Fruit'], note: 'Delivered at 12:45, boxed one per person.' },
+    '0026': { items: ['Mini fatayer, cheese and spinach', 'Zaatar and halloumi bites', 'Fruit skewers', 'Juice and coffee'], note: 'Standing reception; set up by 17:30, two servers until 20:00.' },
+    '0027': { items: ['Coffee and tea', 'Kaak with zaatar', 'Mini sandwiches', 'Date cookies'], note: 'Set up by 15:45 in their hall.' },
+    '0028': { items: ['Stuffed chicken with rice and nuts', 'Kibbeh', 'Three salads', 'Muhallabia'], note: 'Delivered hot at 19:30, with serving dishes.' },
+    '0029': { items: ['Mansaf with rice and almonds', 'Maqluba', 'Four salads', 'Wedding sweets'], note: 'Buffet for 120, set up by 12:30 with six servers.' },
+    '0030': { items: ['Chicken musakhan wraps', 'Mujaddara with yogurt', 'Fattoush and tabbouleh', 'Fruit and mint lemonade'], note: 'Delivered at 12:15, with plates and cutlery for 18.' },
+    '0033': { items: ['Mansaf with rice and almonds', 'Stuffed vine leaves', 'Three salads', 'Kunafa trays'], note: 'Buffet for 70, set up by 19:00 with three servers.' },
+  };
+  jobs.forEach((j) => { const q = quotes[j.code.slice(-4)]; if (q) j.quote = Object.assign({ total: '[TOTAL]' }, q); });
+
   // the orders before today's: SFR-26-0001 to 0022, the codes today's jobs follow (the demo history starts on 26 Aug)
   const past = [
     { code: 'SFR-26-0001', title: 'Board breakfast', people: 12, due: 'Tue 1 Sep, 08:30', iso: '2026-09-01T08:30', client: 'Rami', of: 'Wadi Partners', opened: '2026-08-26T10:15', finished: 'Wed 2 Sep, 10:00', log: { rounds: [{ sent: '2026-08-27T11:00', answer: '2026-08-27T11:40' }], arrived: '2026-09-01T08:10' } },

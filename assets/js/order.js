@@ -88,7 +88,7 @@
 ${k ? `<a class="btn" href="today.html?as=${k}">${IQ.icon('Today', 18)}<span>Open ${esc(cur.who)}’s Today</span></a>` : ''}<a class="od-all" href="${ask}">${IQ.icon('Ask Watar', 18)}<span>Ask Watar why it waits</span></a></section>`;
   }
   const draft = j.draft ? `<section class="od-card"><h2>${IQ.icon('Draft', 18)}Watar’s draft of the quote</h2><ul class="od-draft">${j.draft.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul><p class="hint">${esc(j.draft.note)} Total ${esc(j.draft.total)}.</p></section>` : '';
-  const client = `<section class="od-card"><h2>${IQ.icon('Contact', 18)}Client</h2><dl class="od-dl"><dt>Name</dt><dd>${esc(j.client)}</dd><dt>For</dt><dd>${esc(j.of)}</dd><dt>People</dt><dd>${j.people}</dd><dt>Due</dt><dd>${esc(j.due)}</dd><dt>Their link</dt><dd><code>sufra.iqaa.app/q/${j.code.slice(-4)}</code></dd></dl><p class="hint">The client approves or asks for a change from this link, without an account.</p>
+  const client = `<section class="od-card"><h2>${IQ.icon('Contact', 18)}Client</h2><dl class="od-dl"><dt>Name</dt><dd>${esc(j.client)}</dd><dt>For</dt><dd>${esc(j.of)}</dd><dt>People</dt><dd>${j.people}</dd><dt>Due</dt><dd>${esc(j.due)}</dd><dt>Their link</dt><dd><a href="quote.html?q=${j.code.slice(-4)}"><code>sufra.iqaa.app/q/${j.code.slice(-4)}</code></a></dd></dl><p class="hint">The client approves or asks for a change from this link, without an account.</p>
 <a class="od-all" href="client.html?c=${c.key}">${IQ.icon('History', 18)}<span>All of ${esc(c.name)}’s orders</span></a></section>`;
   // no version history exists for the orders before today, so only today's jobs name the version they walk
   const meta = past ? '' : `<p class="od-meta">Walks version 3 of Sufra’s line · <a href="line.html">See the line</a></p>`;

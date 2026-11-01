@@ -33,6 +33,8 @@ STATES = {
     'watar-m': ('research/qa-watar.html?w=375&h=812&q=Why%20is%20Nakhla%E2%80%99s%20order%20stuck%3F', 375, 812, 2),
     'settings-d': ('research/qa.html?w=1440&h=900&src=settings.html', 1440, 900, 1),
     'settings-m': ('research/qa.html?w=375&h=812&src=settings.html%23organization', 375, 812, 2),
+    'quote-d': ('research/qa.html?w=1440&h=900&src=quote.html%3Fq%3D0030', 1440, 900, 1),
+    'quote-m': ('research/qa.html?w=375&h=812&src=quote.html%3Fq%3D0030', 375, 812, 2),
 }
 
 

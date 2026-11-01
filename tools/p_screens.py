@@ -124,12 +124,24 @@ SCREENS = [
         'alt_d': 'Settings on a desktop: the four areas beside Team, each person with the stations they hold ringed on the line, and Nour’s invitation waiting.',
         'alt_m': 'Settings on a phone: the Organization area, Sufra’s S on an ink plate beside the two steps that colour it.',
     },
+    {
+        'id': 'quote', 'name': 'Answer from a link', 'url': 'sufra.iqaa.app/q/0030', 'href': 'quote.html?q=0030',
+        'open': 'Open the client’s link',
+        'what': 'The client opens Sufra’s link from an email, without an account: the quote with what is in it, one button to approve and one to ask for a change, and then the order itself until the invoice.',
+        'ids': [
+            'Sufra leads: its own mark and name at the top, and Iqaa signs off once at the foot.',
+            'The client’s answer is an arch on the order’s line while it waits; approving is their hand, and the pen writes the arch as a loop.',
+            'Beside the quote, only the steps that reach the client, in the line’s own strokes: done in ink, ahead in the dashed grey pen.',
+        ],
+        'alt_d': 'Omar’s link on a desktop: Sufra’s quote for the office lunch with Approve and Ask for a change, and beside it the order’s steps, his answer waiting as an arch.',
+        'alt_m': 'Omar’s link on a phone: the quote, what is in it and the total, above the two answers.',
+    },
 ]
 COUNT = {7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve'}
 
 
 def screens():
-    out = head('Screens', 'The identity at work', f'{COUNT[len(SCREENS)]} screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, the owner sees the whole organization, follows every order and knows every client, anyone can ask Watar about the work, and the owner sets the organization up. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
+    out = head('Screens', 'The identity at work', f'{COUNT[len(SCREENS)]} screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, the owner sees the whole organization, follows every order and knows every client, anyone can ask Watar about the work, the owner sets the organization up, and its clients answer from a link. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
     out += '</div>'
     for i, s in enumerate(SCREENS):
         ids = ''.join(f'<li>{esc(t)}</li>' for t in s['ids'])

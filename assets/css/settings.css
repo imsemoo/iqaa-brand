@@ -341,3 +341,7 @@ img.se-logo { display: block; box-sizing: border-box; padding: 12.5%; border-rad
   .se-plate .se-pm svg, .se-plate .se-pm img { width: 72px; height: 72px; }
 }
 .se-chev:dir(rtl) { transform: scaleX(-1); }
+
+/* the preview's button opens the client's own page, as the real email's would */
+a.se-fbtn { text-decoration: none; }
+a.se-fbtn:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
