@@ -823,6 +823,25 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     if (d === 'test-close') closeTest();
   });
 
+  // ---------- panels fold away so the canvas can have the whole width; each choice is remembered ----------
+  const body = $('.bd-body');
+  function panel(name, open, quiet) {
+    body.classList.toggle(`${name}-closed`, !open);
+    $(`[data-open-p="${name}"]`).hidden = open;
+    try { localStorage.setItem(`iqaa-build-${name}`, open ? 'open' : 'closed'); } catch (e) { /* this page only */ }
+    if (!quiet) { setTimeout(() => { drawEdges(); drawMini(); }, M.quarter + 20); $(open ? `#bd-${name} .pn-x` : `[data-open-p="${name}"]`).focus(); }
+  }
+  ['lib', 'insp'].forEach((n) => { let v = null; try { v = localStorage.getItem(`iqaa-build-${n}`); } catch (e) { /* default */ } panel(n, v !== 'closed', true); });
+  root.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-fold-p], [data-open-p]');
+    if (t) panel(t.dataset.foldP || t.dataset.openP, !!t.dataset.openP);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || e.ctrlKey || e.metaKey) return;
+    if (e.key === '[') panel('lib', body.classList.contains('lib-closed'));
+    if (e.key === ']') panel('insp', body.classList.contains('insp-closed'));
+  });
+
   // ---------- start ----------
   render();
   // it opens close enough to read, on the start of the line; Fit shows all of it

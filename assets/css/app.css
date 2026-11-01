@@ -71,3 +71,32 @@ html.side-folded .ap-fold svg { transform: scaleX(-1); }
 .vw a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 var(--s-4); border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); text-decoration: none; }
 .vw a[aria-current] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
 .ln-hr { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+
+/* layers: the organization's navigation is ink, so the work beside it reads as the lighter, brighter surface */
+@media (min-width: 900px) {
+  .a-top:has(.ap-side) { background: var(--iqaa-ink); border-inline-end: 0; }
+  .ap-org { color: #fff; }
+  .ap-org-t span { color: var(--iqaa-n300); }
+  .ap-org .org-mark svg rect { fill: #39374D; }
+  .ap-l { color: var(--iqaa-n200); }
+  .ap-l svg { color: var(--iqaa-n300); }
+  a.ap-l:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+  .ap-l[aria-current] { background: rgba(255, 255, 255, 0.12); color: #fff; box-shadow: inset 3px 0 0 var(--iqaa-lilac); }
+  .ap-l[aria-current] svg { color: #fff; }
+  .off .ap-l { color: var(--iqaa-n500); }
+  .off .ap-l svg { color: var(--iqaa-n600); }
+  .ap-me-t { color: var(--iqaa-n300); }
+  .ap-fold { color: var(--iqaa-n300); }
+  .ap-fold:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+  .ap-l:focus-visible, .ap-fold:focus-visible, .ap-org:focus-visible { outline-color: var(--iqaa-lilac); }
+  .a-top:has(.ap-side) { scrollbar-color: #39374D transparent; }
+}
+
+/* scrollbars: thin, rounded, in the identity's greys; never the browser's default grey slab */
+html { scrollbar-width: thin; scrollbar-color: var(--iqaa-n300) transparent; }
+* { scrollbar-width: thin; scrollbar-color: var(--iqaa-n300) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--iqaa-n300); border: 3px solid transparent; border-radius: 10px; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--iqaa-n500); }
+::-webkit-scrollbar-corner { background: transparent; }

@@ -4,7 +4,7 @@ main.bd { background: #fff; }
 main.bd + .a-foot { display: none; }
 .bd-page { display: flex; flex-direction: column; height: 100vh; }
 
-.bd-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding: var(--s-3) var(--s-6); border-block-end: 1px solid var(--iqaa-n200); }
+.bd-head { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding: var(--s-3) var(--s-6); background: #fff; border-block-end: 1px solid var(--iqaa-n200); box-shadow: 0 8px 20px -18px rgba(25, 23, 46, 0.35); }
 .bd-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); min-width: 0; }
 .bd-title h1 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 600; max-width: none; }
 .bd-state { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
@@ -19,11 +19,26 @@ main.bd + .a-foot { display: none; }
 .bd-checks-btn.bad { border-color: var(--iqaa-red); color: var(--iqaa-red); }
 .bd-checks-btn > span { display: inline-flex; align-items: center; gap: var(--s-2); }
 
-.bd-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 312px; }
+.bd-body { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 312px; transition: grid-template-columns var(--m-quarter) var(--ease-move); }
+.bd-body.lib-closed { grid-template-columns: 0 minmax(0, 1fr) 312px; }
+.bd-body.insp-closed { grid-template-columns: 232px minmax(0, 1fr) 0; }
+.bd-body.lib-closed.insp-closed { grid-template-columns: 0 minmax(0, 1fr) 0; }
+.lib-closed .bd-lib, .insp-closed .bd-insp { visibility: hidden; overflow: hidden; padding: 0; border: 0; }
+/* a folded panel leaves a slim tab on the canvas edge */
+.pn-tab { position: absolute; z-index: 8; inset-block-start: var(--s-3); display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 10px; border: 0; background: var(--iqaa-ink); color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 16px -8px rgba(25, 23, 46, 0.5); }
+.pn-tab.l { inset-inline-start: 0; border-radius: 0 10px 10px 0; }
+.pn-tab.r { inset-inline-end: 0; border-radius: 10px 0 0 10px; }
+.pn-tab:hover { background: var(--iqaa-n800); }
+.pn-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.pn-x { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--iqaa-n700); cursor: pointer; flex: none; }
+.pn-x:hover { background: var(--iqaa-n100); color: var(--iqaa-ink); }
+@media (prefers-reduced-motion: reduce) { .bd-body { transition: none; } }
 
 /* the library: every block, grouped by who does the work */
-.bd-lib { overflow-y: auto; padding: var(--s-4); border-inline-end: 1px solid var(--iqaa-n200); background: var(--iqaa-n50); display: flex; flex-direction: column; gap: var(--s-2); }
-.bd-lib h2 { font-size: 15px; line-height: 22px; font-weight: 700; }
+.bd-lib { min-width: 0; display: flex; flex-direction: column; border-inline-end: 1px solid var(--iqaa-n200); background: var(--iqaa-n50); }
+.bd-lib .pn-h, .bd-insp .pn-h { padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4); background: #fff; border-block-end: 1px solid var(--iqaa-n200); }
+.bd-lib > .pn-b { flex: 1; min-height: 0; overflow-y: auto; padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); }
+.bd-lib h2, .bd-insp h2 { font-size: 14px; line-height: 20px; font-weight: 700; }
 .bd-lib h3 { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); margin-block-start: var(--s-3); }
 .bd-lib ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .lib-it { width: 100%; display: flex; align-items: flex-start; gap: var(--s-3); padding: var(--s-2); border: 1px solid transparent; border-radius: 10px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200); font: inherit; text-align: start; color: var(--iqaa-ink); cursor: grab; touch-action: none; }
@@ -90,7 +105,11 @@ main.bd + .a-foot { display: none; }
 .ed-l { font-family: 'Atkinson Hyperlegible Next', sans-serif; font-size: 11px; font-weight: 700; fill: var(--iqaa-n700); paint-order: stroke; stroke: #fff; stroke-width: 4px; }
 
 /* the inspector */
-.bd-insp { overflow-y: auto; padding: var(--s-5, 20px); border-inline-start: 1px solid var(--iqaa-n200); display: flex; flex-direction: column; gap: var(--s-4); }
+.bd-insp { position: relative; z-index: 4; min-width: 0; display: flex; flex-direction: column; background: #fff; border-inline-start: 1px solid var(--iqaa-n200); box-shadow: -12px 0 24px -20px rgba(25, 23, 46, 0.35); }
+.bd-insp > .pn-b { flex: 1; min-height: 0; overflow-y: auto; padding: var(--s-5, 20px); display: flex; flex-direction: column; gap: var(--s-4); }
+/* the inspector's first line is its subject, set apart; its sections divided by hairlines */
+.bd-insp .in-k { margin: calc(-1 * var(--s-5, 20px)) calc(-1 * var(--s-5, 20px)) 0; padding: var(--s-3) var(--s-5, 20px); background: var(--iqaa-n50); border-block-end: 1px solid var(--iqaa-n100); font-size: 13px; color: var(--iqaa-ink); }
+.bd-insp .in-f + .in-f, .bd-insp .in-act, .bd-insp .chk { padding-block-start: var(--s-4); border-block-start: 1px solid var(--iqaa-n100); }
 .in-k { display: flex; align-items: center; gap: var(--s-2); font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); }
 .in-f { display: flex; flex-direction: column; gap: 6px; }
 .in-f label, .in-l { font-size: 13px; line-height: 18px; font-weight: 700; }
@@ -123,7 +142,8 @@ main.bd + .a-foot { display: none; }
 /* below a laptop the panels stack under the canvas; building wants a larger screen, and says so */
 @media (max-width: 1023px) {
   .bd-page { height: auto; }
-  .bd-body { grid-template-columns: minmax(0, 1fr); }
+  .bd-body, .bd-body.lib-closed, .bd-body.insp-closed, .bd-body.lib-closed.insp-closed { grid-template-columns: minmax(0, 1fr); }
+  .pn-tab { display: none; }
   .bd-canvas { height: 62vh; order: -1; }
   .bd-lib { border: 0; border-block-start: 1px solid var(--iqaa-n200); }
   .bd-lib ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }

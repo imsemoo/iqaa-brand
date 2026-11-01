@@ -61,7 +61,8 @@ def build():
 </div>
 </header>
 <div class="bd-body">
-<aside class="bd-lib" aria-labelledby="lib-h"><h2 id="lib-h">Blocks</h2><p class="hint">Drag a block onto a station, or onto the canvas for a new station.</p>{library()}</aside>
+<aside class="bd-lib" id="bd-lib" aria-labelledby="lib-h"><div class="pn-h"><h2 id="lib-h">Blocks</h2><button type="button" class="pn-x" data-fold-p="lib" aria-label="Hide the blocks ([)" title="Hide the blocks ([)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg></button></div><div class="pn-b"><p class="hint">Drag a block onto a station, or onto the canvas for a new station.</p>{library()}</div></aside>
+<button type="button" class="pn-tab l" data-open-p="lib" aria-controls="bd-lib" aria-label="Show the blocks ([)" title="Show the blocks ([)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg><span>Blocks</span></button>
 <div class="bd-canvas" data-canvas tabindex="0" role="application" aria-label="The line’s canvas. Drag to move around; Ctrl and the wheel to zoom.">
 <div class="bd-world" data-world><svg class="bd-edges" data-edges aria-hidden="true"></svg><div data-blocks></div></div>
 <div class="bd-checks" id="checks" data-checks hidden></div>
@@ -77,7 +78,8 @@ def build():
 <div class="bd-test" data-testbar hidden><form class="tb-set" data-test-set novalidate><b>Test job</b><label>People <input class="sn num" type="number" min="1" max="999" value="40" data-t-people></label><label class="chk"><input type="checkbox" checked data-t-back><span>Take each way back once</span></label><button type="submit" class="btn small ink">Start</button><button type="button" class="btn small" data-do="test-close">Close</button></form><p class="tb-now" data-t-now aria-live="polite"></p></div>
 <p class="bd-tip" data-tip>Drag from a station’s ring to another station to hand the job on. Yes and Change asked are dragged the same way.</p>
 </div>
-<aside class="bd-insp" data-insp aria-label="Selected block"></aside>
+<button type="button" class="pn-tab r" data-open-p="insp" aria-controls="bd-insp" aria-label="Show the settings (])" title="Show the settings (])"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg><span>Settings</span></button>
+<aside class="bd-insp" id="bd-insp" aria-labelledby="in-h"><div class="pn-h"><h2 id="in-h">Settings</h2><button type="button" class="pn-x" data-fold-p="insp" aria-label="Hide the settings (])" title="Hide the settings (])"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg></button></div><div class="pn-b" data-insp></div></aside>
 </div>
 <p class="bd-live sr" data-live aria-live="polite"></p>
 </div>'''
