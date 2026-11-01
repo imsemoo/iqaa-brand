@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>qa line</title>
+<style>html,body{margin:0;background:#fff}iframe{border:0;display:block}</style>
+<iframe id="f"></iframe>
+<script>
+// QA only: drives line.html through a scenario so headless shots can capture each state.
+const q = new URLSearchParams(location.search), f = document.getElementById('f');
+f.style.width = q.get('w') + 'px'; f.style.height = q.get('h') + 'px';
+const pick = (d, id) => d.querySelector(`[data-pick="${id}"]`).click();
+const S = {
+  branch(d) { pick(d, 'quote'); d.querySelector('[data-add-branch]').click(); },
+  wholesale(d) { pick(d, 'wholesale'); },
+  test(d) { d.querySelector('[data-test-open]').click(); },
+  run(d) { d.querySelector('[data-test-set] [type=submit]').click(); },
+  edit(d) { pick(d, 'buy'); const n = d.querySelector('#dt-name'); n.value = 'Buy the food'; n.dispatchEvent(new Event('input', { bubbles: true })); },
+  confirm(d) { d.querySelector('[data-publish-open]').click(); },
+  publish(d) { d.querySelector('[data-cf-yes]').click(); },
+  remove(d) { pick(d, 'buy'); d.querySelector('[data-remove]').click(); },
+  scroll(d) { d.defaultView.scrollTo(0, +q.get('y') || 0); },
+};
+f.onload = () => setTimeout(() => {
+  const d = f.contentDocument;
+  // headless virtual time runs no frames, so transitions would freeze half way in a capture
+  d.head.insertAdjacentHTML('beforeend', '<style>*,*::before,*::after{transition:none!important}</style>');
+  (q.get('do') || '').split(',').filter(Boolean).forEach((k) => S[k](d));
+  // no frames means no resize observer: tell the page its layout settled
+  setTimeout(() => f.contentWindow.dispatchEvent(new Event('resize')), 900);
+  // a capture shows the state, not the focus ring a script left, and starts at the top unless asked
+  if (!q.get('keep')) setTimeout(() => { if (d.activeElement) d.activeElement.blur(); if (!q.get('y')) f.contentWindow.scrollTo(0, 0); }, 1300);
+  if (q.get('dbg')) setTimeout(() => { const i = d.querySelector('[data-map-in]'); const t = d.createElement('pre'); t.style.cssText = 'position:fixed;left:0;bottom:0;background:#ff0;z-index:99;margin:0'; t.textContent = `pad=${i.style.paddingBlockEnd} h=${i.offsetHeight} v=${d.defaultView.matchMedia('(max-width: 1023px)').matches}`; d.body.append(t); }, 1500);
+}, 300);
+f.src = '../line.html';
+</script>

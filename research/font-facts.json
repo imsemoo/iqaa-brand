@@ -1,0 +1,269 @@
+[
+ {
+  "face": "Host Grotesk",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.029,
+  "xh": 0.709,
+  "width": 0.521,
+  "zero": false,
+  "weights": [
+   300.0,
+   800.0
+  ],
+  "glyphs": 449
+ },
+ {
+  "face": "Atkinson Hyperlegible Next",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 13,
+  "I_vs_l": true,
+  "l_over_I": 1.06,
+  "xh": 0.743,
+  "width": 0.487,
+  "zero": false,
+  "weights": [
+   200.0,
+   800.0
+  ],
+  "glyphs": 392
+ },
+ {
+  "face": "Funnel Sans",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.037,
+  "xh": 0.741,
+  "width": 0.5,
+  "zero": false,
+  "weights": [
+   300.0,
+   800.0
+  ],
+  "glyphs": 370
+ },
+ {
+  "face": "Funnel Display",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.037,
+  "xh": 0.741,
+  "width": 0.531,
+  "zero": false,
+  "weights": [
+   300.0,
+   800.0
+  ],
+  "glyphs": 370
+ },
+ {
+  "face": "Instrument Sans",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.0,
+  "xh": 0.708,
+  "width": 0.525,
+  "zero": false,
+  "weights": [
+   400.0,
+   700.0
+  ],
+  "glyphs": 501
+ },
+ {
+  "face": "Hanken Grotesk",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 17,
+  "I_vs_l": true,
+  "l_over_I": 1.011,
+  "xh": 0.707,
+  "width": 0.504,
+  "zero": false,
+  "weights": [
+   100.0,
+   900.0
+  ],
+  "glyphs": 708
+ },
+ {
+  "face": "Onest",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.0,
+  "xh": 0.745,
+  "width": 0.527,
+  "zero": false,
+  "weights": [
+   100.0,
+   900.0
+  ],
+  "glyphs": 876
+ },
+ {
+  "face": "Wix Madefor Text",
+  "mono": false,
+  "tnum": false,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.007,
+  "xh": 0.688,
+  "width": 0.529,
+  "zero": false,
+  "weights": [
+   400.0,
+   800.0
+  ],
+  "glyphs": 726
+ },
+ {
+  "face": "Wix Madefor Display",
+  "mono": false,
+  "tnum": false,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.007,
+  "xh": 0.688,
+  "width": 0.532,
+  "zero": false,
+  "weights": [
+   400.0,
+   800.0
+  ],
+  "glyphs": 726
+ },
+ {
+  "face": "Rethink Sans",
+  "mono": false,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 4,
+  "l_points": 4,
+  "I_vs_l": false,
+  "l_over_I": 1.0,
+  "xh": 0.709,
+  "width": 0.521,
+  "zero": false,
+  "weights": [
+   400.0,
+   800.0
+  ],
+  "glyphs": 494
+ },
+ {
+  "face": "Fragment Mono",
+  "mono": true,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 10,
+  "I_vs_l": true,
+  "l_over_I": 1.043,
+  "xh": 0.75,
+  "width": 0.618,
+  "zero": true,
+  "weights": null,
+  "glyphs": 707
+ },
+ {
+  "face": "Martian Mono",
+  "mono": true,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 10,
+  "I_vs_l": true,
+  "l_over_I": 1.06,
+  "xh": 0.75,
+  "width": 0.75,
+  "zero": false,
+  "weights": [
+   100.0,
+   800.0
+  ],
+  "glyphs": 567
+ },
+ {
+  "face": "Azeret Mono",
+  "mono": true,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 12,
+  "I_vs_l": true,
+  "l_over_I": 1.046,
+  "xh": 0.779,
+  "width": 0.65,
+  "zero": true,
+  "weights": [
+   100.0,
+   900.0
+  ],
+  "glyphs": 646
+ },
+ {
+  "face": "Sometype Mono",
+  "mono": true,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 16,
+  "I_vs_l": true,
+  "l_over_I": 1.111,
+  "xh": 0.723,
+  "width": 0.58,
+  "zero": false,
+  "weights": [
+   400.0,
+   700.0
+  ],
+  "glyphs": 563
+ },
+ {
+  "face": "Red Hat Mono",
+  "mono": true,
+  "tnum": true,
+  "turkish": true,
+  "I_points": 12,
+  "l_points": 19,
+  "I_vs_l": true,
+  "l_over_I": 1.053,
+  "xh": 0.697,
+  "width": 0.6,
+  "zero": true,
+  "weights": [
+   300.0,
+   700.0
+  ],
+  "glyphs": 441
+ }
+]

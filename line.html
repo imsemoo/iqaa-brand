@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line · Sufra</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/atkinson.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/tokens.css?v=68">
+<link rel="stylesheet" href="assets/css/brand.css?v=68">
+<link rel="stylesheet" href="assets/css/auth.css?v=68">
+<link rel="stylesheet" href="assets/css/app.css?v=68">
+<link rel="stylesheet" href="assets/css/line.css?v=68">
+<script src="assets/js/iqaa-data.js?v=68" defer></script><script src="assets/js/grammar.js?v=68" defer></script><script src="assets/js/beats.js?v=68" defer></script><script src="assets/js/sufra.js?v=68" defer></script><script src="assets/js/line.js?v=68" defer></script>
+</head>
+<body class="app">
+<a class="skip" href="#main">Skip to content</a>
+<header class="a-top"><div class="ap-wrap ap-top">
+<a class="ap-org" href="today.html"><span class="org-mark" data-org-mark></span><b data-org-name>Sufra</b></a>
+<nav class="ap-nav" aria-label="Sufra"><ul><li><a href="today.html">Today</a></li><li><a href="line.html" aria-current="page">Line</a></li><li><span class="nav-off" title="Not designed yet">Orders</span></li><li><span class="nav-off" title="Not designed yet">Clients</span></li><li><span class="nav-off" title="Not designed yet">Settings</span></li><li><span class="nav-off" title="Not designed yet">Ask Watar</span></li></ul></nav>
+<span class="ap-me"><span class="me-av" aria-hidden="true" data-me-av>H</span><span class="sr" data-me-sr>Signed in as Hala, owner</span></span>
+</div></header>
+<main id="main" class="ln">
+<div class="ln-page">
+<header class="ln-head ap-wrap">
+<div class="ln-title">
+<h1 id="ln-h"><span data-org-name>Sufra</span>’s line</h1>
+<p class="ln-state" data-state aria-live="polite"></p>
+</div>
+<figure class="ln-sig"><div data-head-sig></div><figcaption data-sig-cap></figcaption></figure>
+<div class="ln-act">
+<button class="btn" type="button" data-test-open>Run a test job</button>
+<button class="btn primary" type="button" data-publish-open></button>
+</div>
+</header>
+<div class="ln-confirm ap-wrap" data-confirm hidden>
+<div class="cf-in" role="group" aria-labelledby="cf-h">
+<p id="cf-h"><b data-cf-t></b> <span data-cf-p></span></p>
+<div class="cf-act"><button class="btn" type="button" data-cf-no>Keep editing</button><button class="btn primary" type="button" data-cf-yes></button></div>
+</div>
+</div>
+<p class="ln-note ap-wrap" data-note role="status" hidden><span data-note-t></span> <button class="link" type="button" data-undo>Undo</button></p>
+<section class="map-wrap" aria-labelledby="map-h">
+<h2 class="sr" id="map-h">Map of the line</h2>
+<div class="map" data-map><div class="map-in" data-map-in>
+<svg class="tracks" data-tracks aria-hidden="true"></svg>
+<ol class="stations" data-stations aria-label="Stations, in the order every job walks them"></ol>
+<span class="token" data-token hidden></span>
+</div></div>
+<div class="ap-wrap"><div class="lg" aria-label="How to read the map"><ul class="lg-map"><li><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 10h36" stroke="#19172E" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="10" r="7" fill="#fff" stroke="#19172E" stroke-width="4"/></svg><span>A station: work changes hands here</span></li><li><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 4h10l12 12h14" fill="none" stroke="#19172E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A branch: some jobs take another route</span></li><li><svg viewBox="0 0 40 20" aria-hidden="true"><path d="M34 3v7a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6V3" fill="none" stroke="#19172E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>A way back to an earlier station</span></li></ul><ul class="lg-steps"><li><span class="lg-g"><svg viewBox="-3.2 -33.2 30.4 42.2" width="28" height="38.868" aria-hidden="true"><path d="M0 0h24" fill="none" stroke="#19172E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Runs by itself</span></li><li><span class="lg-g"><svg viewBox="-3.2 -33.2 30.4 42.2" width="28" height="38.868" aria-hidden="true"><path d="M0 0c10 0 18 -8 18 -18c0 -8 -6 -12 -10 -12c-6 0 -9 5 -8 12c2 12 10 18 24 18" fill="none" stroke="#8845F8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>A person does it</span></li><li><span class="lg-g"><svg viewBox="-3.2 -33.2 30.4 42.2" width="28" height="38.868" aria-hidden="true"><path d="M0 0c3 -20 21 -20 24 0" fill="none" stroke="#8845F8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Waits for a person</span></li><li><span class="lg-g"><svg viewBox="-3.2 -33.2 30.4 42.2" width="28" height="38.868" aria-hidden="true"><path d="M0 0h4M20 0h4" fill="none" stroke="#19172E" stroke-width="3.2" stroke-linecap="round"/><circle cx="12" cy="0" r="2.88" fill="#19172E"/></svg></span><span>Timed wait</span></li></ul></div></div>
+</section>
+<section class="detail ap-wrap" data-detail aria-label="Selected station"></section>
+<section class="test ap-wrap" data-test aria-labelledby="test-h" hidden>
+<div class="test-head">
+<h2 id="test-h">Test job</h2>
+<p class="hint" data-test-of></p>
+</div>
+<form class="test-set" data-test-set novalidate>
+<p class="test-job"><b>Lunch for Nakhla</b> <span>for Maha at Nakhla Co. · Thu 5 Nov, 13:00</span></p>
+<div class="test-opts">
+<div class="field small"><label for="t-people">People in the order</label><input id="t-people" type="number" inputmode="numeric" min="1" max="999" value="40"></div>
+<label class="chk"><input type="checkbox" data-t-back checked><span>Take each way back once</span></label>
+</div>
+<div class="row-act"><button class="btn" type="button" data-test-cancel>Cancel</button><button class="btn ink" type="submit"><span class="b" data-k="run" data-test-beat></span>Start the test</button></div>
+</form>
+<ol class="test-log" data-test-log aria-live="polite"></ol>
+<div class="test-end" data-test-end hidden><p data-test-sum></p><div class="row-act"><button class="btn" type="button" data-test-again>Run it again</button><button class="btn ink" type="button" data-test-close>Back to the line</button></div></div>
+</section>
+<div class="test-bar" data-test-bar hidden><div class="ap-wrap tb-in"><span class="tb-dot" aria-hidden="true"></span><p data-test-now></p><button class="btn small" type="button" data-test-skip>Skip to the end</button></div></div>
+</div>
+</main>
+<footer class="a-foot"><div class="sign-off"><a class="runs-on" href="index.html"><svg viewBox="-4.6 -33.3 75.2 37.9" aria-hidden="true" aria-label="Iqaa"><path d="M0 0h24" fill="none" stroke="#19172E" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 0c10 0 18 -8 18 -18c0 -8 -6 -12 -10 -12c-6 0 -9 5 -8 12c2 12 10 18 24 18" fill="none" stroke="#8845F8" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 0c8 0 14 -6 18 -16" fill="none" stroke="#19172E" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Runs on Iqaa</span></a></div><p>Prototype screen, part of the <a href="index.html">Iqaa identity</a>. Nothing is sent or saved.</p></footer>
+</body>
+</html>

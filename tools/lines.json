@@ -1,0 +1,313 @@
+{
+ "_note": "Station names come from the client deck. The steps inside each station are illustrative, built only from step types the build plan names: send, wait, remind, condition, create, task for a person, approval, Watar draft.",
+ "kinds": {
+  "run": "Runs: a step that runs by itself",
+  "held": "Held: waits for a person (an approval, a review, a Watar draft)",
+  "struck": "Struck: a person does the work",
+  "rest": "Rest: a timed wait"
+ },
+ "lines": {
+  "catering": {
+   "org": "Sufra",
+   "template": "Catering",
+   "job": "an order",
+   "blocks": [
+    {
+     "name": "Request",
+     "steps": [
+      [
+       "struck",
+       "Reem logs the order"
+      ],
+      [
+       "run",
+       "Send the client a receipt"
+      ]
+     ]
+    },
+    {
+     "name": "Quote",
+     "steps": [
+      [
+       "held",
+       "Watar drafts the quote"
+      ],
+      [
+       "struck",
+       "Reem checks the prices"
+      ],
+      [
+       "run",
+       "Send the quote link"
+      ]
+     ]
+    },
+    {
+     "name": "Client approval",
+     "steps": [
+      [
+       "held",
+       "Maha approves"
+      ],
+      [
+       "rest",
+       "Wait two days"
+      ],
+      [
+       "run",
+       "Remind Maha"
+      ]
+     ]
+    },
+    {
+     "name": "Buy materials",
+     "steps": [
+      [
+       "run",
+       "Create the shopping list"
+      ],
+      [
+       "struck",
+       "Buy the materials"
+      ]
+     ]
+    },
+    {
+     "name": "Prepare",
+     "steps": [
+      [
+       "run",
+       "Remind the kitchen a day before"
+      ],
+      [
+       "struck",
+       "Salma prepares"
+      ]
+     ]
+    },
+    {
+     "name": "Deliver",
+     "steps": [
+      [
+       "run",
+       "Send the arrival time"
+      ],
+      [
+       "struck",
+       "Yusuf delivers"
+      ]
+     ]
+    },
+    {
+     "name": "Invoice",
+     "steps": [
+      [
+       "run",
+       "Create the invoice"
+      ],
+      [
+       "run",
+       "Send the invoice"
+      ]
+     ]
+    }
+   ]
+  },
+  "software": {
+   "org": "Raqm",
+   "template": "Software company",
+   "job": "a feature request",
+   "blocks": [
+    {
+     "name": "Request",
+     "steps": [
+      [
+       "struck",
+       "Log the request"
+      ],
+      [
+       "run",
+       "Acknowledge to the client"
+      ]
+     ]
+    },
+    {
+     "name": "Analysis",
+     "steps": [
+      [
+       "struck",
+       "Analyse the request"
+      ],
+      [
+       "held",
+       "Lead approves the scope"
+      ]
+     ]
+    },
+    {
+     "name": "Design",
+     "steps": [
+      [
+       "struck",
+       "Design the feature"
+      ],
+      [
+       "held",
+       "Client reviews the design"
+      ]
+     ]
+    },
+    {
+     "name": "Development",
+     "steps": [
+      [
+       "struck",
+       "Build the feature"
+      ]
+     ]
+    },
+    {
+     "name": "Code review",
+     "steps": [
+      [
+       "held",
+       "A reviewer approves"
+      ],
+      [
+       "struck",
+       "Fix the review notes"
+      ]
+     ]
+    },
+    {
+     "name": "Testing",
+     "steps": [
+      [
+       "run",
+       "Send the build to test"
+      ],
+      [
+       "struck",
+       "Test the feature"
+      ]
+     ]
+    },
+    {
+     "name": "Delivery",
+     "steps": [
+      [
+       "struck",
+       "Release"
+      ],
+      [
+       "run",
+       "Tell the client"
+      ]
+     ]
+    }
+   ]
+  },
+  "video": {
+   "org": "Kadr",
+   "template": "Video production",
+   "job": "a project",
+   "blocks": [
+    {
+     "name": "Idea",
+     "steps": [
+      [
+       "struck",
+       "Write the idea"
+      ],
+      [
+       "held",
+       "Client approves the idea"
+      ]
+     ]
+    },
+    {
+     "name": "Script",
+     "steps": [
+      [
+       "held",
+       "Watar drafts an outline"
+      ],
+      [
+       "struck",
+       "Write the script"
+      ],
+      [
+       "held",
+       "Client approves the script"
+      ]
+     ]
+    },
+    {
+     "name": "Shoot prep",
+     "steps": [
+      [
+       "struck",
+       "Book the crew"
+      ],
+      [
+       "run",
+       "Send the call sheet"
+      ]
+     ]
+    },
+    {
+     "name": "Shoot",
+     "steps": [
+      [
+       "struck",
+       "Shoot"
+      ]
+     ]
+    },
+    {
+     "name": "Edit",
+     "steps": [
+      [
+       "struck",
+       "Edit"
+      ],
+      [
+       "run",
+       "Send the preview link"
+      ]
+     ]
+    },
+    {
+     "name": "Client review",
+     "steps": [
+      [
+       "held",
+       "Client reviews"
+      ],
+      [
+       "rest",
+       "Wait three days"
+      ],
+      [
+       "run",
+       "Remind the client"
+      ]
+     ]
+    },
+    {
+     "name": "Delivery",
+     "steps": [
+      [
+       "run",
+       "Send the files"
+      ],
+      [
+       "run",
+       "Create the invoice"
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

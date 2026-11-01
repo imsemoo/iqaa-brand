@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Sufra</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/atkinson.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/tokens.css?v=68">
+<link rel="stylesheet" href="assets/css/brand.css?v=68">
+<link rel="stylesheet" href="assets/css/auth.css?v=68">
+<script src="assets/js/iqaa-data.js?v=68" defer></script><script src="assets/js/grammar.js?v=68" defer></script><script src="assets/js/beats.js?v=68" defer></script><script src="assets/js/signin.js?v=68" defer></script>
+</head>
+<body class="app">
+<a class="skip" href="#main">Skip to content</a>
+
+<main id="main" class="si">
+<div class="si-page">
+<section class="card" data-card aria-labelledby="si-h">
+<div class="card-org"><span class="org-mark" data-sig></span><span class="org-t"><b data-org-name>Sufra</b><span data-org-addr>sufra.iqaa.app</span></span></div>
+<div class="card-line" data-card-line></div>
+<div class="card-body" data-panel="signin">
+<h1 id="si-h">Sign in</h1>
+<p class="card-sub">Welcome back. Use the email your team invited.</p>
+<p class="alert" data-form-err role="alert" hidden></p>
+<form class="form" data-signin novalidate>
+<div class="field" data-field="email">
+<label for="email">Work email</label>
+<input id="email" name="email" type="email" autocomplete="username" required aria-describedby="email-err" inputmode="email" spellcheck="false">
+<p class="err" id="email-err" hidden></p>
+</div>
+<div class="field" data-field="pw">
+<div class="lab-row"><label for="pw">Password</label><button class="link" type="button" data-forgot>Forgot password?</button></div>
+<div class="pw"><input id="pw" name="pw" type="password" autocomplete="current-password" required aria-describedby="pw-err"><button class="show" type="button" aria-pressed="false" aria-controls="pw" data-show>Show</button></div>
+<p class="err" id="pw-err" hidden></p>
+</div>
+<button class="btn primary wide" type="submit" data-submit><span class="b" data-k="run" data-check hidden></span><span data-submit-t>Sign in</span></button>
+</form>
+<p class="card-alt">Not on <span data-org-name>Sufra</span>’s line? <a href="signup.html">Start an organization</a></p>
+</div>
+<div class="card-body" data-panel="forgot" hidden>
+<h1 id="fg-h">Reset your password</h1>
+<p class="card-sub">We send a link to your work email. It works once, for an hour.</p>
+<form class="form" data-forgot-form novalidate>
+<div class="field" data-field="fgemail">
+<label for="fgemail">Work email</label>
+<input id="fgemail" name="fgemail" type="email" autocomplete="username" required aria-describedby="fgemail-err" inputmode="email" spellcheck="false">
+<p class="err" id="fgemail-err" hidden></p>
+</div>
+<p class="ok" data-forgot-ok role="status" hidden></p>
+<button class="btn primary wide" type="submit" data-fg-submit><span class="b" data-k="run" data-fg-check hidden></span><span>Send the link</span></button>
+</form>
+<p class="card-alt"><button class="link" type="button" data-back>Back to sign in</button></p>
+</div>
+<div class="card-body" data-welcome aria-live="polite" hidden>
+<h1 data-greet tabindex="-1"></h1>
+<p class="card-sub" data-w-p></p>
+<a class="btn primary wide" href="today.html">Open Today</a>
+<p class="card-alt"><button class="link" type="button" data-again>Sign out</button></p>
+</div>
+</section>
+<p class="proto">Prototype: any email and password sign you in; type <code>wrong</code> as the password to see a failed check.</p>
+</div>
+</main>
+<footer class="a-foot"><div class="sign-off"><a class="runs-on" href="index.html"><svg viewBox="-4.6 -33.3 75.2 37.9" aria-hidden="true" aria-label="Iqaa"><path d="M0 0h24" fill="none" stroke="#19172E" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 0c10 0 18 -8 18 -18c0 -8 -6 -12 -10 -12c-6 0 -9 5 -8 12c2 12 10 18 24 18" fill="none" stroke="#8845F8" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 0c8 0 14 -6 18 -16" fill="none" stroke="#19172E" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Runs on Iqaa</span></a></div><p>Prototype screen, part of the <a href="index.html">Iqaa identity</a>. Nothing is sent or saved.</p></footer>
+</body>
+</html>
