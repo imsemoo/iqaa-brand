@@ -5,7 +5,7 @@
   if (!root || !window.IQ || !window.Beats || !window.SUFRA || !window.JOBS) return;
   const S = window.SUFRA;
   const $ = (s, el) => (el || document).querySelector(s);
-  const esc = Beats.esc, isPerson = JOBS.isPerson;
+  const esc = Beats.esc, isPerson = JOBS.isPerson, N = window.I18N.n;
   const line = S.line(), J = JOBS.on(line), V = JOBS.views(J, S), K = JOBS.clients(J, S, V);
   const code = new URLSearchParams(location.search).get('code') || 'SFR-26-0031';
   // today's jobs, and the orders before them
@@ -16,14 +16,14 @@
 
 
   if (!j) {
-    $('[data-head]').innerHTML = `<h1>No order ${esc(code)}</h1><p class="od-sub">It may have been typed wrong. <a href="orders.html">See every order</a>.</p>`;
+    $('[data-head]').innerHTML = `<h1>${T('No order {code}', { code: `<bdi>${esc(code)}</bdi>` })}</h1><p class="od-sub">${T('It may have been typed wrong. {link}.', { link: `<a href="orders.html">${T('See every order')}</a>` })}</p>`;
     $('.od-journey').hidden = true; $('.od-grid').hidden = true;
     return;
   }
-  document.title = `${j.title} · ${j.code} · Sufra`;
+  document.title = `${T(j.title)} · ${j.code} · ${T('Sufra')}`;
   const c = K.get(j.ck), f = K.facts(j), past = S.past.includes(j);
   // an order from before today belongs to its client's history: back to the client, not to today's orders
-  if (past) { const back = $('.od-back a'); back.href = `client.html?c=${c.key}`; back.textContent = c.name; }
+  if (past) { const back = $('.od-back a'); back.href = `client.html?c=${c.key}`; back.textContent = T(c.name); }
 
   // ---------- the job's steps in order, each done, now, ahead or not needed, with the times of the shared clock ----------
   const route = J.route(j);
@@ -37,9 +37,9 @@
 
   // ---------- head ----------
   const cur = J.stepOf(j), p = j.finished ? null : J.station(j.at);
-  $('[data-head]').innerHTML = `<div class="od-t"><p class="od-code"><code>${j.code}</code></p><h1>${esc(j.title)}</h1>
-<p class="od-sub">${esc(j.client)}, ${esc(j.of)} · ${j.people} people · due <b>${esc(j.due)}</b></p></div>
-<p class="od-state">${j.finished ? `${glyph('struck')}<span>Finished ${esc(j.finished)}. Every station signed it.</span>` : `${glyph(cur.kind)}<span>At <b>${esc(p.st.name)}</b>: ${esc(cur.name)}</span>`}</p>`;
+  $('[data-head]').innerHTML = `<div class="od-t"><p class="od-code"><code>${j.code}</code></p><h1>${esc(T(j.title))}</h1>
+<p class="od-sub">${T('{who} · due {due}', { who: V.forWhom(j), due: `<b>${esc(V.due(j))}</b>` })}</p></div>
+<p class="od-state">${j.finished ? `${glyph('struck')}<span>${esc(T('Finished {date}. Every station signed it.', { date: V.fin(j) }))}</span>` : `${glyph(cur.kind)}<span>${T('At {station}: {step}', { station: `<b>${esc(T(p.st.name))}</b>`, step: esc(T(cur.name)) })}</span>`}</p>`;
 
   // ---------- the journey: one stroke; the pen stands where the job is (drawn by the shared views, as Watar draws it) ----------
   const jr = V.journey(j);
@@ -49,48 +49,49 @@
   // ---------- station by station ----------
   // when a done step happened, in words: the reminder's wait as a range, an answer that needed it, a change asked for
   function note(s) {
-    if (s.state === 'skip') return `Not needed: ${esc(c.C)} answered first`;
-    if (s.state === 'now') return s.x.who === 'The client' ? `<b>Waiting for ${esc(V.short(j))}</b>` : '<b>Now</b>';
-    if (s.state === 'next') return 'Next';
+    if (s.state === 'skip') return esc(T('Not needed: {C} answered first', V.named('C', c.C)));
+    if (s.state === 'now') return s.x.who === 'The client' ? `<b>${esc(T('Waiting for {name}', { name: T(V.short(j)) }))}</b>` : `<b>${T('Now')}</b>`;
+    if (s.state === 'next') return T('Next');
     if (s.x.name === 'Wait two days' && reminded) return `${time(reminded.sent)}–${time(reminded.reminded)}`;
-    if (s.x.name === 'The client approves' && reminded) return `${time(s.t)} · after the reminder`;
+    if (s.x.name === 'The client approves' && reminded) return T('{time} · after the reminder', { time: time(s.t) });
     return time(s.t);
   }
   function asked(s) {
     if (s.x.name !== 'The client approves' || s.state !== 'done') return '';
-    return f.rounds.map((r, n) => (r.change ? `<p class="od-asked">Asked for a change ${time(r.answer)}: “${esc(r.change)}”${f.rounds[n + 1] ? ` · new quote ${time(f.rounds[n + 1].sent)}` : ''}</p>` : '')).join('');
+    return f.rounds.map((r, n) => (r.change ? `<p class="od-asked">${T('Asked for a change {time}: “{change}”', { time: time(r.answer), change: esc(T(r.change)) })}${f.rounds[n + 1] ? T(' · new quote {time}', { time: time(f.rounds[n + 1].sent) }) : ''}</p>` : '')).join('');
   }
   let i = 0;
   $('[data-stations]').innerHTML = route.map((st) => {
     const rows = st.steps.map((x) => {
       const n = i++, s = state(n);
-      const who = isPerson(x.kind) ? (x.who === 'The client' ? j.client : x.who) : x.kind === 'rest' ? `Waits ${x.who.toLowerCase()}` : 'Runs by itself';
+      const who = isPerson(x.kind) ? T(x.who === 'The client' ? j.client : x.who) : x.kind === 'rest' ? V.rest(x.who) : T('Runs by itself');
       // a late arrival is said in place of a checklist that would tick 'Arrived on time'
       const lateNow = kindOf(steps[n]) === 'failed';
-      const check = lateNow ? `<p class="od-asked">Arrived ${V.hm(f.arrived)} for ${V.hm(j.iso)} · <span class="t-late">${f.late} min late</span></p>`
-        : s === 'done' && x.check ? `<ul class="od-check" aria-label="Checklist, locked">${x.check.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : '';
-      return `<li class="os-step ${s}">${glyph(kindOf(steps[n]), s === 'next' || s === 'skip')}<span class="os-n"><b>${esc(x.name)}</b><span>${esc(who)}</span>${check}${asked(steps[n])}</span><span class="os-w">${note(steps[n])}</span></li>`;
+      const check = lateNow ? `<p class="od-asked">${T('Arrived {arrived} for {due} · {late}', { arrived: V.hm(f.arrived), due: V.hm(j.iso), late: `<span class="t-late">${N(f.late, '{n} min late', '{n} min late')}</span>` })}</p>`
+        : s === 'done' && x.check ? `<ul class="od-check" aria-label="${T('Checklist, locked')}">${x.check.map((t) => `<li>${esc(T(t))}</li>`).join('')}</ul>` : '';
+      return `<li class="os-step ${s}">${glyph(kindOf(steps[n]), s === 'next' || s === 'skip')}<span class="os-n"><b>${esc(T(x.name))}</b><span>${esc(who)}</span>${check}${asked(steps[n])}</span><span class="os-w">${note(steps[n])}</span></li>`;
     }).join('');
     const sStates = st.steps.map((_, k) => state(i - st.steps.length + k)).filter((x) => x !== 'skip');
     const sState = sStates.every((x) => x === 'done') ? 'done' : sStates.includes('now') ? 'now' : 'next';
-    const label = { done: 'Done', now: 'The job is here', next: 'Ahead' }[sState];
+    const label = T({ done: 'Done', now: 'The job is here', next: 'Ahead' }[sState]);
     const onBranch = line.routes.some((r) => r.type === 'branch' && r.stations.includes(st));
-    return `<li class="os ${sState}"><h3><span class="os-dot" aria-hidden="true"></span>${esc(st.name)}${onBranch ? ' <span class="os-br">branch for big orders</span>' : ''}<span class="os-s">${label}</span></h3><ol>${rows}</ol></li>`;
+    return `<li class="os ${sState}"><h3><span class="os-dot" aria-hidden="true"></span>${esc(T(st.name))}${onBranch ? ` <span class="os-br">${T('branch for big orders')}</span>` : ''}<span class="os-s">${label}</span></h3><ol>${rows}</ol></li>`;
   }).join('');
 
   // ---------- beside: who it waits for, the client, Watar's draft ----------
   let now = '';
   if (!j.finished) {
     const k = isPerson(cur.kind) && keyOf(cur.who);
-    const what = isPerson(cur.kind) ? (cur.who === 'The client' ? `Waiting for ${esc(V.short(j))}` : `With ${esc(cur.who)}`) : cur.kind === 'rest' ? `A timed wait: ${esc(cur.who.toLowerCase())}` : 'Running by itself';
+    const what = isPerson(cur.kind) ? (cur.who === 'The client' ? T('Waiting for {name}', { name: T(V.short(j)) }) : T('With {name}', { name: T(cur.who) })) : cur.kind === 'rest' ? V.rest(cur.who, 'is') : T('Running by itself');
+    // the question stays English in the link: Ask Watar reads it as the data's words
     const ask = `watar.html?q=${encodeURIComponent(`Why is ${j.title} waiting?`)}`;
-    now = `<section class="od-card"><h2>${IQ.icon('Today', 18)}Now</h2><p class="od-now">${glyph(cur.kind)}<span><b>${what}</b><br>${esc(cur.name)}${since != null ? ` · since ${time(since)}` : ''}</span></p>
-${k ? `<a class="btn" href="today.html?as=${k}">${IQ.icon('Today', 18)}<span>Open ${esc(cur.who)}’s Today</span></a>` : ''}<a class="od-all" href="${ask}">${IQ.icon('Ask Watar', 18)}<span>Ask Watar why it waits</span></a></section>`;
+    now = `<section class="od-card"><h2>${IQ.icon('Today', 18)}${T('Now')}</h2><p class="od-now">${glyph(cur.kind)}<span><b>${esc(what)}</b><br>${esc(T(cur.name))}${since != null ? T(' · since {time}', { time: time(since) }) : ''}</span></p>
+${k ? `<a class="btn" href="today.html?as=${k}">${IQ.icon('Today', 18)}<span>${esc(T('Open {name}’s Today', V.named('name', cur.who)))}</span></a>` : ''}<a class="od-all" href="${ask}">${IQ.icon('Ask Watar', 18)}<span>${T('Ask Watar why it waits')}</span></a></section>`;
   }
-  const draft = j.draft ? `<section class="od-card"><h2>${IQ.icon('Draft', 18)}Watar’s draft of the quote</h2><ul class="od-draft">${j.draft.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul><p class="hint">${esc(j.draft.note)} Total ${esc(j.draft.total)}.</p></section>` : '';
-  const client = `<section class="od-card"><h2>${IQ.icon('Contact', 18)}Client</h2><dl class="od-dl"><dt>Name</dt><dd>${esc(j.client)}</dd><dt>For</dt><dd>${esc(j.of)}</dd><dt>People</dt><dd>${j.people}</dd><dt>Due</dt><dd>${esc(j.due)}</dd><dt>Their link</dt><dd><a href="quote.html?q=${j.code.slice(-4)}"><code>sufra.iqaa.app/q/${j.code.slice(-4)}</code></a></dd></dl><p class="hint">The client approves or asks for a change from this link, without an account.</p>
-<a class="od-all" href="client.html?c=${c.key}">${IQ.icon('History', 18)}<span>All of ${esc(c.name)}’s orders</span></a></section>`;
+  const draft = j.draft ? `<section class="od-card"><h2>${IQ.icon('Draft', 18)}${T('Watar’s draft of the quote')}</h2><ul class="od-draft">${j.draft.items.map((t) => `<li>${esc(T(t))}</li>`).join('')}</ul><p class="hint">${esc(T(j.draft.note))} ${esc(T('Total {total}.', { total: T(j.draft.total) }))}</p></section>` : '';
+  const client = `<section class="od-card"><h2>${IQ.icon('Contact', 18)}${T('Client')}</h2><dl class="od-dl"><dt>${T('Name')}</dt><dd>${esc(T(j.client))}</dd><dt>${T('For')}</dt><dd>${esc(T(j.of))}</dd><dt>${T('People')}</dt><dd>${j.people}</dd><dt>${T('Due')}</dt><dd>${esc(V.due(j))}</dd><dt>${T('Their link')}</dt><dd><a href="quote.html?q=${j.code.slice(-4)}"><code dir="ltr">sufra.iqaa.app/q/${j.code.slice(-4)}</code></a></dd></dl><p class="hint">${T('The client approves or asks for a change from this link, without an account.')}</p>
+<a class="od-all" href="client.html?c=${c.key}">${IQ.icon('History', 18)}<span>${esc(T('All of {name}’s orders', V.named('name', c.name)))}</span></a></section>`;
   // no version history exists for the orders before today, so only today's jobs name the version they walk
-  const meta = past ? '' : `<p class="od-meta">Walks version 3 of Sufra’s line · <a href="line.html">See the line</a></p>`;
+  const meta = past ? '' : `<p class="od-meta">${T('Walks version {n} of Sufra’s line · {link}', { n: 3, link: `<a href="line.html">${T('See the line')}</a>` })}</p>`;
   $('[data-side]').innerHTML = now + draft + client + meta;
 })();

@@ -15,6 +15,10 @@
   const KIND_WORD = { run: 'runs by itself', held: 'waits for a person', struck: 'done by a person', rest: 'timed wait' };
   const RESERVED = ['www', 'app', 'api', 'admin', 'mail', 'help', 'status', 'iqaa', 'watar', 'login', 'signup'];
   const FIELD_NAME = { catering: 'Catering', software: 'Software company', video: 'Video production' };
+  // In Arabic a Latin name, an email, an address or a station's name sits in its own direction inside the sentence.
+  const iso = (s) => (I18N.rtl ? `\u2068${s}\u2069` : s);
+  // the address before a name has given one; addresses are written in Latin letters in every language
+  const TEAM = T('your-team');
 
   const state = { step: 'account', name: '', email: '', org: '', slug: '', slugEdited: false, slugOk: false, choice: null, watar: null, draft: null, approved: false };
   const template = (key) => LINES[key].blocks.map((b) => ({ name: b.name, steps: b.steps.map((st) => st[0]) }));
@@ -31,9 +35,9 @@
     const blocks = state.step === 'line' && state.draft ? state.draft
       : state.choice === 'watar' ? state.watar
       : state.choice ? template(state.choice) : null;
-    $('[data-prev-name]').textContent = state.org || 'Your organization';
-    $('[data-prev-addr]').textContent = `${state.slug || 'your-team'}.iqaa.app`;
-    Beats.sig($('[data-prev-mark]'), blocks || PLACEHOLDER, { mode: 'mark', size: 40, name: state.org || 'Your organization' });
+    $('[data-prev-name]').textContent = state.org || T('Your organization');
+    $('[data-prev-addr]').textContent = `${state.slug || TEAM}.iqaa.app`;
+    Beats.sig($('[data-prev-mark]'), blocks || PLACEHOLDER, { mode: 'mark', size: 40, name: state.org || T('Your organization') });
     const line = $('[data-prev-line]');
     $('[data-prev-empty]').hidden = !!blocks;
     $('[data-prev-lk]').hidden = !blocks;
@@ -45,15 +49,15 @@
   function bar() {
     const st = state.step;
     prev.hidden = st === 'account';
-    if (st === 'account') { barT.textContent = 'Step 1 of 3 · Next: your organization and its line.'; next.textContent = 'Continue'; }
+    if (st === 'account') { barT.textContent = T('Step 1 of 3 · Next: your organization and its line.'); next.textContent = T('Continue'); }
     if (st === 'work') {
-      next.textContent = 'Continue';
+      next.textContent = T('Continue');
       const c = state.choice;
-      if (!c) barT.textContent = 'Describe your work, or pick the closest field.';
-      else if (c === 'watar') barT.innerHTML = `<b>Watar’s draft</b> · ${state.watar.length} stations. You see it next and can change anything.`;
-      else barT.innerHTML = `<b>You picked ${FIELD_NAME[c]}</b> · ${LINES[c].blocks.length} stations. You see it next and can change anything.`;
+      if (!c) barT.textContent = T('Describe your work, or pick the closest field.');
+      else if (c === 'watar') barT.innerHTML = I18N.n(state.watar.length, '<b>Watar’s draft</b> · {n} station. You see it next and can change anything.', '<b>Watar’s draft</b> · {n} stations. You see it next and can change anything.');
+      else barT.innerHTML = I18N.n(LINES[c].blocks.length, '<b>You picked {field}</b> · {n} station. You see it next and can change anything.', '<b>You picked {field}</b> · {n} stations. You see it next and can change anything.', { field: T(FIELD_NAME[c]) });
     }
-    if (st === 'line') { barT.textContent = 'Approving makes the line real. You can still change it later.'; next.textContent = 'Approve the line'; }
+    if (st === 'line') { barT.textContent = T('Approving makes the line real. You can still change it later.'); next.textContent = T('Approve the line'); }
     preview();
   }
 
@@ -65,7 +69,7 @@
       if (s === step) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
       li.classList.toggle('past', i < cur);
     });
-    $('[data-flow-now]').textContent = `Step ${STEPS.indexOf(step) + 1} of 3 · ${NAMES[step]}`;
+    $('[data-flow-now]').textContent = T('Step {n} of 3 · {name}', { n: STEPS.indexOf(step) + 1, name: T(NAMES[step]) });
     if (state.approved) $(`[data-st="line"]`).classList.add('past');
     try { history.replaceState(null, '', `#${step}`); } catch (e) { /* file:// or sandbox */ }
     bar();
@@ -111,7 +115,7 @@
     const input = document.getElementById(btn.getAttribute('aria-controls'));
     const reveal = input.type === 'password';
     input.type = reveal ? 'text' : 'password';
-    btn.textContent = reveal ? 'Hide' : 'Show';
+    btn.textContent = reveal ? T('Hide') : T('Show');
     btn.setAttribute('aria-pressed', String(reveal));
   }));
 
@@ -122,33 +126,36 @@
   pwI.addEventListener('input', () => { setErr('supw', ''); });
   function submitAccount() {
     let first = null;
-    if (nameI.value.trim().length < 2) { setErr('name', 'Enter your name, as your team knows it.'); first = first || nameI; }
+    if (nameI.value.trim().length < 2) { setErr('name', T('Enter your name, as your team knows it.')); first = first || nameI; }
     const m = mailI.value.trim();
-    if (!EMAIL.test(m)) { setErr('suemail', m ? 'That doesn’t look like an email address. Check for a missing @ or dot.' : 'Enter your work email.'); first = first || mailI; }
-    if (pwI.value.length < 8) { const n = 8 - pwI.value.length; setErr('supw', pwI.value ? `Add ${n} more character${n === 1 ? '' : 's'}: at least 8.` : 'Choose a password of at least 8 characters.'); first = first || pwI; }
+    if (!EMAIL.test(m)) { setErr('suemail', m ? T('That doesn’t look like an email address. Check for a missing @ or dot.') : T('Enter your work email.')); first = first || mailI; }
+    if (pwI.value.length < 8) { const n = 8 - pwI.value.length; setErr('supw', pwI.value ? I18N.n(n, 'Add {n} more character: at least 8.', 'Add {n} more characters: at least 8.') : T('Choose a password of at least 8 characters.')); first = first || pwI; }
     if (first) return first.focus();
     state.name = nameI.value.trim().split(/\s+/)[0];
     state.email = m;
-    $('[data-hello]').textContent = `Welcome, ${state.name}.`;
+    $('[data-hello]').textContent = T('Welcome, {name}.', { name: iso(state.name) });
     show('work');
   }
 
   // ---------- 2 · your work: the organization, then Watar's draft or a field ----------
   const orgI = $('#orgname'), addrI = $('#addr');
-  const slugify = (v) => v.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+  // Turkish ı has no base letter to fall back to, so it is spelled i (Kadr Yapım -> kadr-yapim)
+  const slugify = (v) => v.toLowerCase().replace(/ı/g, 'i').normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
   let addrTimer = null, addrPending = false, wantNext = false;
   function checkAddr() {
     const sl = state.slug;
     const beat = $('[data-addr-beat]');
     const status = $('[data-addr-status]');
-    $('[data-addr]').textContent = `${sl || 'your-team'}.iqaa.app`;
+    $('[data-addr]').textContent = `${sl || TEAM}.iqaa.app`;
     state.slugOk = false;
     Beats.set(beat, 'run', { draft: true });
     status.classList.remove('bad');
     clearTimeout(addrTimer);
     addrPending = false;
-    if (!sl) { Beats.running(beat, false); status.textContent = 'Iqaa writes the address from the name.'; return; }
-    status.textContent = 'Checking the address…';
+    // a name in Arabic letters (or any script but Latin) gives no address: say so, and how to choose one
+    if (!sl && state.org && !state.slugEdited) { Beats.running(beat, false); status.textContent = T('Addresses use Latin letters and digits. Choose one with Change.'); return; }
+    if (!sl) { Beats.running(beat, false); status.textContent = T('Iqaa writes the address from the name.'); return; }
+    status.textContent = T('Checking the address…');
     Beats.running(beat, true);
     addrPending = true;
     addrTimer = setTimeout(() => {
@@ -156,14 +163,14 @@
       Beats.running(beat, false);
       if (sl.length < 3 || RESERVED.includes(sl)) {
         Beats.set(beat, 'failed');
-        status.textContent = sl.length < 3 ? 'An address needs at least 3 letters or digits.' : `${sl}.iqaa.app is taken. Try ${sl}-team, or change it.`;
+        status.textContent = sl.length < 3 ? T('An address needs at least 3 letters or digits.') : T('{address} is taken. Try {other}, or change it.', { address: iso(`${sl}.iqaa.app`), other: iso(`${sl}-team`) });
         status.classList.add('bad');
         wantNext = false;
         return;
       }
       state.slugOk = true;
       Beats.set(beat, 'run');
-      status.textContent = 'Available. Your team signs in here.';
+      status.textContent = T('Available. Your team signs in here.');
       // Continue was pressed while the address was being checked: carry on now it is free
       if (wantNext) { wantNext = false; submitWork(); }
     }, Beats.reduce() ? 0 : M.half);
@@ -192,25 +199,63 @@
 
   // Watar, simulated for the prototype: a sentence or comma clause is a station; parts joined by "and" are its
   // steps. Approvals and reviews wait for a person; sending, reminding and logging run by themselves; waits rest.
+  // It reads the page's language: each has its own clause breaks, its own "and", the words that open a clause without
+  // naming the work, and the cues for each kind of step. Arabic joins "and" to the verb (ونطبخ), and \b does not see
+  // Arabic letters, so its words end at a space instead.
+  const READ = {
+    en: {
+      lead: /^for example:\s*/i,
+      split: /[.;\n]+|,\s*(?:and\s+)?(?:then\s+)?|\bthen\b/i,
+      and: /\s+and\s+/i,
+      subj: /^(?:then|and|first|next|finally|after that|once|when|we|they|i|you|our team|the team|the client|a client|client|clients|companies|customers|the lead|a reviewer|someone|it|watar)\b\s*/i,
+      after: /^(?:once|after)\s+\w+\s+/i,
+      drop: /\b(it|them|this|that|us)\b/gi,
+      held: /\b(approv\w*|sign\w* off|reviews?|ok|okay|confirm\w*|accept\w*)\b/i,
+      rest: /\b(wait\w*|days?|hours?|weeks?)\b/i,
+      run: /\b(send\w*|sent|remind\w*|notif\w*|tell\w*|email\w*|messag\w*|invoic\w*|log\w*)\b/i,
+    },
+    ar: {
+      lead: /^(?:مثال|مثلا|على سبيل المثال)\s*:\s*/,
+      split: /[.;؛،,؟!\n]+|\s(?:ثم|بعدها|وبعدها|بعد ذلك|وبعد ذلك)(?=\s)/,
+      and: /\s+و\s+|\s+و(?=[نيتأ])(?!تر(?:\s|$))/,
+      subj: /^(?:ثم|بعدها|بعد ذلك|أولا|أخيرا|نحن|هم)(?:\s+|$)|^[وف](?!تر(?:\s|$)|ي(?:\s|$)|يه|يها)(?=[نيتأ]|بعد|عند|حين|لما|ال)/,
+      after: /^(?:بعد|عند|حين|لما|عندما|بمجرد)\s+\S+\s+/,
+      drop: /(?:^|\s)(?:لنا|لهم|له|لها|إلينا|إليهم|ذلك|هذا|هذه|الشركات|الشركة|العملاء|العميل|الزبائن|الزبون|الفريق|فريقنا|أحدهم|وتر)(?=\s|$)/g,
+      held: /وافق|موافق|يعتمد|نعتمد|تعتمد|اعتماد|يراجع|نراجع|تراجع|مراجع|يؤكد|نؤكد|تأكيد|يقبل|قبول/,
+      rest: /انتظ|نتظر|يوم|أيام|ساعة|ساعات|أسبوع/,
+      run: /رسل|إرسال|رسالة|ذكر|نبلغ|يبلغ|إبلاغ|إشعار|فاتور|نسجل|يسجل|تسجيل|بريد/,
+    },
+    tr: {
+      lead: /^örneğin\s*:\s*/iu,
+      split: /[.;\n]+|,\s*(?:ve\s+)?(?:sonra\s+)?|\s(?:sonra|ardından|daha sonra)(?=\s)/iu,
+      and: /\s+ve\s+/iu,
+      subj: /^(?:sonra|ardından|daha sonra|ve|önce|ilk olarak|İlk olarak|son olarak|en son|biz|onlar|sen|ekibimiz|ekip|bir müşteri|müşteriler|müşteri|şirketler|şirket|lider|bir inceleyici|biri|watar)(?=\s|$)\s*/iu,
+      after: /^\S+(?:[yd]?[ıiuü]nca|[yd]?[ıiuü]nce|dıktan sonra|dikten sonra)\s+/iu,
+      drop: /(?:^|\s)(?:bize|onlara|ona|bunu|onu|bunları|onları)(?=\s|$)/giu,
+      held: /onay|kabul|incele|gözden geçir|kontrol|doğrula/iu,
+      rest: /bekle|gün|saat|hafta/iu,
+      run: /gönder|hatırlat|bildir|e-posta|mesaj|fatura|kayde[dt]|ilet/iu,
+    },
+  };
+  const RD = READ[I18N.lang] || READ.en;
   function draftFrom(text) {
-    const SUBJ = /^(?:then|and|first|next|finally|after that|once|when|we|they|i|you|our team|the team|the client|a client|client|clients|companies|customers|the lead|a reviewer|someone|it|watar)\b\s*/i;
-    const clauses = text.replace(/^for example:\s*/i, '').split(/[.;\n]+|,\s*(?:and\s+)?(?:then\s+)?|\bthen\b/i).map((v) => v.trim()).filter((v) => v.length > 2);
+    const clauses = text.replace(RD.lead, '').split(RD.split).map((v) => (v || '').trim()).filter((v) => v.length > 2);
     const stations = [];
     clauses.forEach((cl) => {
-      const parts = cl.split(/\s+and\s+/i).map((v) => v.trim()).filter(Boolean);
+      const parts = cl.split(RD.and).map((v) => v.trim()).filter(Boolean);
       let name = parts[0];
-      for (let i = 0; i < 4; i++) name = name.replace(SUBJ, '');
-      name = name.replace(/^(?:once|after)\s+\w+\s+/i, '').replace(/\b(it|them|this|that|us)\b/gi, '').replace(/\s+/g, ' ').trim()
-        .split(' ').slice(0, 3).map((w, i) => (i ? w : verb(w))).join(' ');
+      for (let i = 0; i < 4; i++) name = name.replace(RD.subj, '');
+      name = name.replace(RD.after, '').replace(RD.drop, '').replace(/\s+/g, ' ').trim()
+        .split(' ').slice(0, 3).map((w, i) => (i || RD !== READ.en ? w : verb(w))).join(' ');
       if (!name) return;
-      stations.push({ name: name.charAt(0).toUpperCase() + name.slice(1).replace(/[’']s$/, ''), steps: parts.map(kindOf) });
+      stations.push({ name: name.charAt(0).toLocaleUpperCase(I18N.lang) + name.slice(1).replace(/[’']s$/, ''), steps: parts.map(kindOf) });
     });
     return stations.slice(0, 9);
   }
   function kindOf(v) {
-    if (/\b(approv\w*|sign\w* off|reviews?|ok|okay|confirm\w*|accept\w*)\b/i.test(v)) return 'held';
-    if (/\b(wait\w*|days?|hours?|weeks?)\b/i.test(v)) return 'rest';
-    if (/\b(send\w*|sent|remind\w*|notif\w*|tell\w*|email\w*|messag\w*|invoic\w*|log\w*)\b/i.test(v)) return 'run';
+    if (RD.held.test(v)) return 'held';
+    if (RD.rest.test(v)) return 'rest';
+    if (RD.run.test(v)) return 'run';
     return 'struck';
   }
   function verb(w) {
@@ -225,22 +270,22 @@
   wordsI.addEventListener('input', () => setErr('words', ''));
   async function draw() {
     const words = wordsI.value.trim();
-    if (words.length < 12) { setErr('words', 'Write a sentence or two about how one job moves, from the first step to the last.'); wordsI.focus(); return; }
+    if (words.length < 12) { setErr('words', T('Write a sentence or two about how one job moves, from the first step to the last.')); wordsI.focus(); return; }
     const blocks = draftFrom(words);
-    if (blocks.length < 2) { setErr('words', 'Watar needs at least two steps to draw a line. Add how the job starts and how it ends.'); wordsI.focus(); return; }
+    if (blocks.length < 2) { setErr('words', T('Watar needs at least two steps to draw a line. Add how the job starts and how it ends.')); wordsI.focus(); return; }
     const out = $('[data-watar-out]'), into = $('[data-draft-out]'), ring = $('[data-watar-ring]');
     drawBtn.disabled = true;
     Beats.running(ring, true);
     out.hidden = false;
-    $('[data-watar-state]').textContent = 'Drawing…';
+    $('[data-watar-state]').textContent = T('Drawing…');
     // Watar writes its draft station by station, at the tempo
     Beats.sig(into, blocks, { mode: 'line', k: fit(blocks, into.clientWidth || 480) });
     await Beats.write(into, { each: M.quarter, gap: M.eighth });
     Beats.running(ring, false);
     state.watar = blocks;
-    $('[data-watar-state]').textContent = `${blocks.length} stations · waiting for you`;
+    $('[data-watar-state]').textContent = I18N.n(blocks.length, '{n} station · waiting for you', '{n} stations · waiting for you');
     drawBtn.disabled = false;
-    drawT.textContent = 'Draw it again';
+    drawT.textContent = T('Draw it again');
     choose('watar');
   }
   drawBtn.addEventListener('click', draw);
@@ -248,15 +293,20 @@
 
   function submitWork() {
     let first = null;
-    if (state.org.length < 2) { setErr('orgname', 'Name your organization.'); first = first || orgI; }
-    else if (!state.slugOk && addrPending) { wantNext = true; barT.textContent = 'Checking the address…'; return; }
-    else if (!state.slugOk) { first = first || ($('[data-addr-field]').hidden ? orgI : addrI); if (!$('[data-addr-field]').hidden) setErr('addr', 'Choose an address that is free.'); }
-    if (!state.choice) { setErr('field', 'Describe your work for Watar, or pick the closest field.'); first = first || wordsI; }
+    if (state.org.length < 2) { setErr('orgname', T('Name your organization.')); first = first || orgI; }
+    else if (!state.slugOk && addrPending) { wantNext = true; barT.textContent = T('Checking the address…'); return; }
+    else if (!state.slug && !state.slugEdited) {
+      // the name gave no address (it is not in Latin letters): open the address for the person to write
+      $('[data-addr-field]').hidden = false;
+      setErr('addr', T('Write an address in Latin letters or digits.'));
+      first = first || addrI;
+    } else if (!state.slugOk) { first = first || ($('[data-addr-field]').hidden ? orgI : addrI); if (!$('[data-addr-field]').hidden) setErr('addr', T('Choose an address that is free.')); }
+    if (!state.choice) { setErr('field', T('Describe your work for Watar, or pick the closest field.')); first = first || wordsI; }
     if (first) return first.focus();
     const fromWatar = state.choice === 'watar';
     state.draft = copy(fromWatar ? state.watar : template(state.choice));
-    $('[data-line-h]').textContent = `This is ${state.org}’s line`;
-    $('[data-draft-tag-t]').textContent = fromWatar ? 'Draft from Watar · waiting for your approval' : `From the ${FIELD_NAME[state.choice]} template · waiting for your approval`;
+    $('[data-line-h]').textContent = T('This is {org}’s line', { org: iso(state.org) });
+    $('[data-draft-tag-t]').textContent = fromWatar ? T('Draft from Watar · waiting for your approval') : T('From the {field} template · waiting for your approval', { field: T(FIELD_NAME[state.choice]) });
     buildEditor();
     show('line');
   }
@@ -266,15 +316,17 @@
   const PLUS = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 7v10M7 12h10"/></svg>';
   function buildEditor() {
     const d = state.draft;
-    edit.innerHTML = d.map((b, bi) => `<li class="lst" data-i="${bi}">
-<div class="lst-b">${b.steps.map((k, si) => `<button type="button" class="lbeat" data-cyc="${bi}:${si}" aria-label="${Beats.esc(b.name)}, step ${si + 1}: ${KIND_WORD[k]}. Press to change.">${Beats.beat(k)}</button>`).join('')}<button type="button" class="ladd" data-add-step="${bi}" aria-label="Add a step to ${Beats.esc(b.name)}" title="Add a step"${b.steps.length >= 6 ? ' disabled' : ''}>${PLUS}</button></div>
-<input class="lst-n" type="text" value="${Beats.esc(b.name)}" maxlength="28" aria-label="Station ${bi + 1} name" data-st-name="${bi}">
-<button type="button" class="lst-x" data-rm-st="${bi}"${d.length <= 2 ? ' disabled' : ''}>Remove station</button>
-</li>`).join('') + `<li class="lst-new"><button type="button" class="btn small" data-add-st${d.length >= 12 ? ' disabled' : ''}>Add a station</button></li>`;
+    // a template's station keeps its English name as data and is shown in the page's language; a station renamed
+    // here holds the words the person typed
+    edit.innerHTML = d.map((b, bi) => { const nm = Beats.esc(T(b.name)); return `<li class="lst" data-i="${bi}">
+<div class="lst-b">${b.steps.map((k, si) => `<button type="button" class="lbeat" data-cyc="${bi}:${si}" aria-label="${T('{station}, step {n}: {kind}. Press to change.', { station: nm, n: si + 1, kind: T(KIND_WORD[k]) })}">${Beats.beat(k)}</button>`).join('')}<button type="button" class="ladd" data-add-step="${bi}" aria-label="${T('Add a step to {station}', { station: nm })}" title="${T('Add a step')}"${b.steps.length >= 6 ? ' disabled' : ''}>${PLUS}</button></div>
+<input class="lst-n" type="text" value="${nm}" maxlength="28" aria-label="${T('Station {n} name', { n: bi + 1 })}" data-st-name="${bi}">
+<button type="button" class="lst-x" data-rm-st="${bi}"${d.length <= 2 ? ' disabled' : ''}>${T('Remove station')}</button>
+</li>`; }).join('') + `<li class="lst-new"><button type="button" class="btn small" data-add-st${d.length >= 12 ? ' disabled' : ''}>${T('Add a station')}</button></li>`;
   }
   edit.addEventListener('input', (e) => {
     const i = e.target.dataset.stName;
-    if (i != null) { state.draft[+i].name = e.target.value.trim() || `Station ${+i + 1}`; preview(); }
+    if (i != null) { state.draft[+i].name = e.target.value.trim() || T('Station {n}', { n: +i + 1 }); preview(); }
   });
   edit.addEventListener('click', (e) => {
     const t = e.target.closest('button');
@@ -295,7 +347,7 @@
       buildEditor();
       $('[data-add-st]').focus();
     } else if (t.hasAttribute('data-add-st')) {
-      state.draft.push({ name: 'New station', steps: ['struck'] });
+      state.draft.push({ name: T('New station'), steps: ['struck'] });
       buildEditor();
       $(`[data-st-name="${state.draft.length - 1}"]`).select();
     }
@@ -309,27 +361,30 @@
     next.disabled = true; prev.hidden = true;
     // the draft was held for a person; approving strikes it
     Beats.set($('[data-line-ring]'), 'struck');
-    $('[data-draft-tag-t]').textContent = `Approved by ${state.name || 'you'}`;
+    $('[data-draft-tag-t]').textContent = state.name ? T('Approved by {name}', { name: iso(state.name) }) : T('Approved by you');
     await Beats.wait(M.half);
     // approving signs the line: the pen writes it through once, then signs it on the organization's tile
     Beats.sig(out, state.draft, { mode: 'line', k: fit(state.draft, out.parentElement.clientWidth) });
     out.hidden = false;
     step.classList.add('approved');
-    $('[data-line-h]').textContent = `This is ${state.org}’s signature`;
+    $('[data-line-h]').textContent = T('This is {org}’s signature', { org: iso(state.org) });
     $('[data-line-lead]').hidden = true;
     $('[data-bar]').hidden = true;
     root.classList.add('approved');
     await Beats.write(out, { each: M.quarter, gap: M.eighth / 2 });
     const markEl = $('[data-done-mark]');
-    Beats.sig(markEl, state.draft, { mode: 'mark', size: 96, name: state.org, label: `${state.org}’s mark` });
+    Beats.sig(markEl, state.draft, { mode: 'mark', size: 96, name: state.org, label: T('{org}’s mark', { org: state.org }) });
     const beats = state.draft.reduce((n, b) => n + b.steps.length, 0);
-    $('[data-done-p]').textContent = `${state.org}’s approved line, signed: ${state.draft.length} stations, ${beats} steps. On its tile it stands for ${state.org} until you add a logo, and it greets everyone who signs in at ${state.slug}.iqaa.app.`;
+    $('[data-done-p]').textContent = T('{org}’s approved line, signed: {stations}, {steps}. On its tile it stands for {org} until you add a logo, and it greets everyone who signs in at {address}.', {
+      org: iso(state.org), address: iso(`${state.slug}.iqaa.app`),
+      stations: I18N.n(state.draft.length, '{n} station', '{n} stations'), steps: I18N.n(beats, '{n} step', '{n} steps'),
+    });
     const done = $('[data-done]');
     done.hidden = false;
     Beats.write(markEl, { each: M.quarter, gap: M.beat / 24 });
     Beats.enter(done);
     try { sessionStorage.setItem('iqaa-org', JSON.stringify({ name: state.org, slug: state.slug, blocks: state.draft })); } catch (e) { /* sign-in falls back to the demo */ }
-    $('[data-go]').textContent = `Go to ${state.slug}.iqaa.app`;
+    $('[data-go]').textContent = T('Go to {address}', { address: iso(`${state.slug}.iqaa.app`) });
     $('[data-go]').focus({ preventScroll: true });
   }
   $('[data-restart]').addEventListener('click', () => {
@@ -342,18 +397,21 @@
   function demoUpTo(step) {
     const n = STEPS.indexOf(step);
     if (n >= 1) {
-      nameI.value = 'Hala'; mailI.value = 'hala@sufra.example'; pwI.value = 'prototype1';
+      // the demo person and organization as someone would type them in the page's language
+      nameI.value = T('Hala'); mailI.value = 'hala@sufra.example'; pwI.value = 'prototype1';
       [nameI, mailI, pwI].forEach((i) => i.dispatchEvent(new Event('input')));
-      state.name = 'Hala'; state.email = 'hala@sufra.example';
-      $('[data-hello]').textContent = 'Welcome, Hala.';
+      state.name = T('Hala'); state.email = 'hala@sufra.example';
+      $('[data-hello]').textContent = T('Welcome, {name}.', { name: T('Hala') });
     }
     if (n >= 2) {
-      orgI.value = 'Sufra'; orgI.dispatchEvent(new Event('input'));
+      orgI.value = T('Sufra'); orgI.dispatchEvent(new Event('input'));
+      // Sufra in Arabic letters gives no address of its own: the demo's is sufra
+      if (state.slug !== 'sufra') { addrI.value = 'sufra'; addrI.dispatchEvent(new Event('input')); }
       state.slugOk = true;
       const r = $('input[name="field"][value="catering"]'); r.checked = true; choose('catering');
       state.draft = template('catering');
-      $('[data-line-h]').textContent = 'This is Sufra’s line';
-      $('[data-draft-tag-t]').textContent = 'From the Catering template · waiting for your approval';
+      $('[data-line-h]').textContent = T('This is {org}’s line', { org: T('Sufra') });
+      $('[data-draft-tag-t]').textContent = T('From the {field} template · waiting for your approval', { field: T('Catering') });
       buildEditor();
     }
   }

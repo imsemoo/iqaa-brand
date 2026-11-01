@@ -6,6 +6,8 @@ block library, whose icons come from the identity's icon set.
 """
 from p_auth import runs_badge, shell
 import brand
+import i18n
+from i18n import t
 from p_line import app_top, view_switch
 from shell import esc
 
@@ -37,53 +39,61 @@ def library():
     """Grouped by the stroke a block makes, and shown by it: the library reads like the grammar."""
     out = ('<p class="lib-new"><button type="button" class="lib-it st" data-lib="station"><span class="lib-ic">'
            '<svg viewBox="0 0 40 20" width="40" height="20" aria-hidden="true"><path d="M2 10h36" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'
-           '<circle cx="20" cy="10" r="6.5" fill="#19172E" stroke="#fff" stroke-width="3.5"/></svg></span><span><b>Station</b><span>Where work changes hands</span></span></button></p>')
+           f'<circle cx="20" cy="10" r="6.5" fill="#19172E" stroke="#fff" stroke-width="3.5"/></svg></span><span><b>{t("Station")}</b><span>{t("Where work changes hands")}</span></span></button></p>')
     for group, kind, items in LIBRARY:
-        rows = ''.join(f'<li><button type="button" class="lib-it" data-lib="{t}"><span class="lib-ic">{brand.glyph_svg(kind, "light", 22)}</span>'
-                       f'<span><b>{esc(n)}</b><span>{esc(d)}</span></span></button></li>' for t, n, d in items)
-        out += f'<h3><span class="lib-g">{brand.glyph_svg(kind, "light", 14)}</span>{group}</h3><ul>{rows}</ul>'
+        rows = ''.join(f'<li><button type="button" class="lib-it" data-lib="{key}"><span class="lib-ic">{brand.glyph_svg(kind, "light", 22)}</span>'
+                       f'<span><b>{esc(t(n))}</b><span>{esc(t(d))}</span></span></button></li>' for key, n, d in items)
+        out += f'<h3><span class="lib-g">{brand.glyph_svg(kind, "light", 14)}</span>{t(group)}</h3><ul>{rows}</ul>'
     return out
 
 
 def build():
-    tool = lambda d, label, k='': (f'<button type="button" class="bd-t" data-do="{d}" aria-label="{label}" title="{label}{f" ({k})" if k else ""}">'
+    # the test's button: English keeps its one word; Arabic and Turkish name what starts, because their word for a
+    # station's Start tag is not the word a button uses
+    start = 'Start' if i18n.CUR == 'en' else t('Start the test')
+    tool = lambda d, label, k='': (f'<button type="button" class="bd-t" data-do="{d}" aria-label="{t(label)}" title="{t(label)}{f" ({k})" if k else ""}">'
                                   f'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICONS_T[d]}</svg></button>')
+    # The canvas is a drawing surface: it stays left to right in every language, so its pan, zoom and drag maths hold
+    # (as in a design tool used in Arabic). What sits on it to be read (checks, Watar, the draft, the test, the tip)
+    # takes the page's own direction back.
+    rtl = ' dir="rtl"' if i18n.direction() == 'rtl' else ''
+    org = f'<span data-org-name>{t("Sufra")}</span>'
     body = f'''<div class="bd-page">
 <header class="bd-head">
-<div class="bd-title"><h1><span data-org-name>Sufra</span>’s line</h1>{view_switch('Build')}<p class="bd-state" data-state aria-live="polite"></p></div>
-<div class="bd-tools" role="toolbar" aria-label="Canvas">
+<div class="bd-title"><h1>{t('{org}’s line', org=org)}</h1>{view_switch('Build')}<p class="bd-state" data-state aria-live="polite"></p></div>
+<div class="bd-tools" role="toolbar" aria-label="{t('Canvas')}">
 {tool('undo', 'Undo', 'Ctrl+Z')}{tool('redo', 'Redo', 'Ctrl+Shift+Z')}<span class="bd-sep"></span>
-{tool('out', 'Zoom out', '−')}<button type="button" class="bd-z" data-do="reset" title="Back to 100%" data-zoom>100%</button>{tool('in', 'Zoom in', '+')}{tool('fit', 'Fit the line', 'F')}
+{tool('out', 'Zoom out', '−')}<button type="button" class="bd-z" data-do="reset" title="{t('Back to 100%')}" data-zoom>100%</button>{tool('in', 'Zoom in', '+')}{tool('fit', 'Fit the line', 'F')}
 {tool('tidy', 'Tidy the line into a map', 'T')}
 <span class="bd-sep"></span><button type="button" class="bd-checks-btn" data-do="checks" aria-expanded="false" aria-controls="checks"><span data-checks-n></span></button>
-<button type="button" class="btn small bd-watar" data-do="watar" aria-expanded="false" aria-controls="watar"><span class="b-arch" aria-hidden="true"></span>Ask Watar</button>
-<button type="button" class="btn small ink" data-do="test">Run a test job</button>
+<button type="button" class="btn small bd-watar" data-do="watar" aria-expanded="false" aria-controls="watar"><span class="b-arch" aria-hidden="true"></span>{t('Ask Watar')}</button>
+<button type="button" class="btn small ink" data-do="test">{t('Run a test job')}</button>
 </div>
 </header>
 <div class="bd-body">
-<aside class="bd-lib" id="bd-lib" aria-labelledby="lib-h"><div class="pn-h"><h2 id="lib-h">Blocks</h2><button type="button" class="pn-x" data-fold-p="lib" aria-label="Hide the blocks ([)" title="Hide the blocks ([)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg></button></div><div class="pn-b"><p class="hint">Drag a block onto a station, or onto the canvas for a new station.</p>{library()}</div></aside>
-<button type="button" class="pn-tab l" data-open-p="lib" aria-controls="bd-lib" aria-label="Show the blocks ([)" title="Show the blocks ([)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg><span>Blocks</span></button>
-<div class="bd-canvas" data-canvas tabindex="0" role="application" aria-label="The line’s canvas. Drag to move around; Ctrl and the wheel to zoom.">
+<aside class="bd-lib" id="bd-lib" aria-labelledby="lib-h"><div class="pn-h"><h2 id="lib-h">{t('Blocks')}</h2><button type="button" class="pn-x" data-fold-p="lib" aria-label="{t('Hide the blocks ([)')}" title="{t('Hide the blocks ([)')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg></button></div><div class="pn-b"><p class="hint">{t('Drag a block onto a station, or onto the canvas for a new station.')}</p>{library()}</div></aside>
+<button type="button" class="pn-tab l" data-open-p="lib" aria-controls="bd-lib" aria-label="{t('Show the blocks ([)')}" title="{t('Show the blocks ([)')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg><span>{t('Blocks')}</span></button>
+<div class="bd-canvas" data-canvas dir="ltr" tabindex="0" role="application" aria-label="{t('The line’s canvas. Drag to move around; Ctrl and the wheel to zoom.')}">
 <div class="bd-world" data-world><svg class="bd-edges" data-edges aria-hidden="true"></svg><div data-blocks></div></div>
-<div class="bd-checks" id="checks" data-checks hidden></div>
-<form class="bd-watar-p" id="watar" data-watar hidden novalidate>
-<p class="wt-k"><span class="b-arch" aria-hidden="true"></span><b>Ask Watar for a change</b></p>
-<label class="sr" for="wt-q">Describe the change</label><textarea id="wt-q" rows="3" data-wt-q placeholder="For example: if the client does not answer in two days, remind them."></textarea>
+<div class="bd-checks" id="checks" data-checks{rtl} hidden></div>
+<form class="bd-watar-p" id="watar" data-watar{rtl} hidden novalidate>
+<p class="wt-k"><span class="b-arch" aria-hidden="true"></span><b>{t('Ask Watar for a change')}</b></p>
+<label class="sr" for="wt-q">{t('Describe the change')}</label><textarea id="wt-q" rows="3" data-wt-q placeholder="{t('For example: if the client does not answer in two days, remind them.')}"></textarea>
 <p class="wt-ex" data-wt-ex></p>
 <p class="wt-out" data-wt-out role="status"></p>
-<div class="wt-act"><button type="button" class="btn small" data-do="watar-close">Close</button><button type="submit" class="btn small ink">Draft it</button></div>
+<div class="wt-act"><button type="button" class="btn small" data-do="watar-close">{t('Close')}</button><button type="submit" class="btn small ink">{t('Draft it')}</button></div>
 </form>
-<div class="bd-draft" data-draft hidden><span class="b-arch" aria-hidden="true"></span><p data-draft-t></p><button type="button" class="btn small" data-do="draft-no">Discard</button><button type="button" class="btn small primary" data-do="draft-yes">Accept</button></div>
-<div class="bd-mini" data-mini aria-label="Minimap: press to move the view"><svg data-mini-svg></svg></div>
-<div class="bd-test" data-testbar hidden><form class="tb-set" data-test-set novalidate><b>Test job</b><label>People <input class="sn num" type="number" min="1" max="999" value="40" data-t-people></label><label class="chk"><input type="checkbox" checked data-t-back><span>Take each way back once</span></label><button type="submit" class="btn small ink">Start</button><button type="button" class="btn small" data-do="test-close">Close</button></form><p class="tb-now" data-t-now aria-live="polite"></p></div>
-<p class="bd-tip" data-tip>Drag from a station’s ring to another station to hand the job on. Yes and Change asked are dragged the same way.</p>
+<div class="bd-draft" data-draft{rtl} hidden><span class="b-arch" aria-hidden="true"></span><p data-draft-t></p><button type="button" class="btn small" data-do="draft-no">{t('Discard')}</button><button type="button" class="btn small primary" data-do="draft-yes">{t('Accept')}</button></div>
+<div class="bd-mini" data-mini aria-label="{t('Minimap: press to move the view')}"><svg data-mini-svg></svg></div>
+<div class="bd-test" data-testbar{rtl} hidden><form class="tb-set" data-test-set novalidate><b>{t('Test job')}</b><label>{t('People')} <input class="sn num" type="number" min="1" max="999" value="40" data-t-people></label><label class="chk"><input type="checkbox" checked data-t-back><span>{t('Take each way back once')}</span></label><button type="submit" class="btn small ink">{start}</button><button type="button" class="btn small" data-do="test-close">{t('Close')}</button></form><p class="tb-now" data-t-now aria-live="polite"></p></div>
+<p class="bd-tip" data-tip{rtl}>{t('Drag from a station’s ring to another station to hand the job on. Yes and Change asked are dragged the same way.')}</p>
 </div>
-<button type="button" class="pn-tab r" data-open-p="insp" aria-controls="bd-insp" aria-label="Show the settings (])" title="Show the settings (])"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg><span>Settings</span></button>
-<aside class="bd-insp" id="bd-insp" aria-labelledby="in-h"><div class="pn-h"><h2 id="in-h">Settings</h2><button type="button" class="pn-x" data-fold-p="insp" aria-label="Hide the settings (])" title="Hide the settings (])"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg></button></div><div class="pn-b" data-insp></div></aside>
+<button type="button" class="pn-tab r" data-open-p="insp" aria-controls="bd-insp" aria-label="{t('Show the settings (])')}" title="{t('Show the settings (])')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg><span>{t('Settings')}</span></button>
+<aside class="bd-insp" id="bd-insp" aria-labelledby="in-h"><div class="pn-h"><h2 id="in-h">{t('Settings')}</h2><button type="button" class="pn-x" data-fold-p="insp" aria-label="{t('Hide the settings (])')}" title="{t('Hide the settings (])')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7l5 5-5 5M5 5v14"/></svg></button></div><div class="pn-b" data-insp></div></aside>
 </div>
 <p class="bd-live sr" data-live aria-live="polite"></p>
 </div>'''
-    return shell('bd', 'Build · Sufra’s line', app_top('Line'), body, ('sufra', 'build'), css=('app', 'build'))
+    return shell('bd', t('Build · {line}', line=t('{org}’s line', org=t('Sufra'))), app_top('Line'), body, ('sufra', 'build'), css=('app', 'build'))
 
 
 ICONS_T = {

@@ -1,5 +1,9 @@
 /* The Iqaa identity book. Tokens come from tokens.css (tools/tokens.py); nothing here invents a colour or size. */
 @font-face { font-family: 'Atkinson Hyperlegible Next'; src: url('../fonts/atkinson.woff2') format('woff2'); font-weight: 300 800; font-display: swap; }
+/* Arabic letters fall through to Readex Pro under Atkinson's own name (unicode-range): Latin stays Atkinson in every
+   language, Arabic gets the face whose letter body matches Atkinson's x-height (research/arabic-font, 1.00) */
+@font-face { font-family: 'Atkinson Hyperlegible Next'; src: url('../fonts/readexpro-arabic.woff2') format('woff2'); font-weight: 300 800; font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC; }
 @font-face { font-family: 'Fragment Mono'; src: url('../fonts/fragmentmono.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -199,3 +203,13 @@ tr.out td { color: var(--c-text-3); }
 .om-row .spec { align-self: flex-start; padding: var(--s-4); }
 .om-row .spec svg { max-width: 100%; height: auto; }
 @media (max-width: 700px) { .om-row { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); } }
+
+/* ---------- Arabic: connected script is never spaced out, and its taller letters need room between lines ---------- */
+html:lang(ar) *, html:lang(ar) *::before, html:lang(ar) *::after { letter-spacing: 0 !important; }
+html:lang(ar) :is(h1, h2) { line-height: 1.45; }
+
+/* ---------- right to left: a line that shows order or time runs the way Arabic reads ---------- */
+/* a drawing marked .flow (a line, a journey, a time axis) is mirrored as a whole and its words are turned back, so the
+   first step sits at the right; marks, avatars and single glyphs are never mirrored */
+[dir='rtl'] svg.flow { transform: scaleX(-1); }
+[dir='rtl'] svg.flow text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; direction: ltr; }   /* inherited rtl would flip text-anchor before the mirror */

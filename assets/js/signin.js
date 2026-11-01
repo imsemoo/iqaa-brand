@@ -24,12 +24,17 @@
     name: L.org, slug: 'sufra', demo: true,
     blocks: L.blocks.map((b) => ({ name: b.name, steps: b.steps.map((s) => s[0]) })),
   };
+  // The demo's names are the data's own, shown in the page's language; an organization made at sign-up is named in
+  // the words its owner typed, and keeps them. In Arabic a Latin name, an email or an address sits in its own
+  // direction inside the sentence.
+  const iso = (s) => (I18N.rtl ? `\u2068${s}\u2069` : s);
+  const orgName = org.demo ? T(org.name) : org.name;
 
-  $$('[data-org-name]').forEach((e) => { e.textContent = org.name; });
+  $$('[data-org-name]').forEach((e) => { e.textContent = orgName; });
   $$('[data-org-addr]').forEach((e) => { e.textContent = `${org.slug}.iqaa.app`; });
-  document.title = `Sign in · ${org.name}`;
+  document.title = T('Sign in · {org}', { org: orgName });
   const mark = $('[data-sig]');
-  Beats.sig(mark, org.blocks, { mode: 'mark', size: 40, name: org.name, label: `${org.name}’s mark` });
+  Beats.sig(mark, org.blocks, { mode: 'mark', size: 40, name: org.name, label: T('{org}’s mark', { org: orgName }) });
   const reduce = Beats.reduce();
   // on arrival the pen signs the organization's mark, one beat in all
   Beats.write(mark, { delay: M.quarter, each: M.quarter, gap: M.beat / 24 });
@@ -38,7 +43,7 @@
   const fitK = () => Math.min(1, (card.clientWidth - 64) / (IQ.lineLayout(org.blocks.map((b) => b.steps)).w + 8));
   function quietLine() {
     Beats.sig(lineEl, org.blocks, { mode: 'line', k: fitK(), names: false });
-    lineEl.setAttribute('aria-label', `${org.name}’s line, its signature: ${org.blocks.length} stations`);
+    lineEl.setAttribute('aria-label', I18N.n(org.blocks.length, '{org}’s line, its signature: {n} station', '{org}’s line, its signature: {n} stations', { org: orgName }));
   }
   quietLine();
   Beats.write(lineEl, { delay: M.quarter + M.beat / 2, each: M.quarter, gap: M.eighth / 3 });
@@ -87,7 +92,7 @@
     const input = document.getElementById(btn.getAttribute('aria-controls'));
     const show = input.type === 'password';
     input.type = show ? 'text' : 'password';
-    btn.textContent = show ? 'Hide' : 'Show';
+    btn.textContent = show ? T('Hide') : T('Show');
     btn.setAttribute('aria-pressed', String(show));
   }));
 
@@ -110,16 +115,16 @@
     formErr.hidden = true;
     const ev = email.value.trim();
     let first = null;
-    if (!ev) { setErr('email', 'Enter your work email.'); first = first || email; }
-    else if (!EMAIL.test(ev)) { setErr('email', 'That doesn’t look like an email address. Check for a missing @ or dot.'); first = first || email; }
-    if (!pw.value) { setErr('pw', 'Enter your password.'); first = first || pw; }
+    if (!ev) { setErr('email', T('Enter your work email.')); first = first || email; }
+    else if (!EMAIL.test(ev)) { setErr('email', T('That doesn’t look like an email address. Check for a missing @ or dot.')); first = first || email; }
+    if (!pw.value) { setErr('pw', T('Enter your password.')); first = first || pw; }
     if (first) { first.focus(); return; }
 
-    busy(true, 'Checking…');
+    busy(true, T('Checking…'));
     await Beats.wait(M.beat);
     if (pw.value === 'wrong') {
-      busy(false, 'Sign in');
-      formErr.textContent = 'That email and password don’t match. Check them, or reset your password.';
+      busy(false, T('Sign in'));
+      formErr.textContent = T('That email and password don’t match. Check them, or reset your password.');
       const h0 = card.offsetHeight;
       formErr.hidden = false;
       resize(h0);
@@ -135,9 +140,10 @@
     const local = ev.split('@')[0].split(/[._+-]/)[0] || 'there';
     return local.charAt(0).toUpperCase() + local.slice(1).toLowerCase();
   }
-  function greeting() {
+  // the greeting is one sentence with the name in it, so each language puts the name where it goes
+  function greeting(name) {
     const h = new Date().getHours();
-    return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    return T(h < 12 ? 'Good morning, {name}.' : h < 18 ? 'Good afternoon, {name}.' : 'Good evening, {name}.', { name });
   }
 
   const signinP = $('[data-panel="signin"]'), forgotP = $('[data-panel="forgot"]'), welcome = $('[data-welcome]');
@@ -147,13 +153,15 @@
     // A person lands on a station where a person works, never on one that only runs by itself.
     const firstHand = Math.max(0, org.blocks.findIndex((b) => b.steps.some((k) => k === 'held' || k === 'struck')));
     const idx = org.demo ? (CAST[name.toLowerCase()] ?? firstHand) : firstHand;
-    const station = org.blocks[idx].name;
-    $('[data-greet]').textContent = `${greeting()}, ${name}.`;
-    // Today greets the same person
+    const station = iso(T(org.blocks[idx].name));
+    // the demo cast's names are translated; any other name is the one the email gave, as it was typed
+    const shown = name.toLowerCase() in CAST || name === 'There' ? T(name) : iso(name);
+    $('[data-greet]').textContent = greeting(shown);
+    // Today greets the same person: it is told the name in English, the key it looks the cast up by
     try { sessionStorage.setItem('iqaa-person', name); } catch (e) { /* Today falls back to the demo cast */ }
     $('[data-w-p]').textContent = org.demo && name.toLowerCase() === 'reem'
-      ? `3 jobs are waiting for you at ${station}.`
-      : `Your work on ${org.name}’s line starts at ${station}.`;
+      ? T('3 jobs are waiting for you at {station}.', { station })
+      : T('Your work on {org}’s line starts at {station}.', { org: iso(orgName), station });
     // the form leaves; the pen writes the organization's line across the card, your station marked; the
     // greeting arrives line by line while it writes
     const h0 = card.offsetHeight;
@@ -184,7 +192,7 @@
     form.reset();
     formErr.hidden = true;
     ['email', 'pw'].forEach((n) => done(n, false));
-    busy(false, 'Sign in');
+    busy(false, T('Sign in'));
     email.focus();
   });
 
@@ -205,13 +213,13 @@
   $('[data-forgot-form]').addEventListener('submit', async (e) => {
     e.preventDefault();
     const v = fg.value.trim();
-    if (!EMAIL.test(v)) { setErr('fgemail', v ? 'That doesn’t look like an email address.' : 'Enter your work email.'); fg.focus(); return; }
+    if (!EMAIL.test(v)) { setErr('fgemail', v ? T('That doesn’t look like an email address.') : T('Enter your work email.')); fg.focus(); return; }
     const btn = $('[data-fg-submit]');
     btn.disabled = true; fgCheck.hidden = false; Beats.running(fgCheck, true);
     await Beats.wait(M.beat);
     btn.disabled = false; fgCheck.hidden = true; Beats.running(fgCheck, false);
     const ok = $('[data-forgot-ok]');
-    ok.textContent = `If ${v} has an account at ${org.name}, the link is on its way. (Prototype: nothing was sent.)`;
+    ok.textContent = T('If {email} has an account at {org}, the link is on its way. (Prototype: nothing was sent.)', { email: iso(v), org: iso(orgName) });
     const h0 = card.offsetHeight;
     ok.hidden = false;
     resize(h0);

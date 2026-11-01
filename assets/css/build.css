@@ -20,15 +20,17 @@ main.bd + .a-foot { display: none; }
 .bd-checks-btn.bad { border-color: var(--iqaa-red); color: var(--iqaa-red); }
 .bd-checks-btn > span { display: inline-flex; align-items: center; gap: var(--s-2); }
 
-.bd-body { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 312px; transition: grid-template-columns var(--m-quarter) var(--ease-move); }
+/* one row, as tall as the space under the toolbar: the panels scroll inside it instead of stretching the canvas past
+   the bottom of the sheet */
+.bd-body { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 312px; grid-template-rows: minmax(0, 1fr); transition: grid-template-columns var(--m-quarter) var(--ease-move); }
 .bd-body.lib-closed { grid-template-columns: 0 minmax(0, 1fr) 312px; }
 .bd-body.insp-closed { grid-template-columns: 232px minmax(0, 1fr) 0; }
 .bd-body.lib-closed.insp-closed { grid-template-columns: 0 minmax(0, 1fr) 0; }
 .lib-closed .bd-lib, .insp-closed .bd-insp { visibility: hidden; overflow: hidden; padding: 0; border: 0; }
 /* a folded panel leaves a slim tab on the canvas edge */
 .pn-tab { position: absolute; z-index: 8; inset-block-start: var(--s-3); display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 10px; border: 0; background: var(--iqaa-ink); color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 16px -8px rgba(25, 23, 46, 0.5); }
-.pn-tab.l { inset-inline-start: 0; border-radius: 0 10px 10px 0; }
-.pn-tab.r { inset-inline-end: 0; border-radius: 10px 0 0 10px; }
+.pn-tab.l { inset-inline-start: 0; border-start-start-radius: 0; border-end-start-radius: 0; border-start-end-radius: 10px; border-end-end-radius: 10px; }
+.pn-tab.r { inset-inline-end: 0; border-start-start-radius: 10px; border-end-start-radius: 10px; border-start-end-radius: 0; border-end-end-radius: 0; }
 .pn-tab:hover { background: var(--iqaa-n800); }
 .pn-h { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
 .pn-x { width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--iqaa-n700); cursor: pointer; flex: none; }
@@ -37,7 +39,7 @@ main.bd + .a-foot { display: none; }
 
 /* the library: every block, grouped by who does the work */
 .bd-lib { min-width: 0; display: flex; flex-direction: column; border-inline-end: 1px solid var(--iqaa-n200); background: var(--iqaa-n50); }
-.bd-lib .pn-h, .bd-insp .pn-h { padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4); background: #fff; border-block-end: 1px solid var(--iqaa-n200); }
+.bd-lib .pn-h, .bd-insp .pn-h { padding-block: var(--s-3); padding-inline: var(--s-4) var(--s-3); background: #fff; border-block-end: 1px solid var(--iqaa-n200); }
 .bd-lib > .pn-b { flex: 1; min-height: 0; overflow-y: auto; padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); }
 .bd-lib h2, .bd-insp h2 { font-size: 14px; line-height: 20px; font-weight: 700; }
 .bd-lib h3 { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); margin-block-start: var(--s-3); }
@@ -107,6 +109,7 @@ main.bd + .a-foot { display: none; }
 
 /* the inspector */
 .bd-insp { position: relative; z-index: 4; min-width: 0; display: flex; flex-direction: column; background: #fff; border-inline-start: 1px solid var(--iqaa-n200); box-shadow: -12px 0 24px -20px rgba(25, 23, 46, 0.35); }
+[dir='rtl'] .bd-insp { box-shadow: 12px 0 24px -20px rgba(25, 23, 46, 0.35); }
 .bd-insp > .pn-b { flex: 1; min-height: 0; overflow-y: auto; padding: var(--s-5, 20px); display: flex; flex-direction: column; gap: var(--s-4); }
 /* the inspector's first line is its subject, set apart; its sections divided by hairlines */
 .bd-insp .in-k { margin: calc(-1 * var(--s-5, 20px)) calc(-1 * var(--s-5, 20px)) 0; padding: var(--s-3) var(--s-5, 20px); background: var(--iqaa-n50); border-block-end: 1px solid var(--iqaa-n100); font-size: 13px; color: var(--iqaa-ink); }
@@ -114,15 +117,20 @@ main.bd + .a-foot { display: none; }
 .in-k { display: flex; align-items: center; gap: var(--s-2); font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); }
 .in-f { display: flex; flex-direction: column; gap: 6px; }
 .in-f label, .in-l { font-size: 13px; line-height: 18px; font-weight: 700; }
-.bd-insp .sn, .bd-insp .sw { font: inherit; font-size: 14px; color: var(--iqaa-ink); width: 100%; min-height: 40px; border: 1px solid var(--iqaa-n300); border-radius: 10px; padding: 0 var(--s-3); background: #fff; }
-.bd-insp .sw { appearance: none; padding-inline-end: var(--s-8); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2319172E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 8px center / 18px; }
+.bd-insp .sn, .bd-insp select.sw { font: inherit; font-size: 14px; color: var(--iqaa-ink); width: 100%; min-height: 40px; border: 1px solid var(--iqaa-n300); border-radius: 10px; padding: 0 var(--s-3); background: #fff; }
+.bd-insp select.sw { appearance: none; padding-inline-end: var(--s-8); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2319172E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 8px center / 18px; }
+[dir='rtl'] .bd-insp select.sw { background-position: left 8px center; }
+/* ui.js draws each select as the house dropdown: its button is the inspector's field */
+.bd-insp .dd.sw { width: 100%; }
+.bd-insp .dd-b { min-height: 40px; font-size: 14px; padding-inline: var(--s-3) var(--s-2); }
 .bd-insp textarea.sn { padding-block: var(--s-2); line-height: 20px; resize: vertical; min-height: 96px; }
 .bd-insp .sn:focus-visible, .bd-insp .sw:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; border-color: var(--iqaa-ink); }
 .in-vars { display: flex; flex-wrap: wrap; gap: 4px; }
 .var { font-family: 'Fragment Mono', monospace; font-size: 11px; padding: 4px 6px; border: 0; border-radius: 6px; background: var(--iqaa-n100); color: var(--iqaa-ink); cursor: pointer; }
 .var:hover { background: var(--iqaa-lavender); }
 .in-rule { display: grid; grid-template-columns: minmax(0, 1fr) 64px 72px; gap: 6px; }
-.in-rule .sw { padding-inline-end: var(--s-6); }
+.in-rule select.sw { padding-inline-end: var(--s-6); }
+.in-rule .dd-b { padding-inline: var(--s-2) 4px; gap: 2px; }
 .in-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .in-bad { list-style: none; margin: 0; padding: var(--s-3); border-radius: 10px; background: #FFF1F2; display: flex; flex-direction: column; gap: var(--s-2); }
 .in-bad li { display: flex; gap: var(--s-2); font-size: 13px; line-height: 18px; color: var(--iqaa-ink); }
@@ -137,13 +145,14 @@ main.bd + .a-foot { display: none; }
 .bd-checks .link { text-align: start; padding: 0; font-size: 13px; }
 .bd-checks p { font-size: 13px; color: var(--iqaa-n700); }
 
-.bd-ghost { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 50; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: var(--iqaa-ink); color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 20px -8px rgba(25, 23, 46, 0.4); }
+/* the ghost follows the pointer, whose position is counted from the left in every language */
+.bd-ghost { position: fixed; inset-block-start: 0; left: 0; z-index: 50; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: var(--iqaa-ink); color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 20px -8px rgba(25, 23, 46, 0.4); }
 
 @media (max-width: 1279px) { .bd-body { grid-template-columns: 220px minmax(0, 1fr) 280px; } }
 /* below a laptop the panels stack under the canvas; building wants a larger screen, and says so */
 @media (max-width: 1023px) {
   .bd-page { height: auto; }
-  .bd-body, .bd-body.lib-closed, .bd-body.insp-closed, .bd-body.lib-closed.insp-closed { grid-template-columns: minmax(0, 1fr); }
+  .bd-body, .bd-body.lib-closed, .bd-body.insp-closed, .bd-body.lib-closed.insp-closed { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
   .pn-tab { display: none; }
   .bd-canvas { height: 62vh; order: -1; }
   .bd-lib { border: 0; border-block-start: 1px solid var(--iqaa-n200); }
@@ -166,7 +175,7 @@ main.bd + .a-foot { display: none; }
 .wt-out { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
 .wt-out:empty { display: none; }
 .wt-act { display: flex; justify-content: flex-end; gap: var(--s-2); }
-.bd-draft { position: absolute; inset-block-end: var(--s-4); inset-inline-start: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4); border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n300), 0 12px 32px -12px rgba(25, 23, 46, 0.3); cursor: default; max-width: calc(100% - 24px); }
+.bd-draft { position: absolute; inset-block-end: var(--s-4); inset-inline-start: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: var(--s-3); padding-block: var(--s-2); padding-inline: var(--s-4) var(--s-2); border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n300), 0 12px 32px -12px rgba(25, 23, 46, 0.3); cursor: default; max-width: calc(100% - 24px); }
 .bd-draft .b-arch { color: var(--iqaa-violet); flex: none; }
 .bd-draft p { font-size: 13px; line-height: 18px; }
 /* Watar's draft is drawn with the dashed grey pen until a person accepts it */
@@ -205,3 +214,10 @@ main.bd + .a-foot { display: none; }
 .lib-it { box-shadow: none; border: 0; background: transparent; padding: 6px var(--s-2); }
 .lib-it:hover { background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200); }
 .lib-ic { background: transparent; }
+/* ---------- right to left: the panels, the toolbar and what floats on the canvas follow the page; the canvas's
+   drawing stays left to right (dir="ltr" on .bd-canvas), so these are set from its left and right ---------- */
+[dir='rtl'] .pn-x svg, [dir='rtl'] .pn-tab svg, [dir='rtl'] .bd-t[data-do='undo'] svg, [dir='rtl'] .bd-t[data-do='redo'] svg { transform: scaleX(-1); }
+html[dir='rtl'] .bd-checks { right: auto; left: var(--s-3); }
+html[dir='rtl'] .bd-tip { left: auto; right: var(--s-4); }
+html[dir='rtl'] .bd-mini { right: auto; left: var(--s-3); }
+html[dir='rtl'] .bd-watar-p, html[dir='rtl'] .bd-draft { right: auto; left: 50%; }

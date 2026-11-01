@@ -5,7 +5,7 @@
   const html = document.documentElement;
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
-  const S = window.SUFRA;
+  const S = window.SUFRA, T = window.T, N = window.I18N.n;
 
   // ---------- fold ----------
   const fold = $('[data-fold]');
@@ -16,7 +16,7 @@
   folded = saved ? saved === 'folded' : !!$('main.bd');
   const set = (on) => {
     html.classList.toggle('side-folded', on);
-    if (fold) { fold.setAttribute('aria-pressed', String(on)); fold.setAttribute('aria-label', on ? 'Open the sidebar' : 'Fold the sidebar'); fold.title = fold.getAttribute('aria-label'); }
+    if (fold) { fold.setAttribute('aria-pressed', String(on)); fold.setAttribute('aria-label', on ? T('Open the sidebar') : T('Fold the sidebar')); fold.title = fold.getAttribute('aria-label'); }
   };
   set(folded);
   if (fold) fold.addEventListener('click', () => {
@@ -30,7 +30,7 @@
   const mark = $('[data-org-mark]');
   if (mark && !mark.firstChild && S && window.Beats) {
     const line = S.line();
-    Beats.sig(mark, line.stations.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) })), { mode: 'mark', size: 32, name: 'Sufra', label: 'Sufra’s mark' });
+    Beats.sig(mark, line.stations.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) })), { mode: 'mark', size: 32, name: 'Sufra', label: T('{org}’s mark', { org: T('Sufra') }) });
   }
 
   // ---------- what waits for the person signed in ----------
@@ -42,16 +42,20 @@
     stations = line.stations.concat(...line.routes.filter((r) => r.type === 'branch').map((r) => r.stations));
     stepOf = (j) => { const st = stations.find((s) => s.id === j.at); return st ? st.steps[j.step] : null; };
     live = S.jobs.filter((j) => !j.finished);
-    // the person is the page's own (Today names them before this runs), else the owner the sidebar is written for
-    const me = (($('[data-me-name]') || {}).textContent || 'Hala').trim();
+    // the person is the page's own (Today names them before this runs), else the owner the sidebar is written for; the
+    // name shown may be translated, so the person is read from data-who, the name in the data
+    const meEl = $('[data-me-name]'), me = ((meEl && (meEl.dataset.who || meEl.textContent)) || 'Hala').trim();
     const key = Object.keys(S.people).find((k) => S.people[k].name === me);
     const mine = live.filter((j) => { const x = stepOf(j); return x && (x.kind === 'struck' || x.kind === 'held') && x.who === me; }).length;
     const nT = $('[data-n-today]'), nO = $('[data-n-orders]'), nC = $('.ap-nav [data-n-clients]');
-    if (nT && mine) nT.innerHTML = `${mine}<span class="sr"> waiting for you</span>`;
-    if (nO) nO.innerHTML = `${live.length}<span class="sr"> on the line</span>`;
+    if (nT && mine) nT.innerHTML = `${mine}<span class="sr"> ${T('waiting for you')}</span>`;
+    if (nO) nO.innerHTML = `${live.length}<span class="sr"> ${T('on the line')}</span>`;
+    // what reached Sufra and is neither on the line nor set aside yet (inbox.js)
+    const nI = $('[data-n-inbox]'), arrived = (S.inbox || []).filter((m) => !(S.intake && S.intake.handled[m.id])).length;
+    if (nI && arrived) nI.innerHTML = `${arrived}<span class="sr"> ${N(arrived, 'message waits', 'messages wait')}</span>`;
     // the clients whose answer the line waits for: their soonest open job sits on the client's own step
     const theirs = Object.keys(S.clients || {}).filter((ck) => { const x = stepOf(soonest(ck) || {}); return x && x.who === 'The client'; }).length;
-    if (nC && theirs) nC.innerHTML = `${theirs}<span class="sr"> waiting on their answer</span>`;
+    if (nC && theirs) nC.innerHTML = `${theirs}<span class="sr"> ${T('waiting on their answer')}</span>`;
     if (key) {
       todayHref = `today.html?as=${key}`;
       const t = $('a[data-today]');
@@ -68,30 +72,14 @@
       let pending = 0;
       try { const c = JSON.parse(sessionStorage.getItem(`iqaa-watar:${key}`) || 'null'); if (c && c.drafts) { const sent = JSON.parse(sessionStorage.getItem('iqaa-reminded') || '{}') || {}; pending = Object.values(c.drafts).filter((d) => d.state === 'pending' && !(d.type === 'remind' && d.when === 'now' && sent[d.code])).length; } } catch (e) { /* storage blocked: nothing waits */ }
       if (pending) {
-        const words = `${pending === 1 ? 'draft waits' : 'drafts wait'} for you`, nW = $('[data-n-watar]'), dot = $('[data-n-watar-dot]');
+        const words = N(pending, 'draft waits for you', 'drafts wait for you'), nW = $('[data-n-watar]'), dot = $('[data-n-watar-dot]');
         if (nW) nW.innerHTML = `${pending}<span class="sr"> ${words}</span>`;
         if (dot) { dot.hidden = false; dot.firstElementChild.textContent = `${pending} ${words}`; }
       }
     }
   }
 
-  // ---------- the organization's menu ----------
-  const orgBtn = $('[data-org-menu]'), menu = orgBtn && document.getElementById(orgBtn.getAttribute('aria-controls'));
-  if (orgBtn && menu) {
-    const close = (focus) => { menu.hidden = true; orgBtn.setAttribute('aria-expanded', 'false'); if (focus) orgBtn.focus(); };
-    orgBtn.addEventListener('click', () => {
-      const open = menu.hidden;
-      menu.hidden = !open;
-      orgBtn.setAttribute('aria-expanded', String(open));
-      if (open) $('a', menu).focus();
-    });
-    document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target) && !orgBtn.contains(e.target)) close(false); });
-    menu.addEventListener('keydown', (e) => {
-      const links = $$('a', menu), i = links.indexOf(document.activeElement);
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); links[(i + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length].focus(); }
-    });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) close(true); });
-  }
+  // (the organization's menu and the language switch are ui.js's menus: data-menu)
 
   // ---------- search: screens and orders, from anywhere ----------
   const mac = /Mac|iPhone|iPad/.test(navigator.platform || '');
@@ -101,6 +89,7 @@
   const SCREENS = () => [
     { t: 'Overview', s: 'The whole organization at a glance', href: 'overview.html' },
     { t: 'Today', s: 'What waits for you', href: todayHref },
+    { t: 'Inbox', s: 'What came in and isn’t on the line yet', href: 'inbox.html' },
     { t: 'Line', s: 'The line as a map: test it, publish it', href: 'line.html' },
     { t: 'Build', s: 'Edit the line on a canvas', href: 'build.html', icon: 'line.html' },
     { t: 'Orders', s: 'Every job on the line', href: 'orders.html' },
@@ -112,13 +101,15 @@
     { t: 'Organization', s: 'Name, address, hours, mark and logo', href: `${settingsHref}#organization` },
     { t: 'Billing', s: 'Plan and what Sufra uses', href: `${settingsHref}#billing` },
     { t: 'Start another organization', s: 'Sign up, draft a line with Watar', href: 'signup.html' },
-  ];
+  ].map((s) => Object.assign(s, { t: T(s.t), s: T(s.s) }));
+  // dates from the data's English labels, in the page's language
+  const V = window.JOBS && S ? JOBS.views(JOBS.on(S.line()), S) : null;
   let dlg = null, input = null, list = null, items = [], sel = 0;
   function where(j) {
-    if (j.finished) return { m: `Finished ${j.finished}`, hand: false };
+    if (j.finished) return { m: T('Finished {date}', { date: V ? V.fin(j) : j.finished }), hand: false };
     const st = stations.find((s) => s.id === j.at), x = stepOf(j);
     const hand = !!x && (x.kind === 'struck' || x.kind === 'held');
-    return { m: `${st ? st.name : ''}${hand ? ` · ${x.who === 'The client' ? 'waiting for the client' : `with ${x.who}`}` : ''}`, hand };
+    return { m: `${st ? T(st.name) : ''}${hand ? ` · ${x.who === 'The client' ? T('waiting for the client') : T('with {name}', { name: T(x.who) })}` : ''}`, hand };
   }
   // a client is found by its name, its contact, or the code or title of any of its orders
   const ordersOf = (ck) => S.jobs.concat(S.past || []).filter((j) => j.ck === ck);
@@ -127,26 +118,27 @@
     const screens = SCREENS().filter((s) => !q || `${s.t} ${s.s}`.toLowerCase().includes(q));
     // clients and past orders only once something is typed: the empty palette stays a short list of screens and today's jobs
     const clients = q && S && S.clients ? Object.keys(S.clients).filter((ck) => { const c = S.clients[ck];
-      return `${c.name} ${c.contact || ''} ${ordersOf(ck).map((j) => `${j.code} ${j.title}`).join(' ')}`.toLowerCase().includes(q); }).slice(0, 5) : [];
-    const jobs = (S ? (q ? S.jobs.concat(S.past || []) : S.jobs) : []).filter((j) => !q || `${j.code} ${j.title} ${j.client} ${j.of}`.toLowerCase().includes(q)).slice(0, q ? 8 : 5);
+      return `${c.name} ${T(c.name)} ${c.contact || ''} ${c.contact ? T(c.contact) : ''} ${ordersOf(ck).map((j) => `${j.code} ${j.title} ${T(j.title)}`).join(' ')}`.toLowerCase().includes(q); }).slice(0, 5) : [];
+    // found in English and in the page's language, so an Arabic search finds what the page shows
+    const jobs = (S ? (q ? S.jobs.concat(S.past || []) : S.jobs) : []).filter((j) => !q || `${j.code} ${j.title} ${T(j.title)} ${j.client} ${T(j.client)} ${j.of} ${T(j.of)}`.toLowerCase().includes(q)).slice(0, q ? 8 : 5);
     const iconC = iconOf('clients.html'), iconO = iconOf('orders.html');
     items = [...screens.map((s) => ({ href: s.href, html: `${iconOf(s.icon || s.href)}<span class="cmdk-t"><b>${esc(s.t)}</b><span>${esc(s.s)}</span></span>` })),
-      ...clients.map((ck) => { const c = S.clients[ck], j = soonest(ck), w = j ? where(j) : { m: 'Nothing open', hand: false };
-        return { href: `client.html?c=${ck}`, html: `${iconC}<span class="cmdk-t"><b>${esc(c.name)}</b><span>${esc(c.private ? 'Private client' : c.contact)}</span></span><span class="cmdk-m${w.hand ? ' hand' : ''}">${esc(w.m)}</span>` }; }),
-      ...jobs.map((j) => { const w = where(j); return { href: `order.html?code=${j.code}`, html: `${iconO}<span class="cmdk-t"><b><code>${j.code}</code>${esc(j.title)}</b><span>${esc(j.client)}, ${esc(j.of)} · ${j.people} people</span></span><span class="cmdk-m${w.hand ? ' hand' : ''}">${esc(w.m)}</span>` }; })];
+      ...clients.map((ck) => { const c = S.clients[ck], j = soonest(ck), w = j ? where(j) : { m: T('Nothing open'), hand: false };
+        return { href: `client.html?c=${ck}`, html: `${iconC}<span class="cmdk-t"><b>${esc(T(c.name))}</b><span>${esc(c.private ? T('Private client') : T(c.contact))}</span></span><span class="cmdk-m${w.hand ? ' hand' : ''}">${esc(w.m)}</span>` }; }),
+      ...jobs.map((j) => { const w = where(j); return { href: `order.html?code=${j.code}`, html: `${iconO}<span class="cmdk-t"><b><code>${j.code}</code>${esc(T(j.title))}</b><span>${esc(T('{client}, {of}', { client: T(j.client), of: T(j.of) }))} · ${esc(N(j.people, '{n} person', '{n} people'))}</span></span><span class="cmdk-m${w.hand ? ' hand' : ''}">${esc(w.m)}</span>` }; })];
     sel = Math.min(sel, Math.max(0, items.length - 1));
     const opt = (it, i) => `<li class="cmdk-o" role="option" id="cmdk-${i}" aria-selected="${i === sel}" data-i="${i}">${it.html}</li>`;
     // nothing matches: the words become a question for Watar, who answers from the line
     if (!items.length) {
       const words = input.value.trim();
-      items = [{ href: `${watarHref}${watarHref.includes('?') ? '&' : '?'}q=${encodeURIComponent(words)}`, html: `${iconOf('watar.html')}<span class="cmdk-t"><b>Ask Watar: “${esc(words)}”</b><span>Nothing else matches. Watar answers from Sufra’s line.</span></span>` }];
+      items = [{ href: `${watarHref}${watarHref.includes('?') ? '&' : '?'}q=${encodeURIComponent(words)}`, html: `${iconOf('watar.html')}<span class="cmdk-t"><b>${T('Ask Watar: “{q}”', { q: esc(words) })}</b><span>${T('Nothing else matches. Watar answers from Sufra’s line.')}</span></span>` }];
       sel = 0;
-      list.innerHTML = `<li class="cmdk-g" role="presentation">Ask Watar</li>${opt(items[0], 0)}`;
+      list.innerHTML = `<li class="cmdk-g" role="presentation">${T('Ask Watar')}</li>${opt(items[0], 0)}`;
       input.setAttribute('aria-activedescendant', 'cmdk-0');
       return;
     }
     const group = (name, from, n) => (n ? `<li class="cmdk-g" role="presentation">${name}</li>${items.slice(from, from + n).map((it, i) => opt(it, i + from)).join('')}` : '');
-    list.innerHTML = group('Screens', 0, screens.length) + group('Clients', screens.length, clients.length) + group('Orders', screens.length + clients.length, jobs.length);
+    list.innerHTML = group(T('Screens'), 0, screens.length) + group(T('Clients'), screens.length, clients.length) + group(T('Orders'), screens.length + clients.length, jobs.length);
     input.setAttribute('aria-activedescendant', `cmdk-${sel}`);
   }
   function pick(i) {
@@ -161,11 +153,11 @@
   function build() {
     dlg = document.createElement('dialog');
     dlg.className = 'cmdk';
-    dlg.setAttribute('aria-label', 'Search');
+    dlg.setAttribute('aria-label', T('Search'));
     const glass = $('.ap-search svg');
-    dlg.innerHTML = `<div class="cmdk-in">${glass ? glass.outerHTML : ''}<input type="text" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" aria-label="Search screens and orders" placeholder="Search screens and orders" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
-<ul class="cmdk-list" id="cmdk-list" role="listbox" aria-label="Results"></ul>
-<p class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></p>`;
+    dlg.innerHTML = `<div class="cmdk-in">${glass ? glass.outerHTML : ''}<input type="text" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" aria-label="${T('Search screens and orders')}" placeholder="${T('Search screens and orders')}" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+<ul class="cmdk-list" id="cmdk-list" role="listbox" aria-label="${T('Results')}"></ul>
+<p class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> ${T('move')}</span><span><kbd>Enter</kbd> ${T('open')}</span><span><kbd>Esc</kbd> ${T('close')}</span></p>`;
     document.body.appendChild(dlg);
     input = $('input', dlg);
     list = $('.cmdk-list', dlg);

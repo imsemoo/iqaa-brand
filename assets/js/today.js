@@ -27,93 +27,107 @@
   let open = null;
 
   // ---------- reading the line, through the shared jobs.js ----------
-  const J = window.JOBS.on(line);
+  const J = window.JOBS.on(line), V = window.JOBS.views(J, S);
   const { station, stepOf, nextStation, ahead, pos } = J;
   const mine = (j) => { const x = stepOf(j); return !!x && isPerson(x.kind) && x.who === me.name; };
   const worksAt = (st) => st.steps.some((x) => isPerson(x.kind) && x.who === me.name);
 
-  // ---------- words ----------
-  // "Reem checks the prices" said to Reem: "Check the prices"; "Salma prepares" says what: "Prepare the family dinner"
+  // ---------- words: the data stays English; T() says it in the page's language (i18n.js) ----------
+  const N = window.I18N.n;
+  // "Reem checks the prices" said to Reem: "Check the prices"; "Salma prepares" says what: "Prepare the family dinner".
+  // The English is worked out from the step's name; the other languages translate it whole ('Prepare the {title}')
   function imperative(name, j) {
-    if (!name.startsWith(`${me.name} `)) return name;
+    if (!name.startsWith(`${me.name} `)) return T(name);
     const [verb, ...rest] = name.slice(me.name.length + 1).split(' ');
     const base = /(ch|sh|ss|x)es$/.test(verb) ? verb.slice(0, -2) : verb.replace(/s$/, '');
-    const what = rest.length ? rest : j ? ['the', j.title.charAt(0).toLowerCase() + j.title.slice(1)] : [];
-    return [base.charAt(0).toUpperCase() + base.slice(1)].concat(what).join(' ');
+    const Base = base.charAt(0).toUpperCase() + base.slice(1);
+    if (!rest.length && j) return T(`${Base} the {title}`, { title: V.lcT(j.title) });
+    return T([Base].concat(rest).join(' '));
   }
-  // what a finished step is called in Done today
+  // what a finished step is called in Done today: the English (kept with the step, as the data's) and its words
   function doneName(x) {
     const w = /^Watar drafts (.+)$/.exec(x.name);
     if (w) return `Approved Watar’s draft of ${w[1]}`;
     return x.kind === 'held' ? `Approved: ${x.name}` : x.name;
   }
+  const doneSaid = (d) => (d.said || T(d.step));
+  function doneWords(x) {
+    if (/^Watar drafts /.test(x.name)) return T(doneName(x));
+    return x.kind === 'held' ? T('Approved: {step}', { step: T(x.name) }) : T(x.name);
+  }
   function forYou(j, x) {
-    if (x.kind === 'held' && /^Watar/.test(x.name)) return 'Watar drafted the quote. Check it, then approve it or ask for a change.';
-    if (x.kind === 'held') return `${x.name}: it waits for your answer.`;
+    if (x.kind === 'held' && /^Watar/.test(x.name)) return T('Watar drafted the quote. Check it, then approve it or ask for a change.');
+    if (x.kind === 'held') return T('{step}: it waits for your answer.', { step: T(x.name) });
     return `${imperative(x.name, j)}.`;
   }
   const dayMs = 864e5;
   function when(iso) {
     const d = Math.round((new Date(iso.slice(0, 10)) - new Date(S.dayIso)) / dayMs);
-    return d === 0 ? 'today' : d === 1 ? 'tomorrow' : d < 0 ? 'late' : `in ${d} days`;
+    return d === 0 ? T('today') : d === 1 ? T('tomorrow') : d < 0 ? T('late') : N(d, 'in {n} day', 'in {n} days');
   }
+  const quoted = (s) => T('“{s}”', { s });
   // the demo day has its own clock: it opens at 09:41, after the morning's work, runs at real speed, and each
   // step you finish takes a few minutes of it
   const opened = Date.now(), START = 9 * 60 + 41;
   let worked = 0;
   const minutes = () => START + worked + Math.floor((Date.now() - opened) / 6e4);
   const now = () => { const m = minutes(); return `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
-  function greeting() {
-    const h = Math.floor(minutes() / 60);
-    return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  // the greeting, with the person's name when the page knows it
+  function greeting(name) {
+    const h = Math.floor(minutes() / 60), part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    return name ? T(`${part}, {name}`, { name: T(name) }) : T(part);
   }
   const glyph = (k, test) => `<span class="g" aria-hidden="true">${IQ.glyph(k, { test: !!test })}</span>`;
 
   // the metro strip: the line's stations, yours ringed violet, the job a filled stop
   const strip = (j) => J.strip(j, worksAt);
   function where(j) {
-    const p = station(j.at), st = p.st;
-    return `At <b>${esc(st.name)}</b>${p.route ? ', on the branch for big orders' : ''} · step ${j.step + 1} of ${st.steps.length}`;
+    const p = station(j.at), st = p.st, v = { station: `<b>${esc(T(st.name))}</b>`, n: j.step + 1, total: st.steps.length };
+    return p.route ? T('At {station}, on the branch for big orders · step {n} of {total}', v) : T('At {station} · step {n} of {total}', v);
   }
 
   // ---------- waiting for you ----------
   function panel(j, x) {
     if (x.kind === 'held' && j.draft) {
       const d = j.draft;
-      const chg = d.changed ? `<p class="dr-chg"><b>Changed as you asked:</b> “${esc(d.changed)}”</p>` : '';
+      // what you typed stays as you typed it, in your words
+      const chg = d.changed ? `<p class="dr-chg"><b>${T('Changed as you asked:')}</b> ${esc(quoted(d.changed))}</p>` : '';
       return `<div class="draft" data-draft>
-<p class="dr-k">${glyph('held')}<span>Watar’s draft</span>${d.busy ? '<span class="dr-busy">Watar is redrafting…</span>' : ''}</p>
-<ul>${d.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
-<p>${esc(d.note)}</p>${chg}
-<p class="dr-tot">Total <b>${esc(d.total)}</b> <span class="hint">from Sufra’s price list</span></p>
+<p class="dr-k">${glyph('held')}<span>${T('Watar’s draft')}</span>${d.busy ? `<span class="dr-busy">${T('Watar is redrafting…')}</span>` : ''}</p>
+<ul>${d.items.map((t) => `<li>${esc(T(t))}</li>`).join('')}</ul>
+<p>${esc(T(d.note))}</p>${chg}
+<p class="dr-tot">${T('Total {total}', { total: `<b>${esc(T(d.total))}</b>` })} <span class="hint">${T('from Sufra’s price list')}</span></p>
 </div>
-<div class="jb-act"><button class="btn primary" type="button" data-approve${d.busy ? ' disabled' : ''}>${IQ.icon('Done', 18)}<span>Approve the draft</span></button><button class="btn" type="button" data-change aria-expanded="false"${d.busy ? ' disabled' : ''}>${IQ.icon('Ask Watar', 18)}<span>Ask Watar for a change</span></button></div>
+<div class="jb-act"><button class="btn primary" type="button" data-approve${d.busy ? ' disabled' : ''}>${IQ.icon('Done', 18)}<span>${T('Approve the draft')}</span></button><button class="btn" type="button" data-change aria-expanded="false"${d.busy ? ' disabled' : ''}>${IQ.icon('Ask Watar', 18)}<span>${T('Ask Watar for a change')}</span></button></div>
 <form class="jb-chg" data-chg-form hidden novalidate>
-<div class="field"><label for="chg-${j.code}">What should change?</label><textarea id="chg-${j.code}" rows="2" data-chg-text placeholder="For example: no nuts, and lunch at 12:00 instead."></textarea><p class="err" hidden data-chg-err></p></div>
-<div class="row-act"><button class="btn" type="button" data-chg-cancel>Cancel</button><button class="btn ink" type="submit">${IQ.icon('Send', 18)}<span>Send to Watar</span></button></div>
+<div class="field"><label for="chg-${j.code}">${T('What should change?')}</label><textarea id="chg-${j.code}" rows="2" data-chg-text placeholder="${esc(T('For example: no nuts, and lunch at 12:00 instead.'))}"></textarea><p class="err" hidden data-chg-err></p></div>
+<div class="row-act"><button class="btn" type="button" data-chg-cancel>${T('Cancel')}</button><button class="btn ink" type="submit">${IQ.icon('Send', 18)}<span>${T('Send to Watar')}</span></button></div>
 </form>`;
     }
-    const items = (x.check || ['Done as the step says']).map((t, i) => `<label class="chk"><input type="checkbox" data-check="${i}"><span>${esc(t)}</span></label>`).join('');
+    const items = (x.check || ['Done as the step says']).map((t, i) => `<label class="chk"><input type="checkbox" data-check="${i}"><span>${esc(T(t))}</span></label>`).join('');
     const after = ahead(j);
     const autos = [];
     for (const a of after) { if (a.x.kind !== 'run') break; autos.push(a); }
     const nextP = after[autos.length];
-    const then = nextP && nextP.st !== station(j.at).st
-      ? `Next, ${autos.length ? `${autos.map((a) => `“${esc(a.x.name)}”`).join(' and ')} ${autos.length === 1 ? 'runs' : 'run'} by itself and ` : ''}the job moves to ${esc(nextP.st.name)}.`
-      : '';
-    return `<fieldset class="chk-l"><legend>Before you hand it on</legend>${items}</fieldset>
+    let then = '';
+    if (nextP && nextP.st !== station(j.at).st) {
+      const v = { station: esc(T(nextP.st.name)), steps: autos.map((a) => quoted(esc(T(a.x.name)))).join(T(' and ')) };
+      then = !autos.length ? T('Next, the job moves to {station}.', v)
+        : autos.length === 1 ? T('Next, {steps} runs by itself and the job moves to {station}.', v) : T('Next, {steps} run by itself and the job moves to {station}.', v);
+    }
+    return `<fieldset class="chk-l"><legend>${T('Before you hand it on')}</legend>${items}</fieldset>
 <p class="err" data-check-err hidden></p>
-<div class="jb-act"><button class="btn primary" type="button" data-finish>${IQ.icon('Done', 18)}<span>Mark done</span></button></div>
-<p class="hint">${then} The checklist locks when the job moves on.</p>`;
+<div class="jb-act"><button class="btn primary" type="button" data-finish>${IQ.icon('Done', 18)}<span>${T('Mark done')}</span></button></div>
+<p class="hint">${then} ${T('The checklist locks when the job moves on.')}</p>`;
   }
 
   function jobLi(j) {
     const x = stepOf(j), on = open === j.code;
     return `<li class="job${on ? ' open' : ''}" data-job="${j.code}">
-<div class="jb-top"><a class="jb-code" href="order.html?code=${j.code}"><code>${j.code}</code></a><span>${esc(j.client)}, ${esc(j.of)}</span><span class="due">${IQ.icon('Date', 16)}<span>${esc(j.due)} · ${when(j.iso)}</span></span></div>
-<h3><button type="button" class="jb-h" data-open="${j.code}" aria-expanded="${on}" aria-controls="p-${j.code}">${esc(j.title)} · ${j.people} people</button></h3>
+<div class="jb-top"><a class="jb-code" href="order.html?code=${j.code}"><code>${j.code}</code></a><span>${esc(T('{client}, {of}', { client: T(j.client), of: T(j.of) }))}</span><span class="due">${IQ.icon('Date', 16)}<span>${esc(V.due(j))} · ${when(j.iso)}</span></span></div>
+<h3><button type="button" class="jb-h" data-open="${j.code}" aria-expanded="${on}" aria-controls="p-${j.code}">${esc(T(j.title))} · ${N(j.people, '{n} person', '{n} people')}</button></h3>
 <div class="jb-pos">${strip(j)}<p>${where(j)}</p></div>
-<div class="jb-for">${glyph(x.kind)}<p><b>For you:</b> ${esc(forYou(j, x))}</p></div>
+<div class="jb-for">${glyph(x.kind)}<p><b>${T('For you:')}</b> ${esc(forYou(j, x))}</p></div>
 <div class="jb-panel" id="p-${j.code}"${on ? '' : ' hidden'}>${panel(j, x)}</div>
 </li>`;
   }
@@ -130,10 +144,11 @@
   function renderHead() {
     const w = waiting(), n = w.length;
     const at = [...new Set(w.map((j) => station(j.at).st.name))];
-    $('[data-day]').textContent = S.day;
-    $('[data-greet]').textContent = me.name ? `${greeting()}, ${me.name}` : greeting();
-    $('[data-sum]').textContent = own ? `Welcome to ${own.name}.`
-      : n ? `${n} ${n === 1 ? 'job is' : 'jobs are'} waiting for you at ${at.join(' and ')}. Start with the first.` : 'Nothing is waiting for you right now.';
+    $('[data-day]').textContent = T(S.day);
+    $('[data-greet]').textContent = greeting(me.name);
+    $('[data-sum]').textContent = own ? T('Welcome to {org}.', { org: own.name })
+      : n ? N(n, '{n} job is waiting for you at {stations}. Start with the first.', '{n} jobs are waiting for you at {stations}. Start with the first.', { stations: at.map((a) => T(a)).join(T(' and ')) })
+        : T('Nothing is waiting for you right now.');
   }
   // ---------- the day's rhythm: the working day as a line in time; each finished step is written at its hour ----------
   const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
@@ -143,7 +158,8 @@
     const from = 8 * 60, to = (narrow ? 14 : 18) * 60, H = 88, base = 54, k = narrow ? 0.7 : 1;
     const x = (m) => 12 + ((Math.min(Math.max(m, from), to) - from) / (to - from)) * (W - 24);
     const pal = window.IQAA.pal.light;
-    let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><path class="day" d="M${x(from)} ${base}H${x(to)}"/>`;
+    // a drawing of time: class flow runs it right to left in Arabic, the hours with it
+    let svg = `<svg class="flow" direction="ltr" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><path class="day" d="M${x(from)} ${base}H${x(to)}"/>`;
     for (let h = from / 60; h <= to / 60; h++) {
       const hx = x(h * 60);
       svg += `<path class="hr" d="M${hx} ${base + 6}v6"/>`;
@@ -168,12 +184,13 @@
       kinds.forEach((kind) => { ahead += IQ.cell(kind, ax / k, base / k, pal, k, true); ax += IQ.WIDTH[kind] * k + 4; });
       ax += 10;
     });
-    svg += `${marks}${ahead}<path class="now" d="M${nx} 18V${base + 12}"/><text class="nl" x="${lx}" y="12" text-anchor="middle">Now ${now()}</text></svg>`;
+    svg += `${marks}${ahead}<path class="now" d="M${nx} 18V${base + 12}"/><text class="nl" x="${lx}" y="12" text-anchor="middle">${esc(T('Now {time}', { time: now() }))}</text></svg>`;
     el.innerHTML = svg;
     el.setAttribute('role', 'img');
-    el.setAttribute('aria-label', `${done.length ? `Your day so far: ${done.map((d) => `${d.time}, ${d.step}`).join('; ')}.` : 'Your day has not started yet.'} ${todo.flat().length} steps still yours today.`);
     const steps = done.length, left = todo.flat().length;
-    $('[data-day-cap]').textContent = `${steps ? `${steps} done, each at its hour` : 'Nothing done yet'}${left ? `; ${left} still yours, in grey ahead of now` : ''}.`;
+    const sofar = steps ? T('Your day so far: {steps}.', { steps: done.map((d) => `${d.time}${T(', ')}${doneSaid(d)}`).join(T('; ')) }) : T('Your day has not started yet.');
+    el.setAttribute('aria-label', `${sofar} ${N(left, '{n} steps still yours today.', '{n} steps still yours today.')}`);
+    $('[data-day-cap]').textContent = `${steps ? N(steps, '{n} done, each at its hour', '{n} done, each at its hour') : T('Nothing done yet')}${left ? N(left, '; {n} still yours, in grey ahead of now', '; {n} still yours, in grey ahead of now') : ''}.`;
     // the pen writes only the step just finished
     if (write && !reduce()) $$(`[data-e="${done.length - 1}"] path, [data-e="${done.length - 1}"] circle`, el).forEach((p, i) => {
       if (p.tagName === 'circle') { p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: M.quarter, delay: i * M.eighth, fill: 'backwards' }); return; }
@@ -192,28 +209,28 @@
     if (!w.length) {
       const c = coming()[0];
       empty.innerHTML = own
-        ? `<p>Jobs appear here when your team adds an order. Until then, try your line with a test job.</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>Open the line</span></a>`
-        : `<p><b>Your station is clear.</b></p><p class="hint">${c ? `Next: ${esc(c.j.title)} (<code>${c.j.code}</code>) reaches you at ${esc(c.at.name)}.` : 'No job is heading your way yet.'}</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>See the whole line</span></a>`;
+        ? `<p>${T('Jobs appear here when your team adds an order. Until then, try your line with a test job.')}</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>${T('Open the line')}</span></a>`
+        : `<p><b>${T('Your station is clear.')}</b></p><p class="hint">${c ? T('Next: {title} ({code}) reaches you at {station}.', { title: esc(T(c.j.title)), code: `<code dir="ltr">${c.j.code}</code>`, station: esc(T(c.at.name)) }) : T('No job is heading your way yet.')}</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>${T('See the whole line')}</span></a>`;
     }
   }
   function renderComing() {
     const c = own ? [] : coming();
     $('[data-coming]').innerHTML = c.length ? c.map(({ j, at }) => {
       const x = stepOf(j), p = station(j.at);
-      return `<li class="mn"><div class="mn-t"><code>${j.code}</code><b>${esc(j.title)}</b><span class="hint">${j.people} people</span></div>
+      return `<li class="mn"><div class="mn-t"><code>${j.code}</code><b>${esc(T(j.title))}</b><span class="hint">${N(j.people, '{n} person', '{n} people')}</span></div>
 <div class="mn-pos">${strip(j)}</div>
-<p class="mn-now">${glyph(x.kind)}<span>Now at ${esc(p.st.name)}: ${esc(x.name)}. Reaches you at <b>${esc(at.name)}</b>.</span></p></li>`;
-    }).join('') : '<li class="mn none">No job is heading your way yet.</li>';
+<p class="mn-now">${glyph(x.kind)}<span>${T('Now at {station}: {step}. Reaches you at {to}.', { station: esc(T(p.st.name)), step: esc(T(x.name)), to: `<b>${esc(T(at.name))}</b>` })}</span></p></li>`;
+    }).join('') : `<li class="mn none">${T('No job is heading your way yet.')}</li>`;
   }
   function renderDone(fresh) {
     // only a job's latest step can be taken back: earlier ones are what the latest was built on
     const latest = {};
     done.forEach((d, i) => { latest[d.code] = i; });
     $('[data-done]').innerHTML = done.length ? done.slice().reverse().map((d, i) => `<li class="mn dn${fresh && i === 0 ? ' fresh' : ''}">
-<p class="dn-t"><time>${d.time}</time>${glyph('struck')}<span><b>${esc(d.step)}</b> · ${esc(d.title)} <code>${d.code}</code></span></p>
-${d.then || d.to ? `<p class="hint dn-n">${esc([d.then, d.to ? `Handed on to ${d.to}` : ''].filter(Boolean).join('. '))}.</p>` : ''}
-${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type="button" data-back="${d.code}">Take it back</button>` : ''}
-</li>`).join('') : '<li class="mn none">Nothing yet. Each step you finish lands here.</li>';
+<p class="dn-t"><time>${d.time}</time>${glyph('struck')}<span><b>${esc(doneSaid(d))}</b> · ${esc(T(d.title))} <code>${d.code}</code></span></p>
+${d.then || d.to ? `<p class="hint dn-n">${esc([d.then ? T(d.then) : '', d.to ? T('Handed on to {station}', { station: T(d.to) }) : ''].filter(Boolean).join('. '))}.</p>` : ''}
+${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type="button" data-back="${d.code}">${T('Take it back')}</button>` : ''}
+</li>`).join('') : `<li class="mn none">${T('Nothing yet. Each step you finish lands here.')}</li>`;
     if (fresh && !reduce()) {
       const li = $('.dn.fresh');
       if (li) li.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], { duration: M.half, easing: M.ease_arrive });
@@ -226,7 +243,7 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
   async function finish(j, li) {
     const x = stepOf(j), before = clone(j), fromPos = pos(j), fromSt = station(j.at).st;
     worked += 7;
-    const entry = { who: me.name, code: j.code, title: j.title, step: doneName(x), time: now(), kinds: ['struck'], undo: before };
+    const entry = { who: me.name, code: j.code, title: j.title, step: doneName(x), said: doneWords(x), time: now(), kinds: ['struck'], undo: before };
     // steps that run by themselves follow at once; a timed wait or a person stops the job
     const autos = [];
     let at = j.at, k = j.step + 1, guard = 0;
@@ -238,7 +255,8 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
     }
     if (at) { j.at = at; j.step = k; } else { j.at = main[main.length - 1].id; j.step = station(j.at).st.steps.length - 1; }
     const toSt = station(j.at).st;
-    entry.then = autos.length ? `Ran by itself: ${autos.join(', ')}` : '';
+    // said once, in the page's language (T() leaves words it has no entry for as they are)
+    entry.then = autos.length ? T('Ran by itself: {steps}', { steps: autos.map((a) => T(a)).join(T(', ')) }) : '';
     entry.to = toSt !== fromSt ? toSt.name : '';
     done.push(entry);
     renderHead();
@@ -249,7 +267,7 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
       fresh.innerHTML = jobLi(j);
       li.replaceWith(fresh.firstElementChild);
       renderDone(true);
-      say(`Done. Next for you on ${j.title}: ${imperative(stepOf(j).name, j)}.`);
+      say(T('Done. Next for you on {title}: {step}.', { title: T(j.title), step: imperative(stepOf(j).name, j) }));
       const h = $(`[data-job="${j.code}"] .jb-panel`);
       if (h && !reduce()) h.animate([{ opacity: 0 }, { opacity: 1 }], { duration: M.quarter, easing: M.ease_arrive });
       $(`[data-job="${j.code}"] .jb-h`).focus();
@@ -267,7 +285,8 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
     }
     open = null;
     renderWaiting(); renderComing(); renderDone(true);
-    say(`${j.title} is handed on${entry.to ? ` to ${entry.to}` : ''}. You can take it back from Done today.`);
+    say(entry.to ? T('{title} is handed on to {station}. You can take it back from Done today.', { title: T(j.title), station: T(entry.to) })
+      : T('{title} is handed on. You can take it back from Done today.', { title: T(j.title) }));
     const next = $('.jb-h');
     (next || $('[data-back]') || $('[data-greet]')).focus({ preventScroll: true });
   }
@@ -293,7 +312,7 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
       const boxes = $$('[data-check]', li), left = boxes.filter((b) => !b.checked).length;
       const err = $('[data-check-err]', li);
       if (left) {
-        err.textContent = left === 1 ? 'One item is not ticked yet. Tick it, or keep the job until it is true.' : `${left} items are not ticked yet. Tick them, or keep the job until they are true.`;
+        err.textContent = N(left, 'One item is not ticked yet. Tick it, or keep the job until it is true.', '{n} items are not ticked yet. Tick them, or keep the job until they are true.');
         err.hidden = false;
         boxes.find((b) => !b.checked).focus();
         return;
@@ -318,7 +337,7 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
       jobs = jobs.map((x) => (x.code === d.code ? d.undo : x));
       open = d.code;
       renderAll(); renderSig(false);
-      say(`${d.title} is back with you.`);
+      say(T('{title} is back with you.', { title: T(d.title) }));
       $(`[data-job="${d.code}"] .jb-h`).focus();
     }
   });
@@ -332,27 +351,31 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
     e.preventDefault();
     const li = f.closest('[data-job]'), j = jobs.find((x) => x.code === li.dataset.job);
     const text = $('[data-chg-text]', f).value.trim(), err = $('[data-chg-err]', f);
-    if (!text) { err.textContent = 'Write what should change, in a few words.'; err.hidden = false; $('[data-chg-text]', f).focus(); return; }
+    if (!text) { err.textContent = T('Write what should change, in a few words.'); err.hidden = false; $('[data-chg-text]', f).focus(); return; }
     j.draft.busy = true;
     $('.jb-panel', li).innerHTML = panel(j, stepOf(j));
     const ring = $('.dr-k .g', li);
     if (ring) ring.classList.add('running');
-    say('Watar is redrafting the quote.');
+    say(T('Watar is redrafting the quote.'));
     await new Promise((r) => setTimeout(r, reduce() ? 0 : M.beat * 2));
     j.draft.busy = false; j.draft.changed = text;
     $('.jb-panel', li).innerHTML = panel(j, stepOf(j));
-    say('Watar’s new draft is ready. It waits for your approval.');
+    say(T('Watar’s new draft is ready. It waits for your approval.'));
     $('[data-approve]', li).focus();
   });
 
   // ---------- start ----------
-  $$('[data-org-name]').forEach((el) => { el.textContent = own ? own.name : 'Sufra'; });
+  const org = own ? own.name : T('Sufra');
+  $$('[data-org-name]').forEach((el) => { el.textContent = org; });
   const blocks = own ? own.blocks : main.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) }));
-  Beats.sig($('[data-org-mark]'), blocks, { mode: 'mark', size: 32, name: own ? own.name : 'Sufra', label: `${own ? own.name : 'Sufra'}’s mark` });
-  $('[data-me-av]').textContent = (me.name || own.name).charAt(0);
-  $('[data-me-name]').textContent = me.name || 'You';
-  $('[data-me-role]').textContent = me.access === 'owner' ? 'Owner' : me.role || '';
-  document.title = `Today · ${own ? own.name : 'Sufra'}`;
+  Beats.sig($('[data-org-mark]'), blocks, { mode: 'mark', size: 32, name: own ? own.name : 'Sufra', label: T('{org}’s mark', { org }) });
+  $('[data-me-av]').textContent = (me.name ? T(me.name) : own.name).charAt(0);
+  // the name shown is translated; data-who keeps the data's English name, which the frame (app.js) reads
+  const meName = $('[data-me-name]');
+  meName.textContent = me.name ? T(me.name) : T('You');
+  meName.dataset.who = me.name || 'You';
+  $('[data-me-role]').textContent = me.access === 'owner' ? T('Owner') : me.role ? T(me.role) : '';
+  document.title = `${T('Today')} · ${org}`;
   if (own) jobs = [];
   renderAll();
   renderSig(false);

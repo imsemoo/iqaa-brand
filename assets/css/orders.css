@@ -38,6 +38,9 @@ main.or, main.od { background: #fff; }
 .om-st.on .om-name { color: var(--iqaa-ink); font-weight: 700; }
 @media (hover: hover) and (pointer: fine) { .om-st:hover .om-name { color: var(--iqaa-ink); text-decoration: underline; } }
 .om-st:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+/* right to left the station is placed from the right, so it centres on its point by moving the other way; the track
+   (svg.flow) is mirrored with it */
+[dir='rtl'] .om-st { transform: translateX(50%); }
 
 .or-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding-block: var(--s-6) var(--s-2); }
 .or-tabs { display: flex; gap: var(--s-1); }
@@ -75,6 +78,7 @@ main.or, main.od { background: #fff; }
 /* ---------- the order page ---------- */
 .od-back { padding-block-start: var(--s-6); font-size: 14px; }
 .od-back a::before { content: '← '; }
+[dir='rtl'] .od-back a::before { content: '→ '; }
 .od-back a { display: inline-block; padding-block: 13px; margin-block: -13px; }
 .od-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-4) var(--s-8); padding-block: var(--s-3) var(--s-6); }
 .od-t { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
@@ -110,13 +114,16 @@ main.or, main.od { background: #fff; }
 .os-n > span { color: var(--iqaa-n700); }
 .os-step.next .os-n b { font-weight: 400; color: var(--iqaa-n700); }
 .os-w { font-size: 13px; color: var(--iqaa-n700); white-space: nowrap; }
-.os-w time { font-family: 'Fragment Mono', monospace; font-size: 12px; }
+/* times in the mono face; a date's Arabic or Turkish letters fall through to the text face */
+.os-w time { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 12px; }
 .os-step.now { background: var(--iqaa-n50); border-radius: 8px; padding-inline: var(--s-2); margin-inline: calc(-1 * var(--s-2)); }
 .os-step.now .os-w b { color: var(--iqaa-ink); }
 /* a finished checklist is locked: ticks, not boxes */
 .od-check { list-style: none; margin: var(--s-1) 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .od-check li { position: relative; padding-inline-start: 20px; font-size: 13px; color: var(--iqaa-n700); }
 .od-check li::before { content: ''; position: absolute; inset-inline-start: 2px; inset-block-start: 5px; width: 9px; height: 5px; border-inline-start: 2px solid var(--iqaa-ink); border-block-end: 2px solid var(--iqaa-ink); transform: rotate(-45deg); }
+/* the tick is a glyph, not a direction: right to left its corner (drawn from the inline start) is turned back */
+[dir='rtl'] .od-check li::before { transform: rotate(-45deg) scaleX(-1); }
 .od-side { display: flex; flex-direction: column; gap: var(--s-4); position: sticky; inset-block-start: var(--s-4); }
 .od-card { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-5, 20px); border-radius: 16px; background: var(--iqaa-n50); align-items: flex-start; }
 .od-now { display: flex; gap: var(--s-2); font-size: 14px; line-height: 20px; }
@@ -130,7 +137,7 @@ main.or, main.od { background: #fff; }
 .od-meta { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 /* what the client asked for, or how late the delivery arrived: said under the step it belongs to */
 .od-asked { margin-block-start: var(--s-1); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
-.od-asked time { font-family: 'Fragment Mono', monospace; font-size: 12px; }
+.od-asked time { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 12px; }
 .od-all { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; font-size: 14px; font-weight: 700; color: var(--iqaa-ink); text-underline-offset: 0.18em; }
 .od-all svg { flex: none; color: var(--iqaa-n600); }
 .od-all:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; border-radius: 6px; }
@@ -139,7 +146,9 @@ main.or, main.od { background: #fff; }
   .od-side { position: static; }
   .od-journey { grid-template-columns: minmax(0, 1fr); }
 }
-@media (max-width: 700px) { .or-head h1, .od-head h1 { font-size: var(--t-lg); line-height: var(--lh-lg); } .os-w { white-space: normal; text-align: end; } }
+/* on a phone the time column wraps before it squeezes the step's name: a long date ('الأربعاء 28 أكتوبر، 13:15')
+   would otherwise take the row's width at its full length */
+@media (max-width: 700px) { .or-head h1, .od-head h1 { font-size: var(--t-lg); line-height: var(--lh-lg); } .os-w { white-space: normal; text-align: end; max-width: 9rem; } }
 
 /* ---------- Overview: the owner's page. Grey ground, white panels, numbers first ---------- */
 main.ov { background: var(--iqaa-n50); }
@@ -200,7 +209,8 @@ main.ov { background: var(--iqaa-n50); }
 .tm-list.wide .tm, .tm-list.wide .tm-axis { grid-template-columns: 172px minmax(0, 1fr); column-gap: var(--s-4); align-items: center; }
 .tm-axis { padding-block: 0; }
 .tm-list:not(.wide) .tm-axis > span:first-child { display: none; }
-.tm-axis text { font-family: 'Fragment Mono', monospace; font-size: 10px; fill: var(--iqaa-n500); }
+/* hours in the mono face; a word in Arabic letters falls through to the text face (Atkinson's name carries them) */
+.tm-axis text { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 10px; fill: var(--iqaa-n500); }
 .tm-axis text.nw { fill: var(--iqaa-ink); }
 .tm { border-radius: 12px; color: inherit; text-decoration: none; }
 .tm-list li + li + li .tm { border-block-start: 1px solid var(--iqaa-n100); border-radius: 0; }

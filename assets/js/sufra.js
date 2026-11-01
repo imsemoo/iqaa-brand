@@ -180,8 +180,39 @@
     'samer-haddad': { name: 'Samer Haddad', private: true, by: 'Email', phone: '[PHONE]', email: 'samer.haddad@example.com', address: '[ADDRESS]' },
   };
   // every order knows its client: 'Nakhla Co.' -> 'nakhla-co'; a private order by its person ('Lina Saleh' -> 'lina-saleh')
-  const keyOf = (j) => (j.of === 'a private order' ? j.client : j.of).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  // (letters of any script, so a client named in Arabic gets a key too)
+  const keyOf = (j) => (j.of === 'a private order' ? j.client : j.of).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '');
   jobs.concat(past).forEach((j) => { j.ck = keyOf(j); });
+
+  // What reached Sufra this morning and is not on the line yet: emails to orders@sufra.example and its order form on
+  // sufra.iqaa.app/order. Watar reads each one into a draft order (inbox.js) and shows the words it read every field
+  // from; a field it could not read is null. A person creates the order, or sets the message aside.
+  const inbox = [
+    { id: 'm1', by: 'Email', from: 'Dr Nadia', address: 'nadia@alshifa.example', ck: 'al-shifa-clinic', at: '2026-11-01T08:47',
+      subject: 'Lunch on Thursday the 12th',
+      text: 'Hi Sufra, can we have the clinic lunch again on Thursday the 12th at 13:00? We will be 24 this time, two of us vegetarian. Same address as always. Thanks, Nadia',
+      read: { title: ['Clinic team lunch', 'the clinic lunch again'], date: ['2026-11-12', 'Thursday the 12th'], time: ['13:00', 'at 13:00'],
+        people: [24, 'We will be 24'], where: ['[ADDRESS], Ramallah', 'Same address as always'], note: ['Two vegetarian guests', 'two of us vegetarian'] },
+      like: 'SFR-26-0025' },
+    { id: 'm2', by: 'Form', from: 'Tamer Saad', address: 'tamer.saad@example.com', ck: null, at: '2026-11-01T09:12',
+      subject: 'Order form',
+      text: 'Graduation party for my daughter. Around 40 people, Saturday the 14th in the evening, at our home in Al-Bireh. Mansaf if you can.',
+      read: { title: ['Graduation party', 'Graduation party for my daughter'], date: ['2026-11-14', 'Saturday the 14th'], time: [null, 'in the evening'],
+        people: [40, 'Around 40 people'], where: ['[ADDRESS], Al-Bireh', 'our home in Al-Bireh'], note: ['Mansaf if possible', 'Mansaf if you can'] },
+      menu: ['Mansaf with rice and almonds', 'Three salads', 'Fruit', 'Coffee and tea'] },
+    { id: 'm3', by: 'Email', from: 'Rami', address: 'rami@wadi.example', ck: 'wadi-partners', at: '2026-11-01T09:30',
+      subject: 'October invoice',
+      text: 'Hello, could you also send the invoice for the October board breakfast to accounts@wadi.example? Thank you, Rami',
+      read: null, about: 'SFR-26-0015' },
+  ];
+
+  // Orders made from the inbox, kept for the visit in sessionStorage 'iqaa-intake' (inbox.js writes it): each joins the
+  // line as Reem logs it, the receipt goes out and Watar drafts its quote, so every screen shows it; a new client joins
+  // Clients. `handled` says what happened to each message.
+  let intake = { handled: {}, jobs: [], clients: {} };
+  try { intake = Object.assign(intake, JSON.parse(sessionStorage.getItem('iqaa-intake') || '{}') || {}); } catch (e) { /* storage blocked: nothing made */ }
+  Object.assign(clients, intake.clients);
+  intake.jobs.forEach((j) => { j.ck = keyOf(j); jobs.push(j); });
 
   // what each person finished this morning, before the screen opened, in order: Today and Overview draw each
   // person's entries in this order, and the shared clock pins each step (and the steps it set off) at its time
@@ -191,6 +222,8 @@
     { who: 'Reem', code: 'SFR-26-0035', title: 'Engagement lunch', step: 'Reem logs the order', time: '09:20', then: 'Iqaa is sending Lina a receipt', to: '', kinds: ['struck', 'run'] },
     { who: 'Salma', code: 'SFR-26-0027', title: 'Meetup coffee break', step: 'Salma prepares', time: '09:05', then: 'Iqaa sent Yara the arrival time', to: 'Deliver', kinds: ['struck', 'run'] },
   ];
+  // an order made from the inbox was logged when it was made
+  intake.jobs.forEach((j) => { if (j.logged) done.push(j.logged); });
 
   // asked to join and not joined yet; the link works for seven days from `sent` (Fri 30 Oct -> Fri 6 Nov)
   const invites = [
@@ -229,5 +262,5 @@
   // now: the demo's moment, once, for the clock every page shares (jobs.js views); version: the line's published
   // version, the one every job today walks; hours: Sufra's working day, over which the clock spreads unrecorded steps
   window.SUFRA = { day: 'Sunday 1 November', dayIso: '2026-11-01', now: '2026-11-01T09:41', version: 3, hours: { open: '08:00', close: '18:00' },
-    line, people, jobs, done, past, clients, invites, org, channels, messages, billing };
+    line, people, jobs, done, past, clients, invites, org, channels, messages, billing, inbox, intake };
 })();

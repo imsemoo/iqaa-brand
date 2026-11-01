@@ -199,7 +199,8 @@ ICONS = {
     'People': '<circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20c.7-3.6 3.3-5.5 6.5-5.5s5.8 1.9 6.5 5.5M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.9c2.2.7 3.6 2.4 4 5.1"/>',
     'Contact': '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="10.5" r="2"/><path d="M6 15.5c.5-1.4 1.6-2.1 3-2.1s2.5.7 3 2.1M14.5 10h3.5M14.5 13.5h3.5"/>',
     'Company': '<path d="M5 20.5v-15a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v15M16 9.5h1.5a2 2 0 0 1 2 2v9M3 20.5h18M8.5 7.5h4M8.5 11h4M8.5 14.5h4"/>',
-    'Language': '<path d="M3 18 7.5 6h1L13 18M4.7 14h6.6"/><circle cx="17.5" cy="15.25" r="2.75"/><path d="M20.25 12.5V18"/>',
+    'Inbox': '<path d="M3 13h4.5l1.5 2.5h6l1.5-2.5H21"/><path d="M6.2 5.5h11.6L21 13v4.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5V13z"/>',
+    'Language': '<path d="M2.5 16.5 6.6 5.5h.4l4.1 11M4 12.8h5.6"/><path d="M20.6 9.6c-.8-1-2.6-1.1-3.4-.1-.8.9-.3 2.2 1.2 2.6-2 .2-3.6 1.6-3.6 3.5 0 2.2 1.7 3.7 4 3.7 1 0 1.8-.2 2.4-.6"/>',
     'Preview': '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
     'Phone': '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18h3"/>',
     'Email': '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5l8.5 6 8.5-6"/>',
@@ -215,7 +216,7 @@ ICONS = {
     'Mark': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M7 15h1.8c2 0 3.6-1.6 3.6-3.6 0-1.6-1.2-2.4-2-2.4-1.2 0-1.8 1-1.6 2.4.4 2.4 2 3.6 4.8 3.6H17"/>',
 }
 GROUPS = [
-    ('Navigation', ['Overview', 'Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
+    ('Navigation', ['Overview', 'Today', 'Inbox', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
     ('Steps', ['Send', 'Wait', 'Remind', 'Condition', 'Create', 'Move job', 'Task', 'Webhook', 'HTTP']),
     ('Actions and states', ['Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late', 'Search', 'Switch', 'Sign out', 'History', 'Date', 'Done', 'Discard']),
     ('People and contact', ['People', 'Contact', 'Company', 'Phone', 'Email', 'Place', 'Link', 'Message']),

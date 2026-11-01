@@ -10,7 +10,9 @@
   // draft: a step that is not real yet (Watar's draft, a check that has not run), drawn with a dashed grey pen
   const svg = (kind, o) => IQ.glyph(kind, { pal: (o && o.pal) || 'light', test: !!(o && o.draft) });
   const beat = (kind, o) => `<span class="b" data-k="${kind}">${svg(kind, o)}</span>`;
-  const label = (blocks) => blocks.map((b) => `${b.name}: ${b.steps.map((k) => NAMES[k]).join(', ')}`).join('; ');
+  // in the page's language: the station names are the data's own, translated as they are shown
+  const T = window.T || ((s) => s);
+  const label = (blocks) => blocks.map((b) => T('{station}: {steps}', { station: T(b.name), steps: b.steps.map((k) => T(NAMES[k])).join(T(', ')) })).join(T('; '));
 
   // Render an organization's line into el: mode 'mark' signs it on a tile, mode 'line' writes it out with names.
   function sig(el, blocks, o) {
@@ -18,7 +20,7 @@
     const kinds = blocks.map((b) => b.steps);
     el.innerHTML = opt.mode === 'mark'
       ? IQ.avatar(kinds, { size: opt.size, label: opt.label || '', name: opt.name || '' })
-      : IQ.line(kinds, { k: opt.k, pal: opt.pal, names: opt.names ? blocks.map((b) => b.name) : null, me: opt.me, test: !!opt.draft, minLabel: 10 });
+      : IQ.line(kinds, { k: opt.k, pal: opt.pal, names: opt.names ? blocks.map((b) => T(b.name)) : null, me: opt.me, test: !!opt.draft, minLabel: 10 });
     if (opt.mode !== 'mark') { el.setAttribute('role', 'img'); el.setAttribute('aria-label', label(blocks)); }
   }
 

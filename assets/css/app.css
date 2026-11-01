@@ -188,3 +188,23 @@ html { scrollbar-width: thin; scrollbar-color: var(--iqaa-n300) transparent; }
 ::-webkit-scrollbar-thumb { background: var(--iqaa-n300); border: 3px solid transparent; border-radius: 10px; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background-color: var(--iqaa-n500); }
 ::-webkit-scrollbar-corner { background: transparent; }
+
+/* right to left: the fold arrow points at the sheet's edge, which is now on the left */
+[dir='rtl'] .ap-fold svg { transform: scaleX(-1); }
+[dir='rtl'] html.side-folded .ap-fold svg, html[dir='rtl'].side-folded .ap-fold svg { transform: none; }
+
+/* a phone: the language switch sits in the top bar as its icon alone, and its menu opens down from it */
+@media (max-width: 899px) {
+  .ap-foot .lang-b { width: 44px; height: 44px; padding: 0; justify-content: center; }
+  .ap-foot .lang-c, .ap-foot .lang-cv { display: none; }
+  .ap-foot .lang.up .lang-menu { inset-block-start: calc(100% + 6px); inset-block-end: auto; }
+}
+
+/* the language menu in the sidebar's foot: fixed above the foot and as wide as the sidebar, so it never runs off the
+   window and a short sidebar that scrolls can't clip it; with the sidebar folded it opens beside it, over the sheet */
+@media (min-width: 900px) {
+  .ap-foot .lang.up .lang-menu { position: fixed; inset-inline-start: var(--s-3); inset-inline-end: auto; inset-block-start: auto; inset-block-end: 64px; width: calc(248px - 2 * var(--s-3)); }
+  html.side-folded .ap-foot .lang.up .lang-menu { inset-inline-start: calc(72px - var(--s-1)); inset-block-end: var(--s-3); width: 240px; }
+  html.side-folded .ap-foot .lang-c, html.side-folded .ap-foot .lang-cv { display: none; }
+  html.side-folded .ap-foot .lang-b { width: 40px; height: 36px; padding: 0; justify-content: center; }
+}

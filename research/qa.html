@@ -6,11 +6,18 @@
 // left and scrolls back to the top, so a capture shows the state, not the last programmatic focus.
 const q = new URLSearchParams(location.search), f = document.getElementById('f');
 f.style.width = q.get('w') + 'px'; f.style.height = q.get('h') + 'px';
+// &side=folded starts the app's sidebar folded; &click=a,b presses those elements (CSS selectors) after the page has
+// settled, so a capture can show a menu or a dropdown open
+try { if (q.get('side')) localStorage.setItem('iqaa-side', q.get('side')); else localStorage.removeItem('iqaa-side'); } catch (e) { /* storage blocked */ }
 f.onload = () => setTimeout(() => {
   const d = f.contentDocument;
   d.head.insertAdjacentHTML('beforeend', '<style>*,*::before,*::after{transition:none!important}</style>');
   f.contentWindow.dispatchEvent(new Event('resize'));
-  setTimeout(() => { if (d.activeElement) d.activeElement.blur(); f.contentWindow.scrollTo(0, 0); }, 1200);
+  setTimeout(() => {
+    if (d.activeElement) d.activeElement.blur();
+    f.contentWindow.scrollTo(0, 0);
+    (q.get('click') || '').split(',').filter(Boolean).forEach((sel, i) => setTimeout(() => { const el = d.querySelector(sel); if (el) el.dispatchEvent(new f.contentWindow.MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 })); }, 150 * (i + 1)));
+  }, 1200);
 }, 300);
 f.src = '../' + q.get('src');
 </script>

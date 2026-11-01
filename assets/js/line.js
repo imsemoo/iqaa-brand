@@ -10,12 +10,30 @@
   const esc = Beats.esc;
   const vertical = matchMedia('(max-width: 1023px)');
   const clone = (o) => JSON.parse(JSON.stringify(o));
+  const N = I18N.n;
+  // Names the app wrote are English data, shown in the page's language; a name someone typed is shown as it is.
+  // Build writes a few names with a number or a person in them, so those are read by their pattern.
+  const MADE = [
+    [/^Over (\d+) people\?$/, (m) => N(+m[1], 'Over {n} people?', 'Over {n} people?')],
+    [/^(.+) \(copy\)$/, (m) => T('{name} (copy)', { name: say(m[1]) })],
+    [/^(.+)’s approval$/, (m) => T('{name}’s approval', { name: T(m[1]) })],
+    [/^(.+) approves the big order$/, (m) => T('{name} approves the big order', { name: T(m[1]) })],
+  ];
+  function say(name) {
+    const out = T(name);
+    if (out !== name || I18N.lang === 'en') return out;
+    for (const [re, f] of MADE) { const m = re.exec(name); if (m) return f(m); }
+    return name;
+  }
+  // the signature read aloud, in the words the grammar uses
+  const WORD = { run: 'runs by itself', held: 'waits for a person', struck: 'done by a person', rest: 'timed wait' };
+  const describe = (blocks) => blocks.map((b) => b.map((k) => T(WORD[k])).join(T(', '))).join(' | ');
 
   const KINDS = ['run', 'held', 'struck', 'rest'];
   const KIND_NAME = { run: 'runs by itself', held: 'waits for a person', struck: 'a person does it', rest: 'timed wait' };
   const PEOPLE = ['Reem', 'Salma', 'Yusuf', 'Hala', 'The client'];
   const WHO = { run: ['Send', 'Create', 'Remind', 'Move'], held: PEOPLE, struck: PEOPLE, rest: ['An hour', 'A day', 'Two days', 'Three days', 'A week'] };
-  const WHO_LABEL = { run: 'What it does', held: 'Who', struck: 'Who', rest: 'How long' };
+  const WHO_LABEL = { run: 'what it does', held: 'who', struck: 'who', rest: 'how long' };
   const DEFAULT_NAME = { run: 'Send an update', held: 'Approval', struck: 'Task for a person', rest: 'Wait' };
   const DEFAULT_WHO = { run: 'Send', held: 'Hala', struck: 'Hala', rest: 'A day' };
   // geometry, in px: station spacing comes from CSS (--col); lanes for branches and ways back sit under the line
@@ -78,7 +96,9 @@
   if (wq && org.demo) {
     const st = line.stations.find((s) => s.id === wq[1]), x = st && st.steps.find((y) => y.kind === 'rest');
     if (x && WHO.rest.includes(wq[2]) && x.who !== wq[2]) {
-      fromWatar = `Watar’s change is in the draft: ${st.name} waits ${wq[2].toLowerCase()} instead of ${x.who.toLowerCase()}. Publish it, or discard the draft.`;
+      // the length stays English in the address and the data; only the sentence is in the page's language
+      fromWatar = T('Watar’s change is in the draft: {station} waits {now} instead of {before}. Publish it, or discard the draft.',
+        { station: say(st.name), now: T(wq[2].toLowerCase()), before: T(x.who.toLowerCase()) });
       x.who = wq[2]; x.name = `Wait ${wq[2].toLowerCase()}`; sel = st.id;
     }
   }
@@ -103,8 +123,8 @@
   const capacity = (r) => Math.max(1, mainIdx(r.to) - mainIdx(r.from) - 1);
 
   function routeShort(r) {
-    if (r.type === 'back') return `Way back to ${esc(nameOf(r.to))}`;
-    return `Over ${r.over} people: ${esc(r.stations.map((s) => s.name).join(', '))}`;
+    if (r.type === 'back') return T('Way back to {name}', { name: esc(say(nameOf(r.to))) });
+    return N(r.over, 'Over {n} people: {names}', 'Over {n} people: {names}', { names: esc(r.stations.map((s) => say(s.name)).join(T(', '))) });
   }
 
   // ---------- the page head: version, signature, actions ----------
@@ -112,22 +132,22 @@
   function renderHead() {
     const d = dirty();
     const state = d
-      ? `<b>Draft of version ${version + 1}</b> · not published yet. <button class="link" type="button" data-discard>Discard the draft</button>`
-      : `<b>Version ${version}</b> · published. Every new job walks it.`;
+      ? T('{draft} · not published yet. {discard}', { draft: `<b>${T('Draft of version {n}', { n: version + 1 })}</b>`, discard: `<button class="link" type="button" data-discard>${T('Discard the draft')}</button>` })
+      : T('{version} · published. Every new job walks it.', { version: `<b>${T('Version {n}', { n: version })}</b>` });
     // the state is a live region: it changes only when the state does, never on every keystroke
     if (state !== stateNow) { $('[data-state]').innerHTML = state; stateNow = state; }
     const pub = $('[data-publish-open]');
-    pub.textContent = `Publish version ${version + 1}`;
+    pub.textContent = T('Publish version {n}', { n: version + 1 });
     pub.disabled = !d || !!test;
     $('[data-test-open]').disabled = !!test;
     const changed = JSON.stringify(kinds(line)) !== JSON.stringify(kinds(published));
-    $('[data-sig-cap]').textContent = changed ? `Signature of version ${version}. Publishing the draft changes it.` : `Signature of version ${version}`;
+    $('[data-sig-cap]').textContent = changed ? T('Signature of version {n}. Publishing the draft changes it.', { n: version }) : T('Signature of version {n}', { n: version });
   }
   function renderSig() {
     const el = $('[data-head-sig]');
     el.innerHTML = IQ.line(kinds(published), { k: 0.75 });
     el.setAttribute('role', 'img');
-    el.setAttribute('aria-label', `Signature of version ${version}: ${IQ.describe(kinds(published))}`);
+    el.setAttribute('aria-label', T('Signature of version {n}: {steps}', { n: version, steps: describe(kinds(published)) }));
   }
 
   // ---------- the map ----------
@@ -137,14 +157,14 @@
 
   function stationLi(s, o) {
     const people = s.steps.filter((x) => isPerson(x.kind)).length;
-    const meta = `${s.steps.length} ${s.steps.length === 1 ? 'step' : 'steps'}${people ? ` · ${people} by people` : ''}`;
-    const where = o.route ? `On the branch for orders over ${o.route.over} people` : `Station ${o.i + 1} of ${o.n}`;
+    const meta = `${N(s.steps.length, '{n} step', '{n} steps')}${people ? ` · ${N(people, '{n} by people', '{n} by people')}` : ''}`;
+    const where = o.route ? N(o.route.over, 'On the branch for orders over {n} people', 'On the branch for orders over {n} people') : T('Station {i} of {n}', { i: o.i + 1, n: o.n });
     const rts = o.route ? '' : routesFrom(s.id).map((r) => `<span class="st-rt">${routeShort(r)}</span>`).join('');
     const on = s.id === sel;
     return `<li class="st${o.route ? ' br' : ''}${on ? ' on' : ''}" data-st="${s.id}"${o.route ? ` data-route="${o.route.id}"` : ''}>
-<button type="button" class="st-btn" data-pick="${s.id}" aria-expanded="${on}" aria-controls="detail" aria-label="${esc(s.name)}. ${where}. ${meta}.">
+<button type="button" class="st-btn" data-pick="${s.id}" aria-expanded="${on}" aria-controls="detail" aria-label="${esc(say(s.name))}. ${where}. ${meta}.">
 <span class="st-dot" data-dot="${s.id}" aria-hidden="true"></span>
-<span class="st-t" aria-hidden="true"><b>${esc(s.name)}</b><span class="st-sig">${IQ.line([s.steps.map((x) => x.kind)], { k: 0.5 })}</span><span class="st-m">${meta}</span>${rts}</span>
+<span class="st-t" aria-hidden="true"><b>${esc(say(s.name))}</b><span class="st-sig">${IQ.line([s.steps.map((x) => x.kind)], { k: 0.5 })}</span><span class="st-m">${meta}</span>${rts}</span>
 </button></li>`;
   }
 
@@ -157,7 +177,7 @@
       items.push(stationLi(s, { i, n }));
       routesFrom(s.id).filter((r) => r.type === 'branch').forEach((r) => r.stations.forEach((b) => items.push(stationLi(b, { route: r }))));
     });
-    items.push('<li class="st-add"><button class="btn small" type="button" data-add-end>Add a station</button></li>');
+    items.push(`<li class="st-add"><button class="btn small" type="button" data-add-end>${T('Add a station')}</button></li>`);
     $('[data-stations]').innerHTML = items.join('');
     placeDetail();
     if (active && active.isConnected) active.focus({ preventScroll: true });
@@ -298,54 +318,65 @@
   const requestDraw = () => { if (!drawQueued) { drawQueued = true; setTimeout(() => { drawQueued = false; draw(); }, 0); } };
 
   // ---------- the selected station ----------
+  // a step's who or what: the option's value stays the English the line compares, its label is the page's language
+  const whoOptions = (x) => WHO[x.kind].map((w) => `<option value="${esc(w)}"${w === x.who ? ' selected' : ''}>${esc(T(w))}</option>`).join('');
+  const kindLabel = (x, k) => T('Step {n}: {kind}. Press to change the kind.', { n: k + 1, kind: T(KIND_NAME[x.kind]) });
+  const whoLabel = (x, k) => T('Step {n}, {what}', { n: k + 1, what: T(WHO_LABEL[x.kind]) });
   function stepRow(x, k, n) {
-    const opts = WHO[x.kind].map((w) => `<option${w === x.who ? ' selected' : ''}>${w}</option>`).join('');
     return `<li class="step-row" data-step="${x.id}">
-<button type="button" class="lbeat" data-kind="${x.id}" aria-label="Step ${k + 1}: ${KIND_NAME[x.kind]}. Press to change the kind.">${Beats.beat(x.kind)}</button>
-<label class="sr" for="n-${x.id}">Step ${k + 1}, name</label><textarea class="sn sn-t" id="n-${x.id}" data-sname="${x.id}" rows="1" maxlength="48" spellcheck="false">${esc(x.name)}</textarea>
-<label class="sr" for="w-${x.id}">Step ${k + 1}, ${WHO_LABEL[x.kind].toLowerCase()}</label><select class="sw" id="w-${x.id}" data-swho="${x.id}">${opts}</select>
-<button type="button" class="ic-x" data-sdel="${x.id}" aria-label="Remove step ${k + 1}"${n <= 1 ? ' disabled' : ''}>${X_ICON}</button>
+<button type="button" class="lbeat" data-kind="${x.id}" aria-label="${kindLabel(x, k)}">${Beats.beat(x.kind)}</button>
+<label class="sr" for="n-${x.id}">${T('Step {n}, name', { n: k + 1 })}</label><textarea class="sn sn-t" id="n-${x.id}" data-sname="${x.id}" rows="1" maxlength="48" spellcheck="false">${esc(say(x.name))}</textarea>
+<label class="sr" for="w-${x.id}">${whoLabel(x, k)}</label><select class="sw" id="w-${x.id}" data-swho="${x.id}">${whoOptions(x)}</select>
+<button type="button" class="ic-x" data-sdel="${x.id}" aria-label="${T('Remove step {n}', { n: k + 1 })}"${n <= 1 ? ' disabled' : ''}>${X_ICON}</button>
 </li>`;
   }
 
   function flowText(f) {
-    if (f.route) return `Orders over ${f.route.over} people come here from ${esc(nameOf(f.route.from))} and rejoin the line at ${esc(nameOf(f.route.to))}.`;
+    const at = (i) => esc(say(line.stations[i].name));
+    if (f.route) {
+      return N(f.route.over, 'Orders over {n} people come here from {from} and rejoin the line at {to}.', 'Orders over {n} people come here from {from} and rejoin the line at {to}.',
+        { from: esc(say(nameOf(f.route.from))), to: esc(say(nameOf(f.route.to))) });
+    }
     const n = line.stations.length;
-    if (n === 1) return 'Every job starts and ends here.';
-    if (f.i === 0) return `Every job starts here and leaves for ${esc(line.stations[1].name)}.`;
-    if (f.i === n - 1) return `Jobs arrive from ${esc(line.stations[f.i - 1].name)}. The job is done here.`;
-    return `Jobs arrive from ${esc(line.stations[f.i - 1].name)} and leave for ${esc(line.stations[f.i + 1].name)}.`;
+    if (n === 1) return T('Every job starts and ends here.');
+    if (f.i === 0) return T('Every job starts here and leaves for {next}.', { next: at(1) });
+    if (f.i === n - 1) return T('Jobs arrive from {prev}. The job is done here.', { prev: at(f.i - 1) });
+    return T('Jobs arrive from {prev} and leave for {next}.', { prev: at(f.i - 1), next: at(f.i + 1) });
   }
 
   const trackIcon = (type) => (type === 'back'
     ? '<svg viewBox="0 0 40 20" aria-hidden="true"><path d="M34 3v7a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6V3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     : type === 'branch'
-      ? '<svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 4h10l12 12h14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      ? '<svg class="flow" viewBox="0 0 40 20" aria-hidden="true"><path d="M2 4h10l12 12h14" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
       : '<svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 10h36" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>');
 
   function routeRows(f) {
     if (f.route) {
       const r = f.route;
-      return `<li class="rt">${trackIcon('branch')}<span>Rejoins the line at <b>${esc(nameOf(r.to))}</b>. Change where on ${esc(nameOf(r.from))}.</span></li>`;
+      return `<li class="rt">${trackIcon('branch')}<span>${T('Rejoins the line at {to}. Change where on {from}.', { to: `<b>${esc(say(nameOf(r.to)))}</b>`, from: esc(say(nameOf(r.from))) })}</span></li>`;
     }
     const n = line.stations.length, rows = [];
     rows.push(f.i < n - 1
-      ? `<li class="rt">${trackIcon('next')}<span>Next: <b>${esc(line.stations[f.i + 1].name)}</b></span></li>`
-      : `<li class="rt">${trackIcon('next')}<span>End of the line: the job is done.</span></li>`);
+      ? `<li class="rt">${trackIcon('next')}<span>${T('Next: {name}', { name: `<b>${esc(say(line.stations[f.i + 1].name))}</b>` })}</span></li>`
+      : `<li class="rt">${trackIcon('next')}<span>${T('End of the line: the job is done.')}</span></li>`);
+    // the stations are the options' values; their names are what the list shows
+    const option = (s, to) => `<option value="${s.id}"${s.id === to ? ' selected' : ''}>${esc(say(s.name))}</option>`;
+    // the number of people sits inside the sentence; a language that needs no word after it leaves it out
+    const unit = T('people');
     routesFrom(f.st.id).forEach((r) => {
       if (r.type === 'back') {
-        const opts = line.stations.slice(0, f.i).map((s) => `<option value="${s.id}"${s.id === r.to ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
+        const opts = line.stations.slice(0, f.i).map((s) => option(s, r.to)).join('');
         rows.push(`<li class="rt edit">${trackIcon('back')}<div class="rt-f">
-<p class="rt-l"><label for="bt-${r.id}">Way back to</label> <select class="sw" id="bt-${r.id}" data-back-to="${r.id}">${opts}</select></p>
-<p class="rt-l"><label for="bw-${r.id}">when</label> <input class="sn" id="bw-${r.id}" data-back-when="${r.id}" value="${esc(r.when)}" maxlength="40" autocomplete="off"></p>
-</div><button type="button" class="ic-x" data-rdel="${r.id}" aria-label="Remove the way back to ${esc(nameOf(r.to))}">${X_ICON}</button></li>`);
+<p class="rt-l"><label for="bt-${r.id}">${T('Way back to')}</label> <select class="sw" id="bt-${r.id}" data-back-to="${r.id}">${opts}</select></p>
+<p class="rt-l"><label for="bw-${r.id}">${T('when')}</label> <input class="sn" id="bw-${r.id}" data-back-when="${r.id}" value="${esc(say(r.when))}" maxlength="40" autocomplete="off"></p>
+</div><button type="button" class="ic-x" data-rdel="${r.id}" aria-label="${T('Remove the way back to {name}', { name: esc(say(nameOf(r.to))) })}">${X_ICON}</button></li>`);
       } else {
-        const opts = line.stations.slice(f.i + 1).map((s) => `<option value="${s.id}"${s.id === r.to ? ' selected' : ''}>${esc(s.name)}</option>`).join('');
+        const opts = line.stations.slice(f.i + 1).map((s) => option(s, r.to)).join('');
         rows.push(`<li class="rt edit">${trackIcon('branch')}<div class="rt-f">
-<p class="rt-l"><label for="bo-${r.id}">Orders over</label> <input class="sn num" id="bo-${r.id}" type="number" inputmode="numeric" min="1" max="999" data-over="${r.id}" value="${r.over}"> <span>people</span></p>
-<p class="rt-l">take the branch to <b>${esc(r.stations.map((s) => s.name).join(', '))}</b></p>
-<p class="rt-l"><label for="bj-${r.id}">and rejoin at</label> <select class="sw" id="bj-${r.id}" data-branch-to="${r.id}">${opts}</select></p>
-</div><button type="button" class="ic-x" data-rdel="${r.id}" aria-label="Remove the branch">${X_ICON}</button></li>`);
+<p class="rt-l"><label for="bo-${r.id}">${T('Orders over')}</label> <input class="sn num" id="bo-${r.id}" type="number" inputmode="numeric" min="1" max="999" data-over="${r.id}" value="${r.over}">${unit ? ` <span>${unit}</span>` : ''}</p>
+<p class="rt-l"><span>${T('take the branch to {names}', { names: `<b>${esc(r.stations.map((s) => say(s.name)).join(T(', ')))}</b>` })}</span></p>
+<p class="rt-l"><label for="bj-${r.id}">${T('and rejoin at')}</label> <select class="sw" id="bj-${r.id}" data-branch-to="${r.id}">${opts}</select></p>
+</div><button type="button" class="ic-x" data-rdel="${r.id}" aria-label="${T('Remove the branch')}">${X_ICON}</button></li>`);
       }
     });
     return rows.join('');
@@ -355,8 +386,8 @@
     if (f.route) return '';
     const n = line.stations.length, has = (t) => routesFrom(f.st.id).some((r) => r.type === t);
     const b = [];
-    if (f.i > 0 && !has('back')) b.push('<button class="btn small" type="button" data-add-back>Add a way back</button>');
-    if (f.i < n - 1 && !has('branch')) b.push('<button class="btn small" type="button" data-add-branch>Add a branch</button>');
+    if (f.i > 0 && !has('back')) b.push(`<button class="btn small" type="button" data-add-back>${T('Add a way back')}</button>`);
+    if (f.i < n - 1 && !has('branch')) b.push(`<button class="btn small" type="button" data-add-branch>${T('Add a branch')}</button>`);
     return b.length ? `<div class="rt-add">${b.join('')}</div>` : '';
   }
 
@@ -366,22 +397,22 @@
     const s = f.st, n = f.route ? f.route.stations.length : line.stations.length;
     const canRemove = f.route || line.stations.length > 1;
     const addHere = f.route
-      ? (n < capacity(f.route) ? '<button class="btn small" type="button" data-add-bst>Add a station to this branch</button>' : '')
-      : '<button class="btn small" type="button" data-add-after>Add a station after</button>';
+      ? (n < capacity(f.route) ? `<button class="btn small" type="button" data-add-bst>${T('Add a station to this branch')}</button>` : '')
+      : `<button class="btn small" type="button" data-add-after>${T('Add a station after')}</button>`;
     detail.id = 'detail';
     detail.innerHTML = `<div class="dt-head">
-<div class="field"><label for="dt-name">${f.route ? 'Station on a branch' : `Station ${f.i + 1} of ${n}`}</label><input id="dt-name" data-name value="${esc(s.name)}" maxlength="32" autocomplete="off" spellcheck="false"></div>
+<div class="field"><label for="dt-name">${f.route ? T('Station on a branch') : T('Station {i} of {n}', { i: f.i + 1, n })}</label><input id="dt-name" data-name value="${esc(say(s.name))}" maxlength="32" autocomplete="off" spellcheck="false"></div>
 <p class="dt-flow">${flowText(f)}</p>
-<div class="dt-act">${addHere}<button class="btn small quiet" type="button" data-remove${canRemove ? '' : ' disabled'}>Remove this station</button></div>
+<div class="dt-act">${addHere}<button class="btn small quiet" type="button" data-remove${canRemove ? '' : ' disabled'}>${T('Remove this station')}</button></div>
 </div>
 <div class="dt-steps">
-<h3>Steps <span>in the order they happen</span></h3>
-<p class="st-cols" aria-hidden="true"><span>Kind</span><span>Step</span><span>Who or what</span></p>
+<h3>${T('Steps')} <span>${T('in the order they happen')}</span></h3>
+<p class="st-cols" aria-hidden="true"><span>${T('Kind')}</span><span>${T('Step')}</span><span>${T('Who or what')}</span></p>
 <ol class="steps" data-steps>${s.steps.map((x, k) => stepRow(x, k, s.steps.length)).join('')}</ol>
-<button class="btn small" type="button" data-add-step>Add a step</button>
+<button class="btn small" type="button" data-add-step>${T('Add a step')}</button>
 </div>
 <div class="dt-routes">
-<h3>Where jobs go next</h3>
+<h3>${T('Where jobs go next')}</h3>
 <ul class="routes">${routeRows(f)}</ul>
 ${routeAdds(f)}
 </div>`;
@@ -460,7 +491,8 @@ ${routeAdds(f)}
       gone = before - line.routes.length;
     }
     renderMap(); renderDetail(true); placeDetail(); renderHead();
-    note(gone ? `${f.st.name} is removed, with the ${gone === 1 ? 'route' : 'routes'} that started or ended there.` : `${f.st.name} is removed.`, true);
+    const name = say(f.st.name);
+    note(gone ? N(gone, '{name} is removed, with the route that started or ended there.', '{name} is removed, with the routes that started or ended there.', { name }) : T('{name} is removed.', { name }), true);
     $(`[data-pick="${sel}"]`).focus();
   }
 
@@ -475,10 +507,12 @@ ${routeAdds(f)}
       if (!WHO[x.kind].includes(x.who)) x.who = DEFAULT_WHO[x.kind];
       const k = f.st.steps.indexOf(x);
       Beats.set(t.querySelector('.b'), x.kind);
-      t.setAttribute('aria-label', `Step ${k + 1}: ${KIND_NAME[x.kind]}. Press to change the kind.`);
+      t.setAttribute('aria-label', kindLabel(x, k));
       const sw = $(`[data-swho="${x.id}"]`);
-      sw.innerHTML = WHO[x.kind].map((w) => `<option${w === x.who ? ' selected' : ''}>${w}</option>`).join('');
-      $(`label[for="w-${x.id}"]`).textContent = `Step ${k + 1}, ${WHO_LABEL[x.kind].toLowerCase()}`;
+      sw.innerHTML = whoOptions(x);
+      // ui.js points the select's label at the dropdown's button once it draws it
+      const lab = $(`label[for="w-${x.id}"], label[for="w-${x.id}-dd"]`);
+      if (lab) lab.textContent = whoLabel(x, k);
       return changed({ label: sel });
     }
     if (d.sdel) {
@@ -529,7 +563,7 @@ ${routeAdds(f)}
       const r = line.routes.find((x) => x.id === d.rdel);
       line.routes = line.routes.filter((x) => x !== r);
       changed({ map: true, detail: true });
-      note(r.type === 'back' ? `The way back to ${nameOf(r.to)} is removed.` : 'The branch is removed.', true);
+      note(r.type === 'back' ? T('The way back to {name} is removed.', { name: say(nameOf(r.to)) }) : T('The branch is removed.'), true);
       return;
     }
     if (t.hasAttribute('data-discard')) {
@@ -537,7 +571,7 @@ ${routeAdds(f)}
       line = clone(published);
       if (!find(sel)) sel = line.stations[0].id;
       renderMap(); renderDetail(true); placeDetail(); renderHead();
-      note('The draft is discarded.', true);
+      note(T('The draft is discarded.'), true);
       $('[data-publish-open]').focus();
       return;
     }
@@ -572,20 +606,29 @@ ${routeAdds(f)}
   root.addEventListener('change', (e) => {
     const t = e.target, d = t.dataset;
     if (d.swho) { find(sel).st.steps.find((y) => y.id === d.swho).who = t.value; return renderHead(); }
-    if (d.backTo) { line.routes.find((r) => r.id === d.backTo).to = t.value; return changed({ map: true, detail: true }); }
+    if (d.backTo) { line.routes.find((r) => r.id === d.backTo).to = t.value; changed({ map: true, detail: true }); return refocus(t.id); }
     if (d.branchTo) {
       const r = line.routes.find((x) => x.id === d.branchTo);
       r.to = t.value;
       r.stations = r.stations.slice(0, Math.max(1, capacity(r)));
-      return changed({ map: true, detail: true });
+      changed({ map: true, detail: true });
+      return refocus(t.id);
     }
   });
 
+  // the detail was drawn again under the dropdown just used: the focus goes back to the new one's button
+  function refocus(id) {
+    const s = document.getElementById(id);
+    if (!s) return;
+    if (window.UI) UI.dropdown(s);
+    (document.getElementById(`${id}-dd`) || s).focus();
+  }
+
   // ---------- publishing ----------
   function openConfirm() {
-    $('[data-cf-t]').textContent = `Publish version ${version + 1}?`;
-    $('[data-cf-p]').textContent = `Jobs already on the line stay on version ${version}. New jobs walk version ${version + 1}.`;
-    $('[data-cf-yes]').textContent = `Publish version ${version + 1}`;
+    $('[data-cf-t]').textContent = T('Publish version {n}?', { n: version + 1 });
+    $('[data-cf-p]').textContent = T('Jobs already on the line stay on version {n}. New jobs walk version {next}.', { n: version, next: version + 1 });
+    $('[data-cf-yes]').textContent = T('Publish version {n}', { n: version + 1 });
     $('[data-confirm]').hidden = false;
     $('[data-cf-yes]').focus();
   }
@@ -597,16 +640,16 @@ ${routeAdds(f)}
     renderSig();
     // the pen writes the new version's signature
     Beats.write($('[data-head-sig]'), { each: M.quarter, gap: M.eighth / 2 });
-    note(`Version ${version} is published. New jobs walk it from now on.`, false);
+    note(T('Version {n} is published. New jobs walk it from now on.', { n: version }), false);
     $('[data-publish-open]').focus();
   }
 
   // ---------- the test job: a grey job walks the map and sends nothing ----------
   const NOTE = {
     run: { Send: 'not sent: test', Create: 'made in the test only', Remind: 'no reminder sent: test', Move: 'moved in the test only' },
-    struck: (who) => `marked done for ${who}`,
-    held: (who) => (who === 'The client' ? 'test answer from the client: approved' : `approved for ${who} in the test`),
-    rest: (who) => `skipped; a real job waits ${who.toLowerCase()}`,
+    struck: (who) => T('marked done for {name}', { name: T(who) }),
+    held: (who) => (who === 'The client' ? T('test answer from the client: approved') : T('approved for {name} in the test', { name: T(who) })),
+    rest: (who) => T('skipped; a real job waits {time}', { time: T(who.toLowerCase()) }),
   };
 
   function plan(people, takeBack) {
@@ -620,13 +663,13 @@ ${routeAdds(f)}
       const br = routesFrom(s.id).find((r) => r.type === 'branch');
       if (back && takeBack && !taken.has(back.id)) {
         taken.add(back.id);
-        seq.push({ type: 'hop', route: back.id, k: 0, text: `${back.when || 'A change is asked for'}: back to ${nameOf(back.to)}`, icon: 'back' });
+        seq.push({ type: 'hop', route: back.id, k: 0, text: T('{when}: back to {name}', { when: say(back.when || 'A change is asked for'), name: say(nameOf(back.to)) }), icon: 'back' });
         s = find(back.to).st;
       } else if (br && people > br.over) {
-        seq.push({ type: 'hop', route: br.id, k: 0, text: `${people} people, over ${br.over}: the branch to ${br.stations[0].name}`, icon: 'branch' });
+        seq.push({ type: 'hop', route: br.id, k: 0, text: N(people, '{n} people, over {over}: the branch to {name}', '{n} people, over {over}: the branch to {name}', { over: br.over, name: say(br.stations[0].name) }), icon: 'branch' });
         br.stations.forEach((b, k) => {
           visit(b);
-          seq.push({ type: 'hop', route: br.id, k: k + 1, text: k + 1 < br.stations.length ? `On to ${br.stations[k + 1].name}` : `Back on the line at ${nameOf(br.to)}`, icon: 'branch', quiet: k + 1 < br.stations.length });
+          seq.push({ type: 'hop', route: br.id, k: k + 1, text: k + 1 < br.stations.length ? T('On to {name}', { name: say(br.stations[k + 1].name) }) : T('Back on the line at {name}', { name: say(nameOf(br.to)) }), icon: 'branch', quiet: k + 1 < br.stations.length });
         });
         s = find(br.to).st;
       } else if (i < line.stations.length - 1) {
@@ -647,7 +690,7 @@ ${routeAdds(f)}
     $('[data-test-set]').hidden = false;
     $('[data-test-log]').innerHTML = '';
     $('[data-test-end]').hidden = true;
-    $('[data-test-of]').textContent = dirty() ? `It walks the draft of version ${version + 1}. Nothing is sent to anyone.` : `It walks version ${version}. Nothing is sent to anyone.`;
+    $('[data-test-of]').textContent = dirty() ? T('It walks the draft of version {n}. Nothing is sent to anyone.', { n: version + 1 }) : T('It walks version {n}. Nothing is sent to anyone.', { n: version });
     $('[data-stations]').inert = true;
     renderHead();
     draw();
@@ -721,10 +764,11 @@ ${routeAdds(f)}
         const li = $(`[data-st="${ev.st.id}"]`);
         if (li) li.classList.add('here');
         const x = ev.x, who = x.who || '';
-        const n = x.kind === 'run' ? (NOTE.run[who] || 'done in the test') : NOTE[x.kind](who);
+        const n = x.kind === 'run' ? T(NOTE.run[who] || 'done in the test') : NOTE[x.kind](who);
         steps += 1; last = ev.st;
-        logItem(`<span class="tl-g">${IQ.glyph(x.kind, { test: true })}</span><span class="tl-t"><b>${esc(ev.st.name)}</b><span>${esc(x.name)}</span></span><span class="tl-n">${esc(n)}</span>`,
-          `${ev.st.name}: ${x.name}, ${n}`);
+        const stName = say(ev.st.name), stepName = say(x.name);
+        logItem(`<span class="tl-g">${IQ.glyph(x.kind, { test: true })}</span><span class="tl-t"><b>${esc(stName)}</b><span>${esc(stepName)}</span></span><span class="tl-n">${esc(n)}</span>`,
+          T('{station}: {step}, {note}', { station: stName, step: stepName, note: n }));
         await pause(M.quarter);
       } else {
         const d = ev.route ? (geo.hops[ev.route] || [])[ev.k] : `M${geo.main[ev.from].join(' ')}L${geo.main[ev.to].join(' ')}`;
@@ -738,7 +782,8 @@ ${routeAdds(f)}
     if (test !== run) return;
     $$('.st.here', root).forEach((li) => li.classList.remove('here'));
     $('[data-test-bar]').hidden = true;
-    $('[data-test-sum]').innerHTML = `The test job reached <b>${esc(last.name)}</b> after ${steps} steps. Nothing was sent, and nothing was saved to Sufra’s orders.`;
+    $('[data-test-sum]').innerHTML = N(steps, 'The test job reached {name} after {n} steps. Nothing was sent, and nothing was saved to Sufra’s orders.',
+      'The test job reached {name} after {n} steps. Nothing was sent, and nothing was saved to Sufra’s orders.', { name: `<b>${esc(say(last.name))}</b>` });
     $('[data-test-end]').hidden = false;
     $('[data-test-again]').focus({ preventScroll: true });
   }
@@ -746,9 +791,11 @@ ${routeAdds(f)}
   $('[data-test-set]').addEventListener('submit', (e) => { e.preventDefault(); startTest(); });
 
   // ---------- start ----------
-  $$('[data-org-name]').forEach((el) => { el.textContent = org.name; });
-  Beats.sig($('[data-org-mark]'), line.stations.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) })), { mode: 'mark', size: 32, name: org.name, label: `${org.name}’s mark` });
-  document.title = `Line · ${org.name}`;
+  // the demo's name is translated like the rest of its data; an organization made at sign-up keeps the name it was given
+  const orgName = T(org.name);
+  $$('[data-org-name]').forEach((el) => { el.textContent = orgName; });
+  Beats.sig($('[data-org-mark]'), line.stations.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) })), { mode: 'mark', size: 32, name: org.name, label: T('{org}’s mark', { org: orgName }) });
+  document.title = T('Line · {org}', { org: orgName });
   renderHead();
   renderSig();
   renderMap();

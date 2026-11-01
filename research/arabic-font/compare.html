@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Arabic partner for Atkinson: compare</title>
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&family=Alexandria:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Vazirmatn:wght@400;600;700&family=Rubik:wght@400;600;700&family=Tajawal:wght@400;700&display=block">
+<style>
+  body { margin: 0; padding: 32px; background: #fff; color: #19172E; font-family: 'Atkinson Hyperlegible Next', sans-serif; }
+  .row { display: grid; grid-template-columns: 170px 1fr 300px; gap: 24px; align-items: start; padding: 20px 0; border-block-end: 1px solid #E5E3EE; }
+  .name { font: 700 14px/20px 'Atkinson Hyperlegible Next', sans-serif; direction: ltr; text-align: left; }
+  .name small { display: block; font-weight: 400; color: #4F4D63; }
+  .ar h1 { margin: 0; font-size: 25px; line-height: 40px; font-weight: 600; }
+  .ar p { margin: 4px 0 0; font-size: 16px; line-height: 28px; }
+  .ar .lab { font-size: 13px; line-height: 22px; color: #4F4D63; }
+  .ar .nav { font-size: 15px; line-height: 24px; }
+  .ar .btn { display: inline-block; margin-block-start: 8px; padding: 8px 16px; border-radius: 10px; background: #8845F8; color: #fff; font-size: 16px; font-weight: 600; }
+  .mono { font-family: 'Fragment Mono', monospace; font-size: 0.875em; }
+  .lat { direction: ltr; text-align: left; font-size: 16px; line-height: 24px; }
+  .lat b { font-size: 25px; line-height: 32px; font-weight: 600; display: block; }
+  .m { direction: ltr; font: 12px/18px 'Fragment Mono', monospace; color: #4F4D63; margin-block-start: 6px; }
+</style>
+</head>
+<body>
+<div id="rows"></div>
+<script>
+const FONTS = [['Readex Pro', 'Lexend’s reading research, variable 160–700'], ['Alexandria', 'geometric, display-leaning'], ['Noto Sans Arabic', 'neutral, wide coverage'],
+  ['Vazirmatn', 'Persian/Arabic UI sans'], ['Rubik', 'rounded corners'], ['Tajawal', 'light, compact']];
+const H = 'مرحبا يا عمر. عرض سعر غداء المكتب جاهز.';
+const P = 'أرسلته سفرة اليوم الساعة <span class="mono">08:52</span>. وافق عليه أو اطلب تعديل.';
+const MIX = 'الطلب <span class="mono">SFR-26-0030</span> · الاثنين 2 نوفمبر، <span class="mono">12:30</span> · 18 شخص';
+const NAV = 'نظرة عامة · اليوم · الخط · الطلبات · العملاء · اسأل وتر · الإعدادات';
+const LAB = 'بانتظار ردك · سفرة تجهز الطلب · التسليم غدا قبل 12:30';
+document.getElementById('rows').innerHTML = FONTS.map(([f, why]) => `<div class="row">
+<div class="name">${f}<small>${why}</small><div class="m" data-m="${f}"></div></div>
+<div class="ar" style="font-family:'${f}', 'Atkinson Hyperlegible Next', sans-serif"><h1>${H}</h1><p>${P}</p><p>${MIX}</p><p class="nav">${NAV}</p><p class="lab">${LAB}</p><span class="btn">وافق على العرض</span></div>
+<div class="lat"><b>Hi Omar. Your quote is ready.</b>Sufra sent it today at <span class="mono">08:52</span>. Approve it, or ask for a change.</div>
+</div>`).join('');
+// measured beside Atkinson at 16 px: the Arabic body's visible height against Latin x-height, and the width of one sentence
+document.fonts.ready.then(() => {
+  const c = document.createElement('canvas').getContext('2d');
+  c.font = '400 16px "Atkinson Hyperlegible Next"';
+  const x = c.measureText('x').actualBoundingBoxAscent;
+  FONTS.forEach(([f]) => {
+    c.font = `400 16px "${f}"`;
+    const body = c.measureText('سمعو').actualBoundingBoxAscent;      // letters without ascenders: the Arabic 'x-height'
+    const w = c.measureText('أرسلته سفرة اليوم وافق عليه أو اطلب تعديل').width;
+    const tall = c.measureText('الطلب').actualBoundingBoxAscent;
+    document.querySelector(`[data-m="${f}"]`).textContent = `body/x ${(body / x).toFixed(2)} · alef/x ${(tall / x).toFixed(2)} · w ${w.toFixed(0)}px`;
+  });
+  document.body.dataset.ready = '1';
+});
+</script>
+</body>
+</html>

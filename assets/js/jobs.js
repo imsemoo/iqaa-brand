@@ -9,6 +9,38 @@
   // the hours of each length a timed wait can have, as the Line screen offers them
   const REST_H = { 'An hour': 1, 'A day': 24, 'Two days': 48, 'Three days': 72, 'A week': 168 };
 
+  // ---------- words in the page's language (i18n.js): the data stays English, sentences are translated whole ----------
+  const T = window.T, N = window.I18N.n, LANG = window.I18N.lang;
+  // a timed wait said three ways, each a whole phrase so Arabic can decline its number ('ينتظر يومين')
+  const WAITS = { 'An hour': 'Waits an hour', 'A day': 'Waits a day', 'Two days': 'Waits two days', 'Three days': 'Waits three days', 'A week': 'Waits a week' };
+  const WAIT_OF = { 'An hour': 'a timed wait of an hour', 'A day': 'a timed wait of a day', 'Two days': 'a timed wait of two days', 'Three days': 'a timed wait of three days', 'A week': 'a timed wait of a week' };
+  const WAIT_IS = { 'An hour': 'A timed wait: an hour', 'A day': 'A timed wait: a day', 'Two days': 'A timed wait: two days', 'Three days': 'A timed wait: three days', 'A week': 'A timed wait: a week' };
+  const rest = (who, form) => T((form === 'of' ? WAIT_OF : form === 'is' ? WAIT_IS : WAITS)[who]
+    || `${form === 'of' ? 'a timed wait of ' : form === 'is' ? 'A timed wait: ' : 'Waits '}${who.toLowerCase()}`);
+  // a name with its Turkish case endings, by vowel harmony (Omar’a, Maha’nın, Yusuf’un); other languages need none.
+  // named('C', 'Omar') gives { C, C_dat, C_gen, C_acc, C_loc, C_abl } for a sentence's {C} and its Turkish forms
+  const VOW = 'aıoueiöü';
+  function ending(name, kind) {
+    const w = name.toLocaleLowerCase('tr').replace(/[^a-zçğıöşü]+$/, ''), v = [...w].reverse().find((ch) => VOW.includes(ch)) || 'e', open = VOW.includes(w.slice(-1));
+    const two = 'aıou'.includes(v) ? 'a' : 'e', four = { a: 'ı', ı: 'ı', o: 'u', u: 'u', e: 'i', i: 'i', ö: 'ü', ü: 'ü' }[v], hard = /[çfhkpsşt]$/.test(w);
+    return `${name}’${{ dat: `${open ? 'y' : ''}${two}`, gen: `${open ? 'n' : ''}${four}n`, acc: `${open ? 'y' : ''}${four}`, loc: `${hard ? 't' : 'd'}${two}`, abl: `${hard ? 't' : 'd'}${two}n` }[kind]}`;
+  }
+  function named(k, name) {
+    const n = T(name), o = { [k]: n };
+    ['dat', 'gen', 'acc', 'loc', 'abl'].forEach((c) => { o[`${k}_${c}`] = LANG === 'tr' ? ending(n, c) : n; });
+    return o;
+  }
+  // a title inside a sentence: English lowers its first letter ('the office lunch'), Turkish too unless it starts with a
+  // name ('Nakhla için…'); Arabic has no case
+  function lcT(s) {
+    if (LANG === 'en') return s.charAt(0).toLowerCase() + s.slice(1);
+    const t = T(s);
+    return LANG === 'tr' && !s.split(' ').includes(t.split(' ')[0]) ? t.charAt(0).toLocaleLowerCase('tr') + t.slice(1) : t;
+  }
+  const capL = (t) => t.charAt(0).toLocaleUpperCase(LANG) + t.slice(1);
+  // a list as a sentence says it: 'a, b and c' ('أ، ب وج', 'a, b ve c')
+  const listOf = (a) => (a.length < 2 ? a.join('') : T('{a} and {b}', { a: a.slice(0, -1).join(T(', ')), b: a[a.length - 1] }));
+
   function on(line) {
     const main = line.stations;
     function station(id) {
@@ -63,7 +95,7 @@
     function strip(j, ring) {
       const mine = ring || (() => false);
       const w = PAD * 2 + GAP * (main.length - 1);
-      let svg = `<svg class="strip" viewBox="0 0 ${w} 26" width="${w}" height="26" aria-hidden="true"><path class="tr" d="M${PAD} ${Y}H${w - PAD}"/>`;
+      let svg = `<svg class="strip flow" viewBox="0 0 ${w} 26" width="${w}" height="26" aria-hidden="true"><path class="tr" d="M${PAD} ${Y}H${w - PAD}"/>`;
       const p = j.finished ? null : station(j.at);
       if (p && p.route) {
         const a = xAt(main.findIndex((s) => s.id === p.route.from)), b = xAt(main.findIndex((s) => s.id === p.route.to));
@@ -80,7 +112,7 @@
     // branch's dip only when one of its stations is ringed, with that station in it
     function reach(ring) {
       const w = PAD * 2 + GAP * (main.length - 1);
-      let svg = `<svg class="strip" viewBox="0 0 ${w} 26" width="${w}" height="26" aria-hidden="true"><path class="tr" d="M${PAD} ${Y}H${w - PAD}"/>`;
+      let svg = `<svg class="strip flow" viewBox="0 0 ${w} 26" width="${w}" height="26" aria-hidden="true"><path class="tr" d="M${PAD} ${Y}H${w - PAD}"/>`;
       line.routes.filter((r) => r.type === 'branch').forEach((r) => {
         const on = r.stations.map((st, j) => (ring(st) ? j : -1)).filter((j) => j >= 0);
         if (!on.length) return;
@@ -111,10 +143,16 @@
     const U = (t) => (t instanceof Date ? t : new Date(typeof t === 'number' ? t : `${t}Z`));
     const ms = (t) => U(t).getTime();
     const hm = (t) => { const d = U(t); return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`; };       // '08:52'
-    const day = (t) => { const d = U(t); return `${DAY[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`; }; // 'Tue 1 Sep'
-    const label = (t) => `${day(t)}, ${hm(t)}`;                                                                // 'Tue 1 Sep, 08:30'
+    // dates are written in the page's language from these names (i18n.js): 'Tue 1 Sep', 'الثلاثاء 1 سبتمبر', '1 Eyl Sal';
+    // the English names stay the data's own (fromLabel reads them)
+    const T = window.T, N = window.I18N.n;
+    const day = (t) => { const d = U(t); return T('{wd} {d} {mon}', { wd: T(DAY[d.getUTCDay()]), d: d.getUTCDate(), mon: T(MON[d.getUTCMonth()]) }); };
+    const label = (t) => T('{day}, {time}', { day: day(t), time: hm(t) });                                    // 'Tue 1 Sep, 08:30'
     const iso = (t) => U(t).toISOString().slice(0, 16);                                                      // for <time datetime>
     const at = (t) => (iso(t).slice(0, 10) === S.dayIso ? hm(t) : label(t));                                 // today: the time alone
+    // the data keeps its dates as English labels (j.due, j.finished): a screen shows them through these, in its language
+    const due = (j) => label(j.iso);
+    const fin = (j) => (j.finished ? label(fromLabel(j.finished)) : '');
     // a finished label ('Thu 29 Oct, 16:40') back to a time, in the demo year
     const fromLabel = (s) => { const [, d, m, t] = /(\d+) (\w+), (\d\d:\d\d)/.exec(s); return ms(`2026-${pad(MON.indexOf(m) + 1)}-${pad(d)}T${t}`); };
     // the clock on the wall: the demo's now, plus the whole minutes since the page opened, as Today counts them
@@ -122,12 +160,12 @@
     const now = () => ms(S.now) + Math.floor((Date.now() - loaded) / MIN) * MIN;
     // a span in words, as sentences say it: '49 min', '2 hours 40 min', '2 days 22 hours' (hours to the nearest hour)
     function words(span) {
-      const m = Math.round(span / MIN), pl = (v, w) => `${v} ${w}${v === 1 ? '' : 's'}`;
-      if (m < 60) return `${m} min`;
-      if (m < 1440) return pl(Math.floor(m / 60), 'hour') + (m % 60 ? ` ${m % 60} min` : '');
+      const m = Math.round(span / MIN), min = (v) => N(v, '{n} min', '{n} min'), hour = (v) => N(v, '{n} hour', '{n} hours'), both = (a, b) => T('{a} {b}', { a, b });
+      if (m < 60) return min(m);
+      if (m < 1440) return m % 60 ? both(hour(Math.floor(m / 60)), min(m % 60)) : hour(Math.floor(m / 60));
       let d = Math.floor(m / 1440), h = Math.round((m % 1440) / 60);
       if (h === 24) { d += 1; h = 0; }
-      return pl(d, 'day') + (h ? ` ${pl(h, 'hour')}` : '');
+      return h ? both(N(d, '{n} day', '{n} days'), hour(h)) : N(d, '{n} day', '{n} days');
     }
 
     // The shared clock: every step of a job's route in order, with its state (done, now, next; 'skip' for the line's
@@ -213,7 +251,7 @@
     }
     function when(iso) {
       const d = days(iso);
-      return d === 0 ? 'today' : d === 1 ? 'tomorrow' : d < 0 ? `${-d} ${d === -1 ? 'day' : 'days'} ago` : `in ${d} days`;
+      return d === 0 ? T('today') : d === 1 ? T('tomorrow') : d < 0 ? N(-d, '{n} day ago', '{n} days ago') : N(d, 'in {n} day', 'in {n} days');
     }
     const glyph = (k) => `<span class="g" aria-hidden="true">${window.IQ.glyph(k)}</span>`;
     // the client as the line addresses them: the first name, as on Clients (Dr Nadia keeps her title)
@@ -221,20 +259,24 @@
     // who or what the job is waiting on now, in words
     function waitingOn(j) {
       const x = J.stepOf(j);
-      if (!x) return { html: `<span class="ow-t">Finished ${esc(j.finished)}</span>`, text: `finished ${j.finished}` };
-      if (isPerson(x.kind) && x.who === 'The client') return { html: `${glyph(x.kind)}<span class="ow-t">Waiting for ${esc(short(j))}</span>`, text: `waiting for ${short(j)}` };
-      if (isPerson(x.kind)) return { html: `<span class="av" aria-hidden="true">${esc(x.who.charAt(0))}</span><span class="ow-t">${esc(x.who)}</span>`, text: `with ${x.who}` };
-      if (x.kind === 'rest') return { html: `${glyph('rest')}<span class="ow-t">Waits ${esc(x.who.toLowerCase())}</span>`, text: `a timed wait of ${x.who.toLowerCase()}` };
-      return { html: `${glyph('run')}<span class="ow-t">Runs by itself</span>`, text: 'running by itself' };
+      if (!x) return { html: `<span class="ow-t">${esc(T('Finished {date}', { date: fin(j) }))}</span>`, text: T('finished {date}', { date: fin(j) }) };
+      if (isPerson(x.kind) && x.who === 'The client') return { html: `${glyph(x.kind)}<span class="ow-t">${esc(T('Waiting for {name}', { name: T(short(j)) }))}</span>`, text: T('waiting for {name}', { name: T(short(j)) }) };
+      if (isPerson(x.kind)) return { html: `<span class="av" aria-hidden="true">${esc(T(x.who).charAt(0))}</span><span class="ow-t">${esc(T(x.who))}</span>`, text: T('with {name}', { name: T(x.who) }) };
+      if (x.kind === 'rest') return { html: `${glyph('rest')}<span class="ow-t">${esc(rest(x.who))}</span>`, text: rest(x.who, 'of') };
+      return { html: `${glyph('run')}<span class="ow-t">${T('Runs by itself')}</span>`, text: T('running by itself') };
     }
+    // who the job is for and its size: 'Maha, Nakhla Co. · 40 people'
+    const forWhom = (j) => `${esc(T('{client}, {of}', { client: T(j.client), of: T(j.of) }))} · ${N(j.people, '{n} person', '{n} people')}`;
     function row(j) {
       const p = j.finished ? null : J.station(j.at), x = J.stepOf(j), w = waitingOn(j);
-      const where = j.finished ? 'Walked the whole line' : `At <b>${esc(p.st.name)}</b> · ${esc(x.name)}`;
+      const where = j.finished ? T('Walked the whole line') : T('At {station} · {step}', { station: `<b>${esc(T(p.st.name))}</b>`, step: esc(T(x.name)) });
       const soon = !j.finished && !delivered(j) && days(j.iso) <= 1;
-      return `<li><a class="or-row" href="order.html?code=${j.code}" aria-label="${esc(j.title)}, ${j.code}, for ${esc(j.client)}. ${j.finished ? 'Finished' : `At ${esc(p.st.name)}, ${w.text}`}. Due ${esc(j.due)}.">
-<span class="or-t"><code>${j.code}</code><b>${esc(j.title)}</b><span>${esc(j.client)}, ${esc(j.of)} · ${j.people} people</span></span>
+      const said = j.finished ? T('{title}, {code}, for {client}. Finished. Due {due}.', { title: T(j.title), code: j.code, client: T(j.client), due: due(j) })
+        : T('{title}, {code}, for {client}. At {station}, {waiting}. Due {due}.', { title: T(j.title), code: j.code, client: T(j.client), station: T(p.st.name), waiting: w.text, due: due(j) });
+      return `<li><a class="or-row" href="order.html?code=${j.code}" aria-label="${esc(said)}">
+<span class="or-t"><code>${j.code}</code><b>${esc(T(j.title))}</b><span>${forWhom(j)}</span></span>
 <span class="or-pos">${J.strip(j)}<span>${where}</span></span>
-<span class="or-due${soon ? ' soon' : ''}"><b>${esc(j.due)}</b><span>${when(j.iso)}</span></span>
+<span class="or-due${soon ? ' soon' : ''}"><b>${esc(due(j))}</b><span>${when(j.iso)}</span></span>
 <span class="or-who">${w.html}</span>
 </a></li>`;
     }
@@ -250,11 +292,12 @@
         dip = `<path class="br" d="M${xp(a)} 12L${xp(a) + 4} 52H${xp(b) - 4}L${xp(b)} 12"/>`;
       }
       const count = (id) => jobs.filter((j) => !j.finished && j.at === id).length;
-      const track = `<svg class="om-track" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path d="M${xp(0)} 12H${xp(n - 1)}"/>${dip}</svg>`;
+      // the track is a drawing of order: it runs right to left in Arabic, as the stations placed from the inline start do
+      const track = `<svg class="om-track flow" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path d="M${xp(0)} 12H${xp(n - 1)}"/>${dip}</svg>`;
       return `<div class="om-in">${track}${stations.map(({ s, x, y }) => {
         const c = count(s.id), on = at === s.id;
-        return `<button type="button" class="om-st${y ? ' br' : ''}${on ? ' on' : ''}${c ? '' : ' none'}" style="--x:${x.toFixed(2)}" data-at="${s.id}" aria-pressed="${on}" aria-label="${esc(s.name)}: ${c} ${c === 1 ? 'job' : 'jobs'}">
-<span class="om-n">${c}</span><span class="om-dot" aria-hidden="true"></span><span class="om-name">${esc(s.name)}</span></button>`;
+        return `<button type="button" class="om-st${y ? ' br' : ''}${on ? ' on' : ''}${c ? '' : ' none'}" style="--x:${x.toFixed(2)}" data-at="${s.id}" aria-pressed="${on}" aria-label="${esc(T('{station}: {jobs}', { station: T(s.name), jobs: N(c, '{n} job', '{n} jobs') }))}">
+<span class="om-n">${c}</span><span class="om-dot" aria-hidden="true"></span><span class="om-name">${esc(T(s.name))}</span></button>`;
       }).join('')}</div>`;
     }
 
@@ -264,15 +307,16 @@
     const delivered = (j) => !j.finished && idx(j.at) > idx('deliver');
     const late = (j) => !j.finished && days(j.iso) < 0 && !delivered(j);
     const restHours = (who) => REST_H[who] || 0;
-    const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
     // a job as a compact row, the date first because that is what the owner scans for (Overview's Needs attention)
     function dueRow(j) {
-      const p = J.station(j.at), w = waitingOn(j), d = days(j.iso), time = j.due.split(', ')[1], isLate = late(j);
-      const day = d < 0 ? j.due.split(', ')[0] : cap(when(j.iso));
-      return `<li><a class="at${isLate ? ' late' : ''}" href="order.html?code=${j.code}" aria-label="${esc(j.title)} for ${esc(j.client)}, due ${esc(j.due)}${isLate ? ', late' : ''}. At ${esc(p.st.name)}, ${w.text}.">
-<span class="at-d"><b>${esc(day)}</b><time>${esc(time)}</time></span>
-<span class="at-t"><b>${esc(j.title)}</b><span>${esc(j.client)}, ${esc(j.of)} · ${j.people} people</span></span>
-<span class="at-p"><span class="at-st">At <b>${esc(p.st.name)}</b></span><span class="or-who">${w.html}</span></span></a></li>`;
+      const p = J.station(j.at), w = waitingOn(j), d = days(j.iso), time = hm(j.iso), isLate = late(j);
+      const dd = d < 0 ? day(j.iso) : capL(when(j.iso));
+      const v = { title: T(j.title), client: T(j.client), due: due(j), station: T(p.st.name), waiting: w.text };
+      const said = isLate ? T('{title} for {client}, due {due}, late. At {station}, {waiting}.', v) : T('{title} for {client}, due {due}. At {station}, {waiting}.', v);
+      return `<li><a class="at${isLate ? ' late' : ''}" href="order.html?code=${j.code}" aria-label="${esc(said)}">
+<span class="at-d"><b>${esc(dd)}</b><time>${esc(time)}</time></span>
+<span class="at-t"><b>${esc(T(j.title))}</b><span>${forWhom(j)}</span></span>
+<span class="at-p"><span class="at-st">${T('At {station}', { station: `<b>${esc(T(p.st.name))}</b>` })}</span><span class="or-who">${w.html}</span></span></a></li>`;
     }
     // the station where the line waits for the client's answer, then reminds them (Sufra's Client approval)
     const gate = main.concat(...line.routes.filter((r) => r.type === 'branch').map((r) => r.stations))
@@ -300,24 +344,28 @@
     }
     // the words a step sends, written in for one order with Build's variables: the client's short name ('Dr Nadia'
     // stays whole), the order in a sentence, its people and due time, and the client's link
+    // A message is written in the language of its words: the line's own English text (what the client receives, in
+    // Sufra's client language) gets the data as it is; a translated text gets the names, title and date in its language.
     function fill(msg, j) {
-      const n = j.client;
-      return msg.replace(/\{client\.name\}/g, /^Dr /.test(n) ? n : n.split(' ')[0])
-        .replace(/\{order\.title\}/g, j.title.charAt(0).toLowerCase() + j.title.slice(1))
+      const n = j.client, local = LANG !== 'en' && /[؀-ۿçğıöşüÇĞİÖŞÜ]/.test(msg);
+      const first = /^Dr /.test(n) ? n : n.split(' ')[0];
+      return msg.replace(/\{client\.name\}/g, local ? T(first) : first)
+        .replace(/\{order\.title\}/g, local ? lcT(j.title) : j.title.charAt(0).toLowerCase() + j.title.slice(1))
         .replace(/\{order\.people\}/g, String(j.people))
-        .replace(/\{order\.due\}/g, j.due)
+        .replace(/\{order\.due\}/g, local ? due(j) : j.due)
         .replace(/\{quote\.link\}/g, `sufra.iqaa.app/q/${j.code.slice(-4)}`);
     }
     // a span as a sentence says it, rounded down to what matters: '4 days and 3 hours', '20 hours', 'an hour and 11
     // minutes'; words() is the compact form for rows and steps
     function span(v) {
       const m = Math.floor(Math.abs(v) / MIN), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
-      const pl = (k, w) => `${k} ${w}${k === 1 ? '' : 's'}`;
-      if (d >= 7) return pl(d, 'day');
-      if (d >= 1) return (d === 1 ? 'a day' : pl(d, 'day')) + (h ? ` and ${h === 1 ? 'an hour' : pl(h, 'hour')}` : '');
-      if (h >= 2) return pl(h, 'hour');
-      if (h === 1) return `an hour${mm ? ` and ${pl(mm, 'minute')}` : ''}`;
-      return pl(mm, 'minute');
+      const dW = (k) => N(k, '{n} day', '{n} days'), hW = (k) => N(k, '{n} hour', '{n} hours'), mW = (k) => N(k, '{n} minute', '{n} minutes');
+      const and = (a, b) => T('{a} and {b}', { a, b });
+      if (d >= 7) return dW(d);
+      if (d >= 1) { const a = d === 1 ? T('a day') : dW(d); return h ? and(a, h === 1 ? T('an hour') : hW(h)) : a; }
+      if (h >= 2) return hW(h);
+      if (h === 1) return mm ? and(T('an hour'), mW(mm)) : T('an hour');
+      return mW(mm);
     }
 
     // The job's line written in time, as the order page draws it: one stroke; what is done is real, the pen stands
@@ -348,22 +396,29 @@
           svg += `<path d="M${x} 0h${window.IQ.HANDOFF}" fill="none" stroke="${done ? pal.run : pal.test}" stroke-width="3.2" stroke-linecap="round"${done ? '' : ' stroke-dasharray="4.5 4.5"'}/>`;
           x += window.IQ.HANDOFF;
         }
-        if (last !== s.st) { names += `<text x="${x}" y="${20 + (row % 2) * 10}" font-size="7.5" fill="#4F4D63" font-family="Atkinson Hyperlegible Next, sans-serif">${esc(s.st.name)}</text>`; row++; }
+        if (last !== s.st) { names += `<text x="${x}" y="${20 + (row % 2) * 10}" font-size="7.5" fill="#4F4D63" font-family="Atkinson Hyperlegible Next, sans-serif">${esc(T(s.st.name))}</text>`; row++; }
         if (i === nowAt) nowX = x;
         svg += window.IQ.cell(kindOf(s), x, 0, pal, k, s.state === 'next');
         x += window.IQ.WIDTH[s.x.kind];
         last = s.st;
       });
       if (nowX == null) nowX = x;
-      const nowMark = j.finished ? '' : `<path d="M${nowX + 12} -40V14" stroke="#19172E" stroke-width="1" stroke-dasharray="2 3"/><text x="${nowX + 12}" y="-44" text-anchor="middle" font-size="8" fill="#19172E" font-family="Fragment Mono, monospace">Now</text>`;
+      // 'Now' in the mono face; a word in Arabic letters falls through to the text face (Atkinson's name carries them)
+      const nowMark = j.finished ? '' : `<path d="M${nowX + 12} -40V14" stroke="#19172E" stroke-width="1" stroke-dasharray="2 3"/><text x="${nowX + 12}" y="-44" text-anchor="middle" font-size="8" fill="#19172E" font-family="Fragment Mono, Atkinson Hyperlegible Next, monospace">${esc(T('Now'))}</text>`;
+      const said = T('{title}: {done} of {total} steps done', { title: T(j.title), done: nDone, total: nDrawn }) + (j.finished ? '' : T('; now {step}', { step: T(cur.name) }));
+      // a drawing of time: class flow runs it right to left in Arabic; its words keep the drawing's own direction, so a
+      // name starts at its station (an inherited rtl would anchor it the other way)
       return {
-        svg: `<svg viewBox="-6 -54 ${x + 12} ${54 + 34}" role="img" aria-label="${esc(j.title)}: ${nDone} of ${nDrawn} steps done${j.finished ? '' : `; now ${esc(cur.name)}`}">${svg}${nowMark}${names}</svg>`,
-        cap: j.finished ? `All ${nDrawn} steps written` : `${nDone} of ${nDrawn} steps done; the rest waits ahead in grey`,
+        svg: `<svg class="flow" direction="ltr" viewBox="-6 -54 ${x + 12} ${54 + 34}" role="img" aria-label="${esc(said)}">${svg}${nowMark}${names}</svg>`,
+        cap: j.finished ? N(nDrawn, 'All {n} steps written', 'All {n} steps written') : T('{done} of {total} steps done; the rest waits ahead in grey', { done: nDone, total: nDrawn }),
         done: nDone, drawn: nDrawn,
       };
     }
-    return { days, when, glyph, waitingOn, short, row, loadMap, U, hm, day, label, iso, at, fromLabel, now, words, clock,
-      delivered, late, restHours, REST: REST_H, dueRow, gate, chase, risk, fill, span, since, journey };
+    return { days, when, glyph, waitingOn, short, row, loadMap, U, hm, day, label, iso, at, due, fin, fromLabel, now, words, clock,
+      delivered, late, restHours, REST: REST_H, dueRow, gate, chase, risk, fill, span, since, journey,
+      // words in the page's language: a timed wait ('Waits two days'), a job's client and size, a name with its Turkish
+      // endings, a title inside a sentence, a list
+      rest, forWhom, named, lcT, list: listOf };
   }
 
   // ---------- clients: what passed between Sufra and each client, read from their orders ----------
@@ -371,39 +426,40 @@
   const REACH = new Set(['Send the client a receipt', 'Send the quote link', 'The client approves', 'Wait two days', 'Remind the client',
     'Send the arrival time', 'Yusuf delivers', 'Send the invoice']);
   // what a step is doing, said after a name: 'Reem · checking the prices'; C is the client's short name
+  // C (English, the data's) is said in the page's language with its Turkish endings: {C}, {CDat}, {CGen}…
   const DOING = {
-    'Reem logs the order': () => 'logging the order',
-    'Send the client a receipt': (j, C) => `sending ${C} a receipt`,
-    'Watar drafts the quote': () => 'checking Watar’s draft of the quote',
-    'Reem checks the prices': () => 'checking the prices',
-    'Send the quote link': (j, C) => `sending ${C} the quote`,
-    'Wait two days': (j, C) => `waiting two days for ${C}’s answer`,
-    'Remind the client': (j, C) => `reminding ${C}`,
-    'Create the shopping list': () => 'writing the shopping list',
-    'Buy the materials': () => 'buying the materials',
-    'Hala orders from the wholesaler': () => 'ordering from the wholesaler',
-    'Wait for the delivery': () => 'waiting for the wholesaler’s delivery',
-    'Remind the kitchen a day before': () => 'reminding the kitchen',
-    'Salma prepares': (j) => `preparing the ${j.title.toLowerCase()}`,
-    'Send the arrival time': (j, C) => `sending ${C} the arrival time`,
-    'Yusuf delivers': (j, C, V) => `delivering by ${V.hm(j.iso)} ${V.when(j.iso)}`,
-    'Create the invoice': () => 'writing the invoice',
-    'Send the invoice': () => 'sending the invoice',
+    'Reem logs the order': () => T('logging the order'),
+    'Send the client a receipt': (j, C) => T('sending {C} a receipt', named('C', C)),
+    'Watar drafts the quote': () => T('checking Watar’s draft of the quote'),
+    'Reem checks the prices': () => T('checking the prices'),
+    'Send the quote link': (j, C) => T('sending {C} the quote', named('C', C)),
+    'Wait two days': (j, C) => T('waiting two days for {C}’s answer', named('C', C)),
+    'Remind the client': (j, C) => T('reminding {C}', named('C', C)),
+    'Create the shopping list': () => T('writing the shopping list'),
+    'Buy the materials': () => T('buying the materials'),
+    'Hala orders from the wholesaler': () => T('ordering from the wholesaler'),
+    'Wait for the delivery': () => T('waiting for the wholesaler’s delivery'),
+    'Remind the kitchen a day before': () => T('reminding the kitchen'),
+    'Salma prepares': (j) => T('preparing the {title}', { title: LANG === 'en' ? j.title.toLowerCase() : lcT(j.title) }),
+    'Send the arrival time': (j, C) => T('sending {C} the arrival time', named('C', C)),
+    'Yusuf delivers': (j, C, V) => T('delivering by {time} {when}', { time: V.hm(j.iso), when: V.when(j.iso) }),
+    'Create the invoice': () => T('writing the invoice'),
+    'Send the invoice': () => T('sending the invoice'),
   };
+  // the steps that reach the client, with the client named in place of 'the client' (Clients' between rows)
+  const TO_CLIENT = { 'Send the client a receipt': 'Send {C} a receipt', 'The client approves': '{C} approves', 'Remind the client': 'Remind {C}' };
 
   // Everything Clients shows is computed here, so Ask Watar can answer from the same facts. Copy never uses a pronoun
   // for a client: it repeats the short name C.
   function clients(J, S, V) {
     const all = S.jobs.concat(S.past);
-    const T = (t) => V.U(t).getTime();
-    const lc = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-    const both = (a) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+    const msOf = (t) => V.U(t).getTime();
     const delivered = V.delivered;
     const byIso = (a, b) => a.iso.localeCompare(b.iso);
     // the contact's first name ('Dr Nadia' stays whole), or a private client's own
     const shortOf = (c) => { const n = c.private ? c.name : c.contact; return /^Dr /.test(n) ? n : n.split(' ')[0]; };
     // today, tomorrow or on Sun 4 Oct: when an event is, after a noun
-    const onDay = (iso) => { const d = V.days(iso); return d === 0 ? 'today' : d === 1 ? 'tomorrow' : `on ${V.day(iso)}`; };
+    const onDay = (iso) => { const d = V.days(iso); return d === 0 ? T('today') : d === 1 ? T('tomorrow') : T('on {day}', { day: V.day(iso) }); };
 
     function get(key) {
       const c = S.clients[key];
@@ -429,8 +485,9 @@
     function find(c, q) {
       const words = q.trim().toLowerCase();
       if (!words) return { ok: true, via: null };
-      if (`${c.name} ${c.contact || ''}`.toLowerCase().includes(words)) return { ok: true, via: null };
-      const via = c.open.concat(c.fin.slice().reverse()).find((j) => `${j.code} ${j.title}`.toLowerCase().includes(words));
+      // found in English and in the page's language, so an Arabic search finds what the page shows
+      if (`${c.name} ${c.contact || ''} ${T(c.name)} ${c.contact ? T(c.contact) : ''}`.toLowerCase().includes(words)) return { ok: true, via: null };
+      const via = c.open.concat(c.fin.slice().reverse()).find((j) => `${j.code} ${j.title} ${T(j.title)}`.toLowerCase().includes(words));
       return { ok: !!via, via: via || null };
     }
 
@@ -440,11 +497,11 @@
       const answered = !!(last && last.answer);
       return {
         rounds, answered, open: rounds.find((r) => !r.answer) || null,
-        took: answered ? T(last.answer) - T(rounds[0].sent) : null,
+        took: answered ? msOf(last.answer) - msOf(rounds[0].sent) : null,
         reminded: rounds.some((r) => r.reminded),
         changes: rounds.filter((r) => r.change),
         arrived: log.arrived || null,
-        late: log.arrived ? Math.max(0, Math.round((T(log.arrived) - T(j.iso)) / 6e4)) : 0,
+        late: log.arrived ? Math.max(0, Math.round((msOf(log.arrived) - msOf(j.iso)) / 6e4)) : 0,
       };
     }
     // the line's own reminder for a quote still open: due when the timed wait runs out; a risk when it would come
@@ -453,7 +510,7 @@
       const f = facts(j);
       if (j.finished || !f.open) return null;
       const rest = J.station('approval').st.steps.find((x) => x.kind === 'rest');
-      const sent = T(f.open.sent), due = sent + (REST_H[rest && rest.who] || 48) * 36e5, ev = T(j.iso);
+      const sent = msOf(f.open.sent), due = sent + (REST_H[rest && rest.who] || 48) * 36e5, ev = msOf(j.iso);
       return { sent, due, risk: due > ev - 864e5, after: due > ev };
     }
 
@@ -488,126 +545,138 @@
 
     // the phrase under a mini line: every fact kept, joined
     function phrase(F) {
-      if (!F.length) return 'First order';
+      if (!F.length) return T('First order');
       const fs = F.map((j) => ({ j, f: facts(j) })), n = F.length, parts = [];
       const late = fs.filter((o) => o.f.late), rem = fs.filter((o) => o.f.reminded).length;
       const ch = fs.reduce((v, o) => v + o.f.changes.length, 0);
-      if (late.length) parts.push(late.length === 1 ? `Late once, ${V.day(late[0].j.iso)}` : `Late ${late.length} times`);
-      if (rem) parts.push(`Reminded ${rem} of ${n}`);
-      if (ch) parts.push(`${ch} ${ch === 1 ? 'change' : 'changes'}`);
-      return parts.length ? parts.join(' · ') : n === 1 ? 'One order, on time' : `On time, ${n} of ${n}`;
+      if (late.length) parts.push(late.length === 1 ? T('Late once, {day}', { day: V.day(late[0].j.iso) }) : N(late.length, 'Late {n} time', 'Late {n} times'));
+      if (rem) parts.push(T('Reminded {n} of {total}', { n: rem, total: n }));
+      if (ch) parts.push(N(ch, '{n} change', '{n} changes'));
+      return parts.length ? parts.join(' · ') : n === 1 ? T('One order, on time') : T('On time, {n} of {n}', { n });
     }
     // the sentences about a client's finished orders: answers (long for the band, short for a step), changes, deliveries
     function history(c) {
-      const fs = c.fin.map((j) => ({ j, f: facts(j) })), n = fs.length, C = c.C, E = c.open.length ? 'earlier ' : '';
+      const fs = c.fin.map((j) => ({ j, f: facts(j) })), n = fs.length, C = c.C, E = !!c.open.length;
       if (!n) return null;
-      const quotes = n === 1 ? `the ${E}quote` : n === 2 ? `both ${E}quotes` : `all ${n} ${E}quotes`;
+      const nm = named('C', C);
+      const quotes = n === 1 ? T(E ? 'the earlier quote' : 'the quote') : n === 2 ? T(E ? 'both earlier quotes' : 'both quotes')
+        : T(E ? 'all {n} earlier quotes' : 'all {n} quotes', { n });
       const took = fs.map((o) => o.f.took), lo = Math.min(...took), hi = Math.max(...took);
       let long, short;
       if (fs.every((o) => o.f.reminded)) {
-        short = `${C} answered ${quotes} only after Iqaa’s reminder`;
+        short = T('{C} answered {quotes} only after Iqaa’s reminder', Object.assign({ quotes }, nm));
         const d = took.map(V.words);
-        long = `${short}: after ${d.length === 2 ? `${d[0]}, then ${d[1]}` : both(d)}`;
+        long = T('{short}: after {spans}', { short, spans: d.length === 2 ? T('{a}, then {b}', { a: d[0], b: d[1] }) : listOf(d) });
       } else if (fs.every((o) => !o.f.reminded && !o.f.changes.length)) {
-        if (n === 1) long = short = `${C} answered ${quotes} in ${V.words(took[0])}`;
+        if (n === 1) long = short = T('{C} answered {quotes} in {span}', Object.assign({ quotes, span: V.words(took[0]) }, nm));
         else {
           const h = Math.ceil(hi / 36e5);
-          long = `${C} answered ${quotes} in ${V.words(lo)} to ${V.words(hi)}`;
-          short = `${C} answered ${quotes} within ${h === 1 ? 'an hour' : `${h} hours`}`;
+          long = T('{C} answered {quotes} in {lo} to {hi}', Object.assign({ quotes, lo: V.words(lo), hi: V.words(hi) }, nm));
+          short = h === 1 ? T('{C} answered {quotes} within an hour', Object.assign({ quotes }, nm))
+            : N(h, '{C} answered {quotes} within {n} hour', '{C} answered {quotes} within {n} hours', Object.assign({ quotes }, nm));
         }
       } else if (n <= 3) {
-        const why = (f) => [f.reminded ? 'after the reminder' : '', f.changes.length === 1 ? 'one change' : f.changes.length ? `${f.changes.length} changes` : ''].filter(Boolean).join(', ');
-        const each = fs.slice().reverse().map((o) => `${V.words(o.f.took)}${why(o.f) ? ` (${why(o.f)})` : ''}`);
-        long = short = `${C}’s ${E}${n === 1 ? 'answer' : 'answers'} took ${both(each)}`;
+        const why = (f) => [f.reminded ? T('after the reminder') : '', f.changes.length === 1 ? T('one change') : f.changes.length ? N(f.changes.length, '{n} change', '{n} changes') : ''].filter(Boolean).join(T(', '));
+        const each = fs.slice().reverse().map((o) => (why(o.f) ? T('{span} ({why})', { span: V.words(o.f.took), why: why(o.f) }) : V.words(o.f.took)));
+        const took1 = E ? (n === 1 ? '{C}’s earlier answer took {spans}' : '{C}’s earlier answers took {spans}') : n === 1 ? '{C}’s answer took {spans}' : '{C}’s answers took {spans}';
+        long = short = T(took1, Object.assign({ spans: listOf(each) }, nm));
       } else {
-        long = short = `${C} answered in ${V.words(lo)} to ${V.words(hi)}; Iqaa reminded ${C} ${fs.filter((o) => o.f.reminded).length} of ${n} times`;
+        long = short = T('{C} answered in {lo} to {hi}; Iqaa reminded {C} {r} of {n} times',
+          Object.assign({ lo: V.words(lo), hi: V.words(hi), r: fs.filter((o) => o.f.reminded).length, n }, nm));
       }
       const chg = fs.slice().reverse().find((o) => o.f.changes.length);
-      const change = chg ? `For the ${lc(chg.j.title)} on ${V.day(chg.j.iso)}, ${C} asked for a change: “${chg.f.changes[chg.f.changes.length - 1].change}”.` : '';
+      const change = chg ? T('For the {title} on {day}, {C} asked for a change: “{change}”.',
+        Object.assign({ title: lcT(chg.j.title), day: V.day(chg.j.iso), change: T(chg.f.changes[chg.f.changes.length - 1].change) }, nm)) : '';
       const late = fs.filter((o) => o.f.late);
       function delivery(before) {
-        const b = before ? ' before' : '';
         if (late.length) {
-          const o = late[late.length - 1], s = `${V.day(o.j.iso)}, ${V.hm(o.f.arrived)} for ${V.hm(o.j.iso)}`;
-          return late.length === 1 ? `Late once${b}: ${s}.` : `Late ${late.length} times${b}, last on ${s}.`;
+          const o = late[late.length - 1], s = T('{day}, {arrived} for {due}', { day: V.day(o.j.iso), arrived: V.hm(o.f.arrived), due: V.hm(o.j.iso) });
+          return late.length === 1 ? T(before ? 'Late once before: {s}.' : 'Late once: {s}.', { s })
+            : N(late.length, before ? 'Late {n} time before, last on {s}.' : 'Late {n} time, last on {s}.', before ? 'Late {n} times before, last on {s}.' : 'Late {n} times, last on {s}.', { s });
         }
-        const lead = n === 1 ? `The ${E}delivery` : n === 2 ? `Both ${E}deliveries` : `All ${n} ${E}deliveries`;
         const same = fs.every((o) => V.hm(o.j.iso) === V.hm(fs[0].j.iso));
-        return `${lead} arrived on time${n <= 3 && same ? ` (${fs.map((o) => V.hm(o.f.arrived)).join(', ')})` : ''}.`;
+        const times = n <= 3 && same ? ` (${fs.map((o) => V.hm(o.f.arrived)).join(T(', '))})` : '';
+        const lead = n === 1 ? (E ? 'The earlier delivery arrived on time{times}.' : 'The delivery arrived on time{times}.')
+          : n === 2 ? (E ? 'Both earlier deliveries arrived on time{times}.' : 'Both deliveries arrived on time{times}.')
+            : E ? 'All {n} earlier deliveries arrived on time{times}.' : 'All {n} deliveries arrived on time{times}.';
+        return T(lead, { n, times });
       }
       return { long, short, change, delivery };
     }
     // the band's reading: how the client answers, then how Sufra delivered
     function reading(c) {
       const h = history(c);
-      return h ? `${h.long}. ${h.delivery(false)}` : `First order. ${c.C}’s line with Sufra starts with this one.`;
+      return h ? `${h.long}. ${h.delivery(false)}` : T('First order. {C}’s line with Sufra starts with this one.', named('C', c.C));
     }
     // history as evidence on the step it predicts: { t, risk } or null. name is the line's step name.
     function evidence(name, j, c) {
       const h = history(c), f = facts(j);
       if (name === 'The client approves') {
-        if (f.answered) return { t: `Answered in ${V.words(f.took)}${f.reminded ? ', after the reminder' : ''}` };
-        if (!h) return { t: 'First order: nothing to compare yet.' };
+        if (f.answered) return { t: T(f.reminded ? 'Answered in {span}, after the reminder' : 'Answered in {span}', { span: V.words(f.took) }) };
+        if (!h) return { t: T('First order: nothing to compare yet.') };
         return { t: `${h.short}.${h.change ? ` ${h.change}` : ''}` };
       }
       if (name === 'Remind the client') {
         const r = reminder(j);
-        if (r && r.risk) return { t: `That is ${r.after ? 'after' : 'less than a day before'} the ${lc(j.title)} on ${V.label(j.iso)}.`, risk: true };
+        if (r && r.risk) return { t: T(r.after ? 'That is after the {title} on {date}.' : 'That is less than a day before the {title} on {date}.', { title: lcT(j.title), date: V.label(j.iso) }), risk: true };
         return null;
       }
       if (name === 'Yusuf delivers' && h && !f.arrived) return { t: h.delivery(true) };
       return null;
     }
 
-    // what a step is doing, in words; C is the client's short name
-    const doing = (x, j, C) => (DOING[x.name] ? DOING[x.name](j, C, V) : lc(x.name));
+    // what a step is doing, in words; C is the client's short name (English, the data's)
+    const doing = (x, j, C) => (DOING[x.name] ? DOING[x.name](j, C, V) : lcT(x.name));
     const glyph = (k) => V.glyph(k);
-    const av = (who) => `<span class="av" aria-hidden="true">${window.Beats.esc(who.charAt(0))}</span>`;
-    // whose move it is on one open job: lead (the step's glyph or the person's initial, html), two lines, risk
+    const av = (who) => `<span class="av" aria-hidden="true">${window.Beats.esc(T(who).charAt(0))}</span>`;
+    // whose move it is on one open job: lead (the step's glyph or the person's initial, html), two lines, risk; who stays
+    // the data's English name (Clients compares it with C)
     function move(j, c) {
-      const x = J.stepOf(j), f = facts(j), C = c.C;
+      const x = J.stepOf(j), f = facts(j), C = c.C, nm = named('C', C);
       if (x.who === 'The client') {
-        const r = reminder(j);
-        const l2 = r.after ? `Reminder due ${V.at(r.due)}, after the ${lc(j.title)}`
-          : r.risk ? `Reminder due ${V.at(r.due)}, less than a day before the ${lc(j.title)}` : `Reminder due ${V.at(r.due)} if there’s no answer`;
-        return { lead: glyph(x.kind), l1: `Waiting for ${C} since ${V.at(r.sent)}`, l2, risk: r.risk, who: C };
+        const r = reminder(j), v = { at: V.at(r.due), title: lcT(j.title) };
+        const l2 = r.after ? T('Reminder due {at}, after the {title}', v)
+          : r.risk ? T('Reminder due {at}, less than a day before the {title}', v) : T('Reminder due {at} if there’s no answer', v);
+        return { lead: glyph(x.kind), l1: T('Waiting for {C} since {at}', Object.assign({ at: V.at(r.sent) }, nm)), l2, risk: r.risk, who: C };
       }
-      const l1 = isPerson(x.kind) ? `${x.who} · ${doing(x, j, C)}` : `${x.kind === 'rest' ? 'Waits' : 'Runs by itself'} · ${doing(x, j, C)}`;
+      const l1 = isPerson(x.kind) ? T('{name} · {doing}', { name: T(x.who), doing: doing(x, j, C) }) : T(x.kind === 'rest' ? 'Waits · {doing}' : 'Runs by itself · {doing}', { doing: doing(x, j, C) });
       const told = V.clock(j).find((s) => s.x.name === 'Send the arrival time' && s.state === 'done');
-      const l2 = delivered(j) && f.arrived ? `Delivered ${V.at(f.arrived)}`
-        : told ? `${C} has had the arrival time since ${V.at(told.t)}`
-          : f.answered ? `${C} ${f.rounds[f.rounds.length - 1].change ? 'asked for a change' : 'approved the quote'} ${V.at(f.rounds[f.rounds.length - 1].answer)}`
-            : !f.rounds.length ? `The quote hasn’t gone to ${C} yet` : `The quote went to ${C} ${V.at(f.rounds[0].sent)}`;
+      const last = f.rounds[f.rounds.length - 1];
+      const l2 = delivered(j) && f.arrived ? T('Delivered {at}', { at: V.at(f.arrived) })
+        : told ? T('{C} has had the arrival time since {at}', Object.assign({ at: V.at(told.t) }, nm))
+          : f.answered ? T(last.change ? '{C} asked for a change {at}' : '{C} approved the quote {at}', Object.assign({ at: V.at(last.answer) }, nm))
+            : !f.rounds.length ? T('The quote hasn’t gone to {C} yet', nm) : T('The quote went to {C} {at}', Object.assign({ at: V.at(f.rounds[0].sent) }, nm));
       return { lead: isPerson(x.kind) ? av(x.who) : glyph(x.kind), l1, l2, risk: false, who: isPerson(x.kind) ? x.who : null };
     }
     // the state box on the client's page: its lead and one sentence
     function state(c) {
-      if (!c.soon) return { lead: glyph('struck'), t: `Nothing open · last order finished ${c.fin[c.fin.length - 1].finished}` };
-      const j = c.soon, x = J.stepOf(j), more = c.open.length > 1 ? ` and ${c.open.length - 1} more open` : '';
-      if (x.who === 'The client') return { lead: glyph(x.kind), t: `Waiting on ${c.C}’s answer to the quote for the ${lc(j.title)} ${onDay(j.iso)}${more}` };
-      if (isPerson(x.kind)) return { lead: av(x.who), t: `With ${x.who}: ${doing(x, j, c.C)}${more}` };
-      return { lead: glyph(x.kind), t: `${x.kind === 'rest' ? 'Waits' : 'Runs by itself'}: ${doing(x, j, c.C)}${more}` };
+      if (!c.soon) return { lead: glyph('struck'), t: T('Nothing open · last order finished {date}', { date: V.fin(c.fin[c.fin.length - 1]) }) };
+      const j = c.soon, x = J.stepOf(j), more = c.open.length > 1 ? N(c.open.length - 1, ' and {n} more open', ' and {n} more open') : '';
+      if (x.who === 'The client') return { lead: glyph(x.kind), t: T('Waiting on {C}’s answer to the quote for the {title} {when}{more}', Object.assign({ title: lcT(j.title), when: onDay(j.iso), more }, named('C', c.C))) };
+      if (isPerson(x.kind)) return { lead: av(x.who), t: T('With {name}: {doing}{more}', { name: T(x.who), doing: doing(x, j, c.C), more }) };
+      return { lead: glyph(x.kind), t: T(x.kind === 'rest' ? 'Waits: {doing}{more}' : 'Runs by itself: {doing}{more}', { doing: doing(x, j, c.C), more }) };
     }
 
     // The steps of an open job that reach the client, from the last one done (or the first) through the delivery, or
     // to the end once it is past Deliver. The wait and the reminder show only while the job waits on the client, or
     // once they ran. early: the time a reminder was sent from the page. Each row: x, name (with C), state, when, ev.
+    // A done row's when starts with V.at(t) in every language (Clients cuts the time off the front to mark it up).
     function between(j, c, early) {
       const steps = V.clock(j), r = reminder(j), on = j.at === 'approval';
       const rows = steps.filter((s) => REACH.has(s.x.name) && s.state !== 'skip' && (!CHASE.has(s.x.name) || on || s.state === 'done'));
       const lastDone = rows.map((s) => s.state).lastIndexOf('done');
       const end = delivered(j) ? rows.length : rows.findIndex((s) => s.x.name === 'Yusuf delivers') + 1;
       return rows.slice(Math.max(0, lastDone), end || rows.length).map((s) => {
-        const name = s.x.name.replace(/^The client/, c.C).replace(/the client/, c.C);
+        const name = TO_CLIENT[s.x.name] ? T(TO_CLIENT[s.x.name], named('C', c.C)) : T(s.x.name);
         let st = s.state, when, ev = evidence(s.x.name, j, c);
         if (st === 'done') when = V.at(s.t);
-        else if (st === 'now') when = s.x.name === 'The client approves' && r ? `Waiting, ${V.words(V.now() - r.sent)}` : s.x.name === 'Yusuf delivers' ? `By ${V.hm(j.iso)} ${V.when(j.iso)}` : 'Now';
-        else if (s.x.name === 'Wait two days' && r) when = `Until ${V.at(r.due)}`;
+        else if (st === 'now') when = s.x.name === 'The client approves' && r ? T('Waiting, {span}', { span: V.words(V.now() - r.sent) }) : s.x.name === 'Yusuf delivers' ? T('By {time} {when}', { time: V.hm(j.iso), when: V.when(j.iso) }) : T('Now');
+        else if (s.x.name === 'Wait two days' && r) when = T('Until {at}', { at: V.at(r.due) });
         else if (s.x.name === 'Remind the client' && r) when = V.at(r.due);
-        else if (s.x.name === 'Yusuf delivers') when = `${V.day(j.iso)}, by ${V.hm(j.iso)}`;
-        else when = 'Ahead';
-        if (early != null && s.x.name === 'Remind the client') { st = 'done'; when = `${V.hm(early.t)} · sent early by ${early.by}`; ev = null; }
-        if (early != null && s.x.name === 'Wait two days') { st = 'skip'; when = 'Not needed: reminded early'; }
+        else if (s.x.name === 'Yusuf delivers') when = T('{day}, by {time}', { day: V.day(j.iso), time: V.hm(j.iso) });
+        else when = T('Ahead');
+        if (early != null && s.x.name === 'Remind the client') { st = 'done'; when = T('{time} · sent early by {name}', { time: V.hm(early.t), name: T(early.by) }); ev = null; }
+        if (early != null && s.x.name === 'Wait two days') { st = 'skip'; when = T('Not needed: reminded early'); }
         return { x: s.x, name, state: st, when, t: st !== 'done' ? null : s.t != null ? s.t : early.t, ev };
       });
     }

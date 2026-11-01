@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brand  # noqa: E402
 import tokens as T  # noqa: E402
 
-V = 112
+V = 121
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 esc = lambda s: html.escape(str(s), quote=True)
 

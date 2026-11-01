@@ -69,7 +69,7 @@
       bot = BOT * o.k + (o.me >= 0 ? 20 : 33) * u;
     }
     const pad = W * o.k, top = TOP * o.k, vw = right + 2 * pad;
-    return `<svg class="${o.cls}" viewBox="${n(-pad)} ${n(top)} ${n(vw)} ${n(bot - top)}" width="${n(vw)}" height="${n(bot - top)}" role="img" aria-label="${describe(blocks)}">${svg}</svg>`;
+    return `<svg class="${o.cls ? `${o.cls} flow` : 'flow'}" viewBox="${n(-pad)} ${n(top)} ${n(vw)} ${n(bot - top)}" width="${n(vw)}" height="${n(bot - top)}" role="img" aria-label="${describe(blocks)}">${svg}</svg>`;
   }
 
   // An organization's mark: its own line signed across an ink tile; long lines sign on two rows.

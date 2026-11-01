@@ -25,6 +25,8 @@ STATES = {
     'overview-m': ('research/qa.html?w=375&h=812&src=overview.html', 375, 812, 2),
     'build-d': ('research/qa.html?w=1440&h=900&src=build.html', 1440, 900, 1),
     'build-m': ('research/qa.html?w=375&h=812&src=build.html', 375, 812, 2),
+    'inbox-d': ('research/qa.html?w=1440&h=900&src=inbox.html', 1440, 900, 1),
+    'inbox-m': ('research/qa.html?w=375&h=812&src=inbox.html%23m2', 375, 812, 2),
     'orders-d': ('research/qa.html?w=1440&h=900&src=orders.html', 1440, 900, 1),
     'orders-m': ('research/qa.html?w=375&h=812&src=order.html%3Fcode%3DSFR-26-0029', 375, 812, 2),
     'clients-d': ('research/qa.html?w=1440&h=900&src=clients.html', 1440, 900, 1),

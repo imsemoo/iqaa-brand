@@ -17,9 +17,10 @@ main.td { background: #fff; }
 .db-line svg { display: block; overflow: visible; }
 .db-line .day { stroke: var(--iqaa-n200); stroke-width: 1.5; }
 .db-line .hr { stroke: var(--iqaa-n300); stroke-width: 1; }
-.db-line .hl { font-family: 'Fragment Mono', monospace; font-size: 11px; fill: var(--iqaa-n600); }
+.db-line .hl { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 11px; fill: var(--iqaa-n600); }
 .db-line .now { stroke: var(--iqaa-ink); stroke-width: 1; stroke-dasharray: 2 3; }
-.db-line .nl { font-family: 'Fragment Mono', monospace; font-size: 11px; fill: var(--iqaa-ink); }
+/* 'Now 09:41' in the mono face; Arabic letters fall through to the text face (Atkinson's name carries them) */
+.db-line .nl { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 11px; fill: var(--iqaa-ink); }
 @media (max-width: 900px) { .td-band { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- the board: waiting for you, and beside it what is coming and what is done ---------- */
@@ -31,12 +32,15 @@ main.td { background: #fff; }
 .job:first-child, .job.open, .job.open + .job { border-block-start-color: transparent; }
 .job.open { background: var(--iqaa-n50); }
 .jb-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
-.jb-top code, .mn code, .dn-t time { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--iqaa-ink); }
+.jb-top code, .mn code, .dn-t time { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--iqaa-ink); white-space: nowrap; }
 .jb-top .due { margin-inline-start: auto; }
 .job h3 { margin: 0; }
 .jb-h { appearance: none; background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer; width: 100%; text-align: start; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); font-size: 18px; line-height: 26px; font-weight: 600; }
 .jb-h::after { content: ''; flex: none; width: 10px; height: 10px; border-inline-end: 2px solid currentColor; border-block-end: 2px solid currentColor; transform: translateY(-3px) rotate(45deg); transition: transform var(--m-quarter) var(--ease-move); }
 .job.open .jb-h::after { transform: translateY(2px) rotate(-135deg); }
+/* right to left the chevron's borders sit on the other side, so it turns the other way to point down, then up */
+[dir='rtl'] .jb-h::after { transform: translateY(-3px) rotate(-45deg); }
+[dir='rtl'] .job.open .jb-h::after { transform: translateY(2px) rotate(135deg); }
 .jb-h:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 4px; border-radius: 6px; }
 .jb-pos { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .jb-pos b { color: var(--iqaa-ink); }

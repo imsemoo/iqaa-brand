@@ -10,6 +10,21 @@
   const esc = Beats.esc;
   const canvas = $('[data-canvas]'), world = $('[data-world]'), edgesEl = $('[data-edges]'), blocksEl = $('[data-blocks]');
   const clone = (o) => JSON.parse(JSON.stringify(o));
+  const N = I18N.n;
+  // Names the app writes are English data, shown in the page's language; a name someone typed is shown as it is.
+  // A few are written with a number or a person in them, so those are read by their pattern.
+  const MADE = [
+    [/^Over (\d+) people\?$/, (m) => N(+m[1], 'Over {n} people?', 'Over {n} people?')],
+    [/^(.+) \(copy\)$/, (m) => T('{name} (copy)', { name: say(m[1]) })],
+    [/^(.+)’s approval$/, (m) => T('{name}’s approval', { name: T(m[1]) })],
+    [/^(.+) approves the big order$/, (m) => T('{name} approves the big order', { name: T(m[1]) })],
+  ];
+  function say(name) {
+    const out = T(name);
+    if (out !== name || I18N.lang === 'en') return out;
+    for (const [re, f] of MADE) { const m = re.exec(name); if (m) return f(m); }
+    return name;
+  }
   let uid = 0;
   const nid = (p) => `${p}${Date.now().toString(36)}${++uid}`;
 
@@ -30,6 +45,9 @@
   };
   const VARS = ['{client.name}', '{order.title}', '{order.people}', '{order.due}', '{quote.link}', '{station.name}'];
   const FIELDS = { people: 'Number of people', total: 'Order total', days: 'Days until it is due' };
+  // the kind of a block, as the library names it; English keeps the key it has always shown
+  const LIB_NAME = { task: 'Task', approval: 'Approval', watar: 'Watar draft', send: 'Send', remind: 'Remind', create: 'Create', move: 'Move job', webhook: 'Webhook', http: 'HTTP request', condition: 'Condition', wait: 'Wait' };
+  const typeLabel = (k) => (I18N.lang === 'en' ? k : T(LIB_NAME[k]));
 
   // ---------- Sufra's line, laid out once like its metro map ----------
   function fromSufra() {
@@ -101,20 +119,21 @@
     const reach = new Set([line.start]), q = [line.start];
     while (q.length) { const id = q.shift(); line.edges.filter((e) => e.from === id).forEach((e) => { if (!reach.has(e.to)) { reach.add(e.to); q.push(e.to); } }); }
     line.stations.forEach((s) => {
-      if (!reach.has(s.id)) out.push({ at: s.id, text: `No job ever reaches ${s.name}.` });
+      const name = say(s.name);
+      if (!reach.has(s.id)) out.push({ at: s.id, text: T('No job ever reaches {name}.', { name }) });
       const next = line.edges.some((e) => e.from === s.id && e.port === 'next');
-      if (!next && !s.end) out.push({ at: s.id, text: `${s.name} has no way out. Connect its Next, or mark it as the end.` });
-      ports(s).filter((p) => p.step).forEach((p) => { if (!line.edges.some((e) => e.from === s.id && e.port === p.id)) out.push({ at: s.id, step: p.step, text: `${s.name}: “${p.label}” goes nowhere yet.` }); });
+      if (!next && !s.end) out.push({ at: s.id, text: T('{name} has no way out. Connect its Next, or mark it as the end.', { name }) });
+      ports(s).filter((p) => p.step).forEach((p) => { if (!line.edges.some((e) => e.from === s.id && e.port === p.id)) out.push({ at: s.id, step: p.step, text: T('{name}: “{label}” goes nowhere yet.', { name, label: T(p.label) }) }); });
       s.steps.forEach((p) => {
-        const T = TYPES[p.type];
-        if (T.person && !p.who) out.push({ at: s.id, step: p.id, text: `${s.name}: “${p.name}” has nobody to do it.` });
-        if (T.msg && !p.msg.trim()) out.push({ at: s.id, step: p.id, text: `${s.name}: “${p.name}” has no message.` });
-        if (T.url && !/^https:\/\//.test(p.url || '')) out.push({ at: s.id, step: p.id, text: `${s.name}: “${p.name}” needs an https address.` });
-        if (T.rule && !(p.rule && p.rule.value !== '' && p.rule.value != null)) out.push({ at: s.id, step: p.id, text: `${s.name}: the condition has no value.` });
+        const ty = TYPES[p.type], step = say(p.name);
+        if (ty.person && !p.who) out.push({ at: s.id, step: p.id, text: T('{name}: “{step}” has nobody to do it.', { name, step }) });
+        if (ty.msg && !p.msg.trim()) out.push({ at: s.id, step: p.id, text: T('{name}: “{step}” has no message.', { name, step }) });
+        if (ty.url && !/^https:\/\//.test(p.url || '')) out.push({ at: s.id, step: p.id, text: T('{name}: “{step}” needs an https address.', { name, step }) });
+        if (ty.rule && !(p.rule && p.rule.value !== '' && p.rule.value != null)) out.push({ at: s.id, step: p.id, text: T('{name}: the condition has no value.', { name }) });
       });
-      if (!s.steps.length) out.push({ at: s.id, text: `${s.name} has no steps.` });
+      if (!s.steps.length) out.push({ at: s.id, text: T('{name} has no steps.', { name }) });
     });
-    if (line.stations.filter((s) => s.end).length === 0) out.push({ text: 'No station is marked as the end of the line.' });
+    if (line.stations.filter((s) => s.end).length === 0) out.push({ text: T('No station is marked as the end of the line.') });
     return out;
   }
 
@@ -127,17 +146,19 @@
     const start = s.id === line.start;
     const rows = s.steps.map((p) => {
       const k = kindOf(p), pon = sel.kind === 'step' && sel.id === p.id, b = bad.some((c) => c.step === p.id);
-      const who = TYPES[p.type].person ? (p.who || 'Nobody yet') : p.type === 'wait' ? (p.wait || 'How long?') : p.type === 'condition' && p.rule ? `${FIELDS[p.rule.field] || ''} ${p.rule.op} ${p.rule.value}` : TYPES[p.type].name;
-      const outs = ports(s).filter((o) => o.step === p.id).map((o) => `<button type="button" class="bk-out" data-port="${o.id}" data-from="${s.id}" aria-label="${esc(s.name)}: drag “${esc(o.label)}” to a station">${esc(o.label)}</button>`).join('');
+      const who = TYPES[p.type].person ? (p.who ? T(p.who) : T('Nobody yet')) : p.type === 'wait' ? (p.wait ? T(p.wait) : T('How long?'))
+        : p.type === 'condition' && p.rule ? `${T(FIELDS[p.rule.field] || '')} ${p.rule.op} ${p.rule.value}` : T(TYPES[p.type].name);
+      const outs = ports(s).filter((o) => o.step === p.id).map((o) => `<button type="button" class="bk-out" data-port="${o.id}" data-from="${s.id}" aria-label="${T('{name}: drag “{label}” to a station', { name: esc(say(s.name)), label: esc(T(o.label)) })}">${esc(T(o.label))}</button>`).join('');
       return `<li class="bk-step${pon ? ' on' : ''}${b ? ' bad' : ''}${p.draft ? ' draft' : ''}" data-step="${p.id}" tabindex="-1">
-<span class="bk-g" aria-hidden="true">${IQ.glyph(k, { test: !!p.draft })}</span><span class="bk-n"><b>${esc(p.name)}</b><span>${esc(who)}</span>${outs}</span>${b ? '<span class="bk-x" aria-label="Needs fixing">' + IQ.glyph('failed') + '</span>' : ''}
+<span class="bk-g" aria-hidden="true">${IQ.glyph(k, { test: !!p.draft })}</span><span class="bk-n"><b dir="auto">${esc(say(p.name))}</b><span dir="auto">${esc(who)}</span>${outs}</span>${b ? `<span class="bk-x" aria-label="${T('Needs fixing')}">${IQ.glyph('failed')}</span>` : ''}
 <span class="bk-grip" data-grip="${p.id}" aria-hidden="true"></span></li>`;
     }).join('');
     const isBad = bad.some((c) => c.at === s.id && !c.step);
-    return `<section class="bk${on ? ' on' : ''}${isBad ? ' bad' : ''}${s.end ? ' end' : ''}${s.draft ? ' draft' : ''}" data-st="${s.id}" style="transform:translate(${s.x}px,${s.y}px)" aria-label="Station ${esc(s.name)}">
-<p class="bk-h" data-drag="${s.id}" tabindex="0"><b>${esc(s.name)}</b>${start ? '<span class="bk-tag">Start</span>' : ''}${s.end ? '<span class="bk-tag">End</span>' : ''}</p>
-<button type="button" class="bk-ring" data-port="next" data-from="${s.id}" aria-label="${esc(s.name)}: drag to the station that comes next"></button>
-<ol class="bk-steps">${rows || '<li class="bk-empty">Drop a block here</li>'}</ol></section>`;
+    const name = esc(say(s.name));
+    return `<section class="bk${on ? ' on' : ''}${isBad ? ' bad' : ''}${s.end ? ' end' : ''}${s.draft ? ' draft' : ''}" data-st="${s.id}" style="transform:translate(${s.x}px,${s.y}px)" aria-label="${T('Station {name}', { name })}">
+<p class="bk-h" data-drag="${s.id}" tabindex="0"><b dir="auto">${name}</b>${start ? `<span class="bk-tag">${T('Start')}</span>` : ''}${s.end ? `<span class="bk-tag">${T('End')}</span>` : ''}</p>
+<button type="button" class="bk-ring" data-port="next" data-from="${s.id}" aria-label="${T('{name}: drag to the station that comes next', { name })}"></button>
+<ol class="bk-steps">${rows || `<li class="bk-empty">${T('Drop a block here')}</li>`}</ol></section>`;
   }
 
   // a polyline with rounded bends
@@ -182,16 +203,21 @@
     }
     return at;
   }
+  // the checks' button says how many things are left to fix
+  function checksCount(n) {
+    $('[data-checks-n]').innerHTML = n ? `${IQ.glyph('failed')}<span>${N(n, '{n} thing to fix', '{n} things to fix')}</span>` : `${IQ.glyph('struck')}<span>${T('The line is complete')}</span>`;
+    $('[data-checks-n]').parentElement.classList.toggle('bad', !!n);
+  }
   function render() {
     const bad = checks();
     blocksEl.innerHTML = line.stations.map((s) => block(s, bad)).join('');
     drawEdges();
     renderInspector(bad);
     renderChecks(bad);
-    const n = bad.length;
-    $('[data-checks-n]').innerHTML = n ? `${IQ.glyph('failed')}<span>${n} ${n === 1 ? 'thing' : 'things'} to fix</span>` : `${IQ.glyph('struck')}<span>The line is complete</span>`;
-    $('[data-checks-n]').parentElement.classList.toggle('bad', !!n);
-    $('[data-state]').textContent = `${line.stations.length} stations · ${line.stations.reduce((a, s) => a + s.steps.length, 0)} steps · ${line.edges.length} connections`;
+    checksCount(bad.length);
+    const steps = line.stations.reduce((a, s) => a + s.steps.length, 0);
+    $('[data-state]').textContent = T('{stations} · {steps} · {connections}', {
+      stations: N(line.stations.length, '{n} stations', '{n} stations'), steps: N(steps, '{n} steps', '{n} steps'), connections: N(line.edges.length, '{n} connections', '{n} connections') });
     $('[data-do="undo"]').disabled = !undo.length;
     $('[data-do="redo"]').disabled = !redo.length;
   }
@@ -216,7 +242,7 @@
       paths[e.id] = d;
       svg += `<path class="ed-hit" data-edge="${e.id}" d="${d}"/><path class="ed${kind === 'back' && e.port !== 'next' ? ' back' : ''}${on ? ' on' : ''}${e.draft ? ' draft' : ''}" d="${d}"/>`;
       if (test && test.walked.has(e.id)) svg += `<path class="ed walked" d="${d}"/>`;
-      const label = e.port.endsWith(':yes') ? 'Yes' : e.port.endsWith(':change') ? 'Change asked' : '';
+      const label = esc(e.port.endsWith(':yes') ? T('Yes') : e.port.endsWith(':change') ? T('Change asked') : '');
       // beside a vertical run, above a level one
       if (label) { const [lx, ly, up] = labelAt(pts); labels += up ? `<text class="ed-l" x="${lx + 9}" y="${ly}" dominant-baseline="middle">${label}</text>` : `<text class="ed-l" x="${lx}" y="${ly - 9}" text-anchor="middle">${label}</text>`; }
     });
@@ -232,53 +258,55 @@
 
   // ---------- inspector ----------
   const field = (label, html, id) => `<div class="in-f"><label${id ? ` for="${id}"` : ''}>${label}</label>${html}</div>`;
-  const pick = (id, opts, val, attr) => `<select class="sw" id="${id}" ${attr}>${opts.map((o) => `<option value="${esc(o)}"${o === val ? ' selected' : ''}>${esc(o) || 'Choose'}</option>`).join('')}</select>`;
+  // a dropdown's options keep the English the line compares as their values; label() gives what each one shows
+  const pick = (id, opts, val, attr, label) => `<select class="sw" id="${id}" ${attr}>${opts.map((o) => `<option value="${esc(o)}"${o === val ? ' selected' : ''}>${esc((label || T)(o)) || T('Choose')}</option>`).join('')}</select>`;
   function renderInspector(bad) {
     const el = $('[data-insp]');
     if (sel.kind === 'station' && st(sel.id)) {
-      const s = st(sel.id), ins = line.edges.filter((e) => e.to === s.id).map((e) => st(e.from).name);
-      el.innerHTML = `<p class="in-k">Station</p>
-${field('Name', `<input class="sn" id="in-name" data-set="name" value="${esc(s.name)}" maxlength="32" autocomplete="off">`, 'in-name')}
-<p class="hint">${ins.length ? `Jobs arrive from ${esc(ins.join(', '))}.` : s.id === line.start ? 'Every job starts here.' : 'No station hands on to this one yet.'} ${s.steps.length} ${s.steps.length === 1 ? 'step' : 'steps'}.</p>
-<label class="chk"><input type="checkbox" data-set="end"${s.end ? ' checked' : ''}><span>The job ends here</span></label>
-<div class="in-act"><button type="button" class="btn small" data-do="start"${s.id === line.start ? ' disabled' : ''}>Start jobs here</button><button type="button" class="btn small" data-do="dup">Duplicate</button><button type="button" class="btn small quiet" data-do="del">Remove</button></div>
+      const s = st(sel.id), ins = line.edges.filter((e) => e.to === s.id).map((e) => say(st(e.from).name));
+      const from = ins.length ? T('Jobs arrive from {names}.', { names: esc(ins.join(T(', '))) }) : s.id === line.start ? T('Every job starts here.') : T('No station hands on to this one yet.');
+      el.innerHTML = `<p class="in-k">${T('Station')}</p>
+${field(T('Name'), `<input class="sn" id="in-name" data-set="name" value="${esc(say(s.name))}" maxlength="32" autocomplete="off">`, 'in-name')}
+<p class="hint">${from} ${N(s.steps.length, '{n} step.', '{n} steps.')}</p>
+<label class="chk"><input type="checkbox" data-set="end"${s.end ? ' checked' : ''}><span>${T('The job ends here')}</span></label>
+<div class="in-act"><button type="button" class="btn small" data-do="start"${s.id === line.start ? ' disabled' : ''}>${T('Start jobs here')}</button><button type="button" class="btn small" data-do="dup">${T('Duplicate')}</button><button type="button" class="btn small quiet" data-do="del">${T('Remove')}</button></div>
 ${issues(bad.filter((c) => c.at === s.id && !c.step))}`;
       return;
     }
     if (sel.kind === 'step' && stepAt(sel.id)) {
-      const { s, p } = stepAt(sel.id), T = TYPES[p.type];
-      let f = field('Name', `<input class="sn" id="in-sname" data-set="sname" value="${esc(p.name)}" maxlength="48" autocomplete="off">`, 'in-sname');
-      f += field('Kind of block', pick('in-type', Object.keys(TYPES), p.type, 'data-set="type"'), 'in-type');
-      if (T.person) f += field(p.type === 'approval' ? 'Who approves' : 'Who does it', pick('in-who', [''].concat(PEOPLE), p.who, 'data-set="who"'), 'in-who');
-      if (p.type === 'approval') f += `<label class="chk"><input type="checkbox" data-set="change"${p.change ? ' checked' : ''}><span>They can ask for a change, which sends the job back</span></label>`;
-      if (T.channel) f += field('By', pick('in-ch', ['Email', 'WhatsApp', 'SMS'], p.channel || 'Email', 'data-set="channel"'), 'in-ch');
-      if (T.msg) f += field('Message', `<textarea class="sn sn-t" id="in-msg" data-set="msg" rows="4">${esc(p.msg || '')}</textarea><p class="in-vars">${VARS.map((v) => `<button type="button" class="var" data-var="${v}">${v}</button>`).join('')}</p>`, 'in-msg');
-      if (T.make) f += field('What it creates', pick('in-make', ['An invoice', 'A shopping list', 'A task', 'A delivery note'], p.make || 'An invoice', 'data-set="make"'), 'in-make');
-      if (T.url) f += field('Address', `<input class="sn" id="in-url" data-set="url" value="${esc(p.url || '')}" placeholder="https://" inputmode="url" spellcheck="false">`, 'in-url');
-      if (T.wait) f += field('How long', pick('in-wait', ['An hour', 'A day', 'Two days', 'Three days', 'A week'], p.wait || 'A day', 'data-set="wait"'), 'in-wait');
-      if (T.rule) {
+      const { s, p } = stepAt(sel.id), ty = TYPES[p.type];
+      let f = field(T('Name'), `<input class="sn" id="in-sname" data-set="sname" value="${esc(say(p.name))}" maxlength="48" autocomplete="off">`, 'in-sname');
+      f += field(T('Kind of block'), pick('in-type', Object.keys(TYPES), p.type, 'data-set="type"', typeLabel), 'in-type');
+      if (ty.person) f += field(p.type === 'approval' ? T('Who approves') : T('Who does it'), pick('in-who', [''].concat(PEOPLE), p.who, 'data-set="who"'), 'in-who');
+      if (p.type === 'approval') f += `<label class="chk"><input type="checkbox" data-set="change"${p.change ? ' checked' : ''}><span>${T('They can ask for a change, which sends the job back')}</span></label>`;
+      if (ty.channel) f += field(T('By'), pick('in-ch', ['Email', 'WhatsApp', 'SMS'], p.channel || 'Email', 'data-set="channel"'), 'in-ch');
+      if (ty.msg) f += field(T('Message'), `<textarea class="sn sn-t" id="in-msg" data-set="msg" rows="4">${esc(say(p.msg || ''))}</textarea><p class="in-vars">${VARS.map((v) => `<button type="button" class="var" data-var="${v}">${v}</button>`).join('')}</p>`, 'in-msg');
+      if (ty.make) f += field(T('What it creates'), pick('in-make', ['An invoice', 'A shopping list', 'A task', 'A delivery note'], p.make || 'An invoice', 'data-set="make"'), 'in-make');
+      if (ty.url) f += field(T('Address'), `<input class="sn" id="in-url" data-set="url" value="${esc(p.url || '')}" placeholder="https://" inputmode="url" spellcheck="false" dir="ltr">`, 'in-url');
+      if (ty.wait) f += field(T('How long'), pick('in-wait', ['An hour', 'A day', 'Two days', 'Three days', 'A week'], p.wait || 'A day', 'data-set="wait"'), 'in-wait');
+      if (ty.rule) {
         const r = p.rule || { field: 'people', op: '>', value: '' };
-        f += `<div class="in-f"><span class="in-l">Jobs go the Yes way when</span><div class="in-rule">${pick('in-rf', Object.keys(FIELDS), r.field, 'data-set="rf" aria-label="Field"').replace(/>(people|total|days)</g, (m, k) => `>${FIELDS[k]}<`)}
-${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Comparison"')}<input class="sn num" type="number" data-set="rv" value="${esc(r.value)}" aria-label="Value"></div></div>`;
+        f += `<div class="in-f"><span class="in-l">${T('Jobs go the Yes way when')}</span><div class="in-rule">${pick('in-rf', Object.keys(FIELDS), r.field, `data-set="rf" aria-label="${T('Field to compare')}"`, (k) => T(FIELDS[k]))}
+${pick('in-ro', ['>', '≥', '=', '<'], r.op, `data-set="ro" aria-label="${T('Comparison')}"`, (o) => o)}<input class="sn num" type="number" data-set="rv" value="${esc(r.value)}" aria-label="${T('Value')}"></div></div>`;
       }
-      if (!T.person) f += `<label class="chk"><input type="checkbox" data-set="retry"${p.retry ? ' checked' : ''}><span>If it fails, try again three times, then tell Hala</span></label>`;
-      el.innerHTML = `<p class="in-k"><span class="bk-g" aria-hidden="true">${IQ.glyph(T.kind)}</span>${esc(T.name)} · in ${esc(s.name)}</p>${f}
-<div class="in-act"><button type="button" class="btn small" data-do="sdup">Duplicate</button><button type="button" class="btn small quiet" data-do="sdel">Remove</button></div>${issues(bad.filter((c) => c.step === p.id))}`;
+      if (!ty.person) f += `<label class="chk"><input type="checkbox" data-set="retry"${p.retry ? ' checked' : ''}><span>${T('If it fails, try again three times, then tell {name}', { name: T('Hala') })}</span></label>`;
+      el.innerHTML = `<p class="in-k"><span class="bk-g" aria-hidden="true">${IQ.glyph(ty.kind)}</span>${T('{type} · in {station}', { type: esc(T(ty.name)), station: esc(say(s.name)) })}</p>${f}
+<div class="in-act"><button type="button" class="btn small" data-do="sdup">${T('Duplicate')}</button><button type="button" class="btn small quiet" data-do="sdel">${T('Remove')}</button></div>${issues(bad.filter((c) => c.step === p.id))}`;
       return;
     }
     if (sel.kind === 'edge') {
       const e = line.edges.find((x) => x.id === sel.id);
       if (e) {
         const label = ports(st(e.from)).find((p) => p.id === e.port);
-        el.innerHTML = `<p class="in-k">Connection</p><p>${esc(st(e.from).name)} <b>${esc(label ? label.label : '')}</b> → ${esc(st(e.to).name)}</p><div class="in-act"><button type="button" class="btn small quiet" data-do="edel">Remove the connection</button></div>`;
+        el.innerHTML = `<p class="in-k">${T('Connection')}</p><p>${T('{from} {label} → {to}', { from: esc(say(st(e.from).name)), label: `<b>${esc(label ? T(label.label) : '')}</b>`, to: esc(say(st(e.to).name)) })}</p><div class="in-act"><button type="button" class="btn small quiet" data-do="edel">${T('Remove the connection')}</button></div>`;
         return;
       }
     }
-    el.innerHTML = '<p class="in-k">Nothing selected</p><p class="hint">Select a station, a step or a connection to change it.</p>';
+    el.innerHTML = `<p class="in-k">${T('Nothing selected')}</p><p class="hint">${T('Select a station, a step or a connection to change it.')}</p>`;
   }
   const issues = (list) => (list.length ? `<ul class="in-bad">${list.map((c) => `<li>${IQ.glyph('failed')}<span>${esc(c.text)}</span></li>`).join('')}</ul>` : '');
   function renderChecks(bad) {
-    $('[data-checks]').innerHTML = `<h2>Checks</h2>${bad.length ? `<ul>${bad.map((c, i) => `<li><button type="button" class="link" data-goto="${i}">${esc(c.text)}</button></li>`).join('')}</ul>` : '<p>Every station has a way out, every step has someone or something to do it.</p>'}`;
+    $('[data-checks]').innerHTML = `<h2>${T('Checks')}</h2>${bad.length ? `<ul>${bad.map((c, i) => `<li><button type="button" class="link" data-goto="${i}">${esc(c.text)}</button></li>`).join('')}</ul>` : `<p>${T('Every station has a way out, every step has someone or something to do it.')}</p>`}`;
   }
 
   // ---------- pointer: pan, move blocks, connect, drag from the library, move steps ----------
@@ -313,7 +341,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     }
     if (drag.type === 'link') { drawEdges({ a: ring(drag.from), b: toWorld(e.clientX, e.clientY) }); }
     if (drag.type === 'step') {
-      if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 4) { drag.moved = true; ghost(stepAt(drag.id).p.name); }
+      if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 4) { drag.moved = true; ghost(say(stepAt(drag.id).p.name)); }
       if (drag.moved) moveGhost(e.clientX, e.clientY);
     }
   });
@@ -321,14 +349,14 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     if (!drag) return;
     const d = drag; drag = null;
     canvas.classList.remove('panning');
-    if (d.type === 'move' && d.moved) changed(`${st(d.id).name} moved`);
+    if (d.type === 'move' && d.moved) changed(T('{name} moved', { name: say(st(d.id).name) }));
     if (d.type === 'link') {
       const target = hitStation(e.clientX, e.clientY);
       if (target && target !== d.from) {
         commit();
         line.edges = line.edges.filter((x) => !(x.from === d.from && x.port === d.port));
         line.edges.push({ id: nid('e'), from: d.from, port: d.port, to: target });
-        changed(`${st(d.from).name} now hands on to ${st(target).name}`);
+        changed(T('{from} now hands on to {to}', { from: say(st(d.from).name), to: say(st(target).name) }));
       } else drawEdges();
     }
     if (d.type === 'step' && d.moved) { endGhost(); dropStep(d.id, e.clientX, e.clientY); }
@@ -348,11 +376,11 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     commit();
     const { s, p } = stepAt(id);
     s.steps = s.steps.filter((x) => x.id !== id);
-    const T = st(tgt);
-    const i = before && before !== id ? T.steps.findIndex((x) => x.id === before) : -1;
-    if (i >= 0) T.steps.splice(i, 0, p); else T.steps.push(p);
+    const to = st(tgt);
+    const i = before && before !== id ? to.steps.findIndex((x) => x.id === before) : -1;
+    if (i >= 0) to.steps.splice(i, 0, p); else to.steps.push(p);
     sel = { kind: 'step', id };
-    changed(`${p.name} moved to ${T.name}`);
+    changed(T('{step} moved to {station}', { step: say(p.name), station: say(to.name) }));
   }
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
@@ -380,8 +408,8 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
   function moveGhost(x, y) { if (gh) gh.style.transform = `translate(${x + 12}px, ${y + 12}px)`; }
   function endGhost() { if (gh) gh.remove(); gh = null; }
   const newStep = (type) => {
-    const T = TYPES[type];
-    return { id: nid('s'), type, name: T.name, who: '', msg: T.msg ? 'Hello {client.name}, ' : '', channel: 'Email', make: T.make ? 'An invoice' : '', url: '', wait: T.wait ? 'A day' : '', rule: T.rule ? { field: 'people', op: '>', value: '' } : null, change: false, retry: !T.person };
+    const ty = TYPES[type];
+    return { id: nid('s'), type, name: ty.name, who: '', msg: ty.msg ? 'Hello {client.name}, ' : '', channel: 'Email', make: ty.make ? 'An invoice' : '', url: '', wait: ty.wait ? 'A day' : '', rule: ty.rule ? { field: 'people', op: '>', value: '' } : null, change: false, retry: !ty.person };
   };
   function addFromLibrary(type, cx, cy) {
     const tgt = cx == null ? (sel.kind === 'station' ? sel.id : sel.kind === 'step' ? stepAt(sel.id).s.id : null) : hitStation(cx, cy);
@@ -391,12 +419,12 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       const s = { id: nid('t'), name: 'New station', x: Math.round(wx / 8) * 8, y: Math.round(wy / 8) * 8, end: false, steps: type === 'station' ? [] : [newStep(type)] };
       line.stations.push(s);
       sel = s.steps.length ? { kind: 'step', id: s.steps[0].id } : { kind: 'station', id: s.id };
-      changed(`New station${s.steps.length ? ` with ${TYPES[type].name}` : ''}`);
+      changed(s.steps.length ? T('New station with {type}', { type: T(TYPES[type].name) }) : T('New station'));
     } else {
       const p = newStep(type);
       st(tgt).steps.push(p);
       sel = { kind: 'step', id: p.id };
-      changed(`${TYPES[type].name} added to ${st(tgt).name}`);
+      changed(T('{type} added to {station}', { type: T(TYPES[type].name), station: say(st(tgt).name) }));
     }
     const i = $('#in-sname') || $('#in-name');
     if (i) { i.focus(); i.select(); }
@@ -410,7 +438,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
   });
   $('.bd-lib').addEventListener('pointermove', (e) => {
     if (!lib) return;
-    if (!lib.moved && Math.hypot(e.clientX - lib.x, e.clientY - lib.y) > 4) { lib.moved = true; ghost(lib.type === 'station' ? 'Station' : TYPES[lib.type].name); }
+    if (!lib.moved && Math.hypot(e.clientX - lib.x, e.clientY - lib.y) > 4) { lib.moved = true; ghost(T(lib.type === 'station' ? 'Station' : TYPES[lib.type].name)); }
     if (lib.moved) {
       moveGhost(e.clientX, e.clientY);
       $$('.bk.drop').forEach((x) => x.classList.remove('drop'));
@@ -473,9 +501,15 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     if (k === 'retry') p.retry = t.checked;
     const keep = t.id;
     changed();
-    const back = keep && document.getElementById(keep);
-    if (back) back.focus();
+    refocus(keep);
   });
+  // the inspector was drawn again: the focus returns to the field just used, or to its dropdown's button
+  function refocus(id) {
+    const el = id && document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT' && window.UI) UI.dropdown(el);
+    (document.getElementById(`${id}-dd`) || el).focus();
+  }
   // typing updates the blocks without rebuilding the field being typed in
   function soft() {
     const bad = checks();
@@ -484,9 +518,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     blocksEl.innerHTML = line.stations.map((s) => block(s, bad)).join('');
     drawEdges();
     renderChecks(bad);
-    const n = bad.length;
-    $('[data-checks-n]').innerHTML = n ? `${IQ.glyph('failed')}<span>${n} ${n === 1 ? 'thing' : 'things'} to fix</span>` : `${IQ.glyph('struck')}<span>The line is complete</span>`;
-    $('[data-checks-n]').parentElement.classList.toggle('bad', !!n);
+    checksCount(bad.length);
     try { sessionStorage.setItem('iqaa-build', JSON.stringify(line)); } catch (e) { /* kept for this page */ }
     const el = keep && document.getElementById(keep);
     if (el && el !== document.activeElement) { el.focus(); if (pos != null && el.setSelectionRange) el.setSelectionRange(pos, pos); }
@@ -501,17 +533,17 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       line.edges = line.edges.filter((x) => x.from !== s.id && x.to !== s.id);
       if (line.start === s.id && line.stations[0]) line.start = line.stations[0].id;
       sel = { kind: 'none' };
-      changed(`${s.name} removed. Ctrl+Z brings it back.`);
+      changed(T('{name} removed. Ctrl+Z brings it back.', { name: say(s.name) }));
     } else if (kind === 'step') {
       const { s, p } = stepAt(sel.id);
       s.steps = s.steps.filter((x) => x !== p);
       line.edges = line.edges.filter((x) => !x.port.startsWith(`${p.id}:`));
       sel = { kind: 'station', id: s.id };
-      changed(`${p.name} removed. Ctrl+Z brings it back.`);
+      changed(T('{name} removed. Ctrl+Z brings it back.', { name: say(p.name) }));
     } else if (kind === 'edge') {
       line.edges = line.edges.filter((x) => x.id !== sel.id);
       sel = { kind: 'none' };
-      changed('Connection removed');
+      changed(T('Connection removed'));
     }
   }
   function dup() {
@@ -521,12 +553,12 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       c.id = nid('t'); c.name = `${s.name} (copy)`; c.x += 32; c.y += 32; c.end = false;
       c.steps.forEach((p) => { p.id = nid('s'); });
       line.stations.push(c); sel = { kind: 'station', id: c.id };
-      changed(`${s.name} duplicated`);
+      changed(T('{name} duplicated', { name: say(s.name) }));
     } else if (sel.kind === 'step') {
       const { s, p } = stepAt(sel.id), c = clone(p);
       c.id = nid('s');
       s.steps.splice(s.steps.indexOf(p) + 1, 0, c); sel = { kind: 'step', id: c.id };
-      changed(`${p.name} duplicated`);
+      changed(T('{name} duplicated', { name: say(p.name) }));
     }
   }
   function history(from, to, word) {
@@ -555,8 +587,8 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       return;
     }
     if (!d) return;
-    if (d === 'undo') history(undo, redo, 'Undone');
-    if (d === 'redo') history(redo, undo, 'Redone');
+    if (d === 'undo') history(undo, redo, T('Undone'));
+    if (d === 'redo') history(redo, undo, T('Redone'));
     if (d === 'in') zoomAt(canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2, view.z * 1.2);
     if (d === 'out') zoomAt(canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2, view.z / 1.2);
     if (d === 'reset') zoomAt(canvas.getBoundingClientRect().left + canvas.clientWidth / 2, canvas.getBoundingClientRect().top + canvas.clientHeight / 2, 1);
@@ -566,7 +598,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     if (d === 'sdel') del('step');
     if (d === 'edel') del('edge');
     if (d === 'dup' || d === 'sdup') dup();
-    if (d === 'start') { commit(); line.start = sel.id; changed(`Jobs now start at ${st(sel.id).name}`); }
+    if (d === 'start') { commit(); line.start = sel.id; changed(T('Jobs now start at {name}', { name: say(st(sel.id).name) })); }
   });
   function centre(id) {
     const s = st(id);
@@ -575,11 +607,13 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
   }
 
   // ---------- keyboard ----------
+  // a field, or a dropdown's button (it takes letters to jump and the arrows), keeps its keys from the canvas shortcuts
+  const inField = () => /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || !!document.activeElement.closest('.dd');
   document.addEventListener('keydown', (e) => {
-    const typingIn = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+    const typingIn = inField();
     const mod = e.ctrlKey || e.metaKey;
-    if (mod && e.key.toLowerCase() === 'z' && !typingIn) { e.preventDefault(); if (e.shiftKey) history(redo, undo, 'Redone'); else history(undo, redo, 'Undone'); return; }
-    if (mod && e.key.toLowerCase() === 'y' && !typingIn) { e.preventDefault(); history(redo, undo, 'Redone'); return; }
+    if (mod && e.key.toLowerCase() === 'z' && !typingIn) { e.preventDefault(); if (e.shiftKey) history(redo, undo, T('Redone')); else history(undo, redo, T('Undone')); return; }
+    if (mod && e.key.toLowerCase() === 'y' && !typingIn) { e.preventDefault(); history(redo, undo, T('Redone')); return; }
     if (typingIn) return;
     if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); dup(); return; }
     if ((e.key === 'Delete' || e.key === 'Backspace') && sel.kind !== 'none') { e.preventDefault(); del(sel.kind); return; }
@@ -615,7 +649,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       s.x = Math.round(((a + b) / 2) / 8) * 8; s.y = 470 + lane * 330; lane++;
     });
     canvas.classList.add('tidying');
-    changed('The line is laid out as a map');
+    changed(T('The line is laid out as a map'));
     setTimeout(() => { canvas.classList.remove('tidying'); fit(); }, M.half);
   }
 
@@ -662,16 +696,16 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       if (!s) break;
       let leave = null;
       for (const p of s.steps) {
-        seq.push({ type: 'step', s: s.id, p: p.id, text: `${s.name}: ${p.name}` });
+        seq.push({ type: 'step', s: s.id, p: p.id, text: T('{station}: {step}', { station: say(s.name), step: say(p.name) }) });
         if (p.type === 'condition' && p.rule) {
           const v = value[p.rule.field], n = Number(p.rule.value);
           const yes = p.rule.op === '>' ? v > n : p.rule.op === '≥' ? v >= n : p.rule.op === '<' ? v < n : v === n;
-          seq.push({ type: 'note', text: `${p.name} ${yes ? 'Yes' : 'No'}: ${v} ${p.rule.op} ${n}` });
+          seq.push({ type: 'note', text: T('{step} {answer}: {value} {op} {limit}', { step: say(p.name), answer: T(yes ? 'Yes' : 'No'), value: v, op: p.rule.op, limit: n }) });
           if (yes && line.edges.some((e) => e.from === s.id && e.port === `${p.id}:yes`)) { leave = `${p.id}:yes`; break; }
         }
         if (p.type === 'approval' && p.change && takeBack && !taken.has(p.id) && line.edges.some((e) => e.from === s.id && e.port === `${p.id}:change`)) {
           taken.add(p.id); leave = `${p.id}:change`;
-          seq.push({ type: 'note', text: `${p.name}: test answer, a change is asked` });
+          seq.push({ type: 'note', text: T('{step}: test answer, a change is asked', { step: say(p.name) }) });
           break;
         }
       }
@@ -708,13 +742,13 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
         const row = $(`[data-step="${ev.p}"]`);
         if (row) row.classList.add('here');
         steps++;
-        now.textContent = `${ev.text} · not sent: test`;
+        now.textContent = T('{text} · not sent: test', { text: ev.text });
         await wait(M.quarter);
       } else if (ev.type === 'note') { now.textContent = ev.text; await wait(M.quarter * 2); }
       else if (ev.type === 'hop') { test.walked.add(ev.e); drawEdges(); await travel(paths[ev.e]); }
-      else if (ev.type === 'end') now.textContent = `The test job reached ${st(ev.s).name} after ${steps} steps. Nothing was sent.`;
+      else if (ev.type === 'end') now.textContent = N(steps, 'The test job reached {name} after {n} steps. Nothing was sent.', 'The test job reached {name} after {n} steps. Nothing was sent.', { name: say(st(ev.s).name) });
     }
-    if (seq.length && seq[seq.length - 1].type !== 'end') now.textContent = `The test job stopped after ${steps} steps: a station had no way on. See the checks.`;
+    if (seq.length && seq[seq.length - 1].type !== 'end') now.textContent = N(steps, 'The test job stopped after {n} steps: a station had no way on. See the checks.', 'The test job stopped after {n} steps: a station had no way on. See the checks.');
   }
   function closeTest() {
     test = null; token.hidden = true;
@@ -730,11 +764,28 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     'Orders over 50 people need Hala’s approval before buying.',
     'Send the client a WhatsApp when Yusuf delivers.',
   ];
-  $('[data-wt-ex]').innerHTML = EXAMPLES.map((t) => `<button type="button" data-ex="${esc(t)}">${esc(t)}</button>`).join('');
+  // an example keeps its English sentence, which is what Watar reads when it is chosen in any language
+  $('[data-wt-ex]').innerHTML = EXAMPLES.map((x) => `<button type="button" data-ex="${esc(x)}">${esc(T(x))}</button>`).join('');
   const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, a: 1 };
+  // A request written in Arabic or Turkish is read through a few of its words, turned into the English ones the
+  // drafting below looks for: a length, a number of people, remind, approve, buy, send, a channel, a station's work.
+  const WORDS = {
+    ar: [[/(?:يومين|يومان)/g, ' two days '], [/(?:ثلاثة|ثلاث) أيام/g, ' three days '], [/(\d+)\s*(?:أيام|يوما|يوم)/g, ' $1 days '],
+      [/(?:أسبوع|اسبوع)/g, ' 1 week '], [/ساعة/g, ' 1 hour '], [/يوم/g, ' a day '],
+      [/(?:أكثر من|اكثر من|فوق|(?:يزيد|تزيد|زاد)(?: [^\d\s]+){0,3} (?:على|عن))\s*(\d+)\s*(?:شخصا|شخص|أشخاص|اشخاص|ضيفا|ضيف)?/g, ' over $1 people '],
+      [/(?:يذكر|تذكير|ذكر|نذكر)/g, ' remind '], [/(?:موافق|يوافق|توافق|اعتماد|يعتمد)/g, ' approve '], [/(?:قبل الشراء|الشراء|شراء)/g, ' before buying '],
+      [/(?:واتساب|واتس اب)/g, ' whatsapp '], [/(?:رسالة نصية|رسائل قصيرة)/g, ' sms '], [/بريد/g, ' email '], [/(?:أرسل|ارسل|إرسال|ارسال|رسالة)/g, ' send '],
+      [/(?:يوصل|توصيل|يسلم|تسليم)/g, ' deliver '], [/فاتورة/g, ' invoice '], [/(?:يحضر|تحضير|طبخ)/g, ' prepare ']],
+    tr: [[/(\d+)\s*kişiden\s*(?:fazla|çok)/g, ' over $1 people '], [/(\d+)\s*kişinin\s*üzerinde/g, ' over $1 people '],
+      [/iki gün/g, ' two days '], [/üç gün/g, ' three days '], [/bir gün/g, ' a day '], [/(\d+)\s*gün/g, ' $1 days '], [/(?:bir )?saat/g, ' 1 hour '], [/(?:bir )?hafta/g, ' 1 week '],
+      [/hatırlat/g, ' remind '], [/onay/g, ' approve '], [/(?:satın almadan önce|satın al)/g, ' before buying '], [/(?:gönder|mesaj)/g, ' send '],
+      [/teslim/g, ' deliver '], [/fatura/g, ' invoice '], [/(?:hazırla|pişir)/g, ' prepare ']],
+  };
+  // Arabic-Indic digits are read as the digits the rules look for
+  const read = (t) => (WORDS[I18N.lang] || []).reduce((s, [re, to]) => s.replace(re, to), t.replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
   const findStation = (re) => line.stations.find((s) => re.test(s.name)) || (sel.kind === 'station' && st(sel.id)) || line.stations[0];
   function draft(text) {
-    const t = text.toLowerCase(), made = [];
+    const t = read(text.toLowerCase()), made = [];
     const clientSt = line.stations.find((s) => s.steps.some((p) => p.type === 'approval' && p.who === 'The client')) || findStation(/approv/i);
     // "remind ... in two days": a wait, then a reminder, at the client's approval
     if (/remind|nudge/.test(t)) {
@@ -744,14 +795,14 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       const w = newStep('wait'); w.name = `Wait ${label.toLowerCase()}`; w.wait = label; w.draft = true;
       const r = newStep('remind'); r.name = 'Remind the client'; r.msg = 'Hello {client.name}, a reminder about {order.title}: your quote is waiting at {quote.link}.'; r.draft = true;
       clientSt.steps.push(w, r);
-      made.push(`a wait of ${label.toLowerCase().replace(/^an? /, 'one ')} and a reminder in ${clientSt.name}`);
+      made.push(T('a wait of {time} and a reminder in {station}', { time: T(label.toLowerCase().replace(/^an? /, 'one ')), station: say(clientSt.name) }));
     }
     // "over N people ... approval": a condition and an owner's approval on a branch that rejoins
     const over = /(over|more than|above)\s+(\d+)\s+people/.exec(t);
     if (over && /approv|check|sign/.test(t)) {
       const from = /before buying|buy/.test(t) ? (line.edges.find((e) => e.port === 'next' && /buy/i.test(st(e.to).name)) || {}).from : null;
       const s = (from && st(from)) || clientSt;
-      const who = PEOPLE.find((p) => t.includes(p.toLowerCase())) || 'Hala';
+      const who = PEOPLE.find((p) => t.includes(p.toLowerCase()) || t.includes(T(p).toLowerCase())) || 'Hala';
       const c = newStep('condition'); c.name = `Over ${over[2]} people?`; c.rule = { field: 'people', op: '>', value: +over[2] }; c.draft = true;
       s.steps.push(c);
       const next = line.edges.find((e) => e.from === s.id && e.port === 'next');
@@ -760,7 +811,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       line.stations.push(ns);
       line.edges.push({ id: nid('e'), from: s.id, port: `${c.id}:yes`, to: ns.id, draft: true });
       if (next) line.edges.push({ id: nid('e'), from: ns.id, port: 'next', to: next.to, draft: true });
-      made.push(`a condition in ${s.name} and a new station where ${who} approves orders over ${over[2]} people`);
+      made.push(N(+over[2], 'a condition in {station} and a new station where {name} approves orders over {n} people', 'a condition in {station} and a new station where {name} approves orders over {n} people', { station: say(s.name), name: T(who) }));
     }
     // "send ... when X delivers": a message in that station
     const ch = /whatsapp/.test(t) ? 'WhatsApp' : /sms|text/.test(t) ? 'SMS' : /email|mail/.test(t) ? 'Email' : null;
@@ -769,25 +820,26 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
       const m = newStep('send'); m.name = `Send the client a ${ch || 'message'}`; m.channel = ch || 'Email'; m.draft = true;
       m.msg = /deliver/.test(t) ? 'Hello {client.name}, {order.title} has been delivered. Enjoy, from all of us at Sufra.' : 'Hello {client.name}, an update on {order.title}.';
       s.steps.push(m);
-      made.push(`a ${ch || 'message'} to the client in ${s.name}`);
+      made.push(T(`a ${ch || 'message'} to the client in {station}`, { station: say(s.name) }));
     }
     return made;
   }
   $('[data-watar]').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const q = $('[data-wt-q]').value.trim(), out = $('[data-wt-out]');
-    if (!q) { out.textContent = 'Write the change in a sentence, the way you would tell a colleague.'; $('[data-wt-q]').focus(); return; }
+    const typed = $('[data-wt-q]').value.trim(), out = $('[data-wt-out]');
+    const q = EXAMPLES.find((x) => T(x) === typed) || typed;
+    if (!q) { out.textContent = T('Write the change in a sentence, the way you would tell a colleague.'); $('[data-wt-q]').focus(); return; }
     if (hasDraft()) discardDraft(true);
-    out.textContent = 'Watar is drafting…';
+    out.textContent = T('Watar is drafting…');
     await wait(M.beat);
     commit();
     const made = draft(q);
-    if (!made.length) { undo.pop(); out.textContent = 'Watar could not tell what to change. Try one of the examples, or name a station, a person, a number of days or of people.'; return; }
+    if (!made.length) { undo.pop(); out.textContent = T('Watar could not tell what to change. Try one of the examples, or name a station, a person, a number of days or of people.'); return; }
     out.textContent = '';
     $('[data-watar]').hidden = true;
     changed();
     $('[data-draft]').hidden = false;
-    $('[data-draft-t]').innerHTML = `<b>Watar drafted:</b> ${esc(made.join('; '))}. It stays grey until you accept it.`;
+    $('[data-draft-t]').innerHTML = T('{head} {list}. It stays grey until you accept it.', { head: `<b>${T('Watar drafted:')}</b>`, list: esc(made.join(T('; '))) });
     const ds = line.stations.find((s) => s.draft) || line.stations.find((s) => s.steps.some((p) => p.draft));
     if (ds) centre(ds.id);
     $('[data-do="draft-yes"]').focus();
@@ -798,7 +850,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     line.stations.forEach((s) => { delete s.draft; s.steps.forEach((p) => { delete p.draft; }); });
     line.edges.forEach((e) => { delete e.draft; });
     $('[data-draft]').hidden = true;
-    changed('Watar’s draft is now part of the line');
+    changed(T('Watar’s draft is now part of the line'));
   }
   function discardDraft(quiet) {
     if (!quiet) commit();
@@ -807,19 +859,19 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     line.stations.forEach((s) => { const ids = s.steps.filter((p) => p.draft).map((p) => p.id); s.steps = s.steps.filter((p) => !p.draft); line.edges = line.edges.filter((e) => !ids.some((id) => e.port.startsWith(`${id}:`))); });
     line.edges = line.edges.filter((e) => !e.draft && !gone.has(e.from) && !gone.has(e.to));
     $('[data-draft]').hidden = true;
-    if (!quiet) changed('Watar’s draft is discarded');
+    if (!quiet) changed(T('Watar’s draft is discarded'));
   }
   root.addEventListener('click', (e) => {
     const t = e.target.closest('button');
     if (!t) return;
-    if (t.dataset.ex) { $('[data-wt-q]').value = t.dataset.ex; $('[data-wt-q]').focus(); return; }
+    if (t.dataset.ex) { $('[data-wt-q]').value = T(t.dataset.ex); $('[data-wt-q]').focus(); return; }
     const d = t.dataset.do;
     if (d === 'watar') { const p = $('[data-watar]'); p.hidden = !p.hidden; t.setAttribute('aria-expanded', String(!p.hidden)); if (!p.hidden) $('[data-wt-q]').focus(); }
     if (d === 'watar-close') { $('[data-watar]').hidden = true; $('[data-do="watar"]').setAttribute('aria-expanded', 'false'); }
     if (d === 'draft-yes') acceptDraft();
     if (d === 'draft-no') discardDraft(false);
     if (d === 'tidy') tidy();
-    if (d === 'test') { $('[data-testbar]').hidden = false; $('[data-t-now]').textContent = 'A test job walks the blocks, step by step. Nothing is sent.'; $('[data-test-set] [type=submit]').focus(); }
+    if (d === 'test') { $('[data-testbar]').hidden = false; $('[data-t-now]').textContent = T('A test job walks the blocks, step by step. Nothing is sent.'); $('[data-test-set] [type=submit]').focus(); }
     if (d === 'test-close') closeTest();
   });
 
@@ -837,7 +889,7 @@ ${pick('in-ro', ['>', '≥', '=', '<'], r.op, 'data-set="ro" aria-label="Compari
     if (t) panel(t.dataset.foldP || t.dataset.openP, !!t.dataset.openP);
   });
   document.addEventListener('keydown', (e) => {
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || e.ctrlKey || e.metaKey) return;
+    if (inField() || e.ctrlKey || e.metaKey) return;
     if (e.key === '[') panel('lib', body.classList.contains('lib-closed'));
     if (e.key === ']') panel('insp', body.classList.contains('insp-closed'));
   });

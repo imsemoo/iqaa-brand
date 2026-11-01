@@ -3,6 +3,7 @@ now, what is coming to you, what you handed on today; your day writes its own si
 
 The lists are rendered by assets/js/today.js from the shared demo world in assets/js/sufra.js.
 """
+from i18n import t
 from p_auth import runs_badge, shell
 from p_ct import icon
 from p_line import app_top
@@ -20,22 +21,22 @@ def today():
 </div>
 </header>
 <section class="td-band ap-wrap" aria-labelledby="day-h">
-<div class="db-k"><h2 id="day-h">{icon('Today', 20)}Your day</h2><p data-day-cap></p></div>
+<div class="db-k"><h2 id="day-h">{icon('Today', 20)}{t('Your day')}</h2><p data-day-cap></p></div>
 <div class="db-line" data-day-sig></div>
 </section>
 <div class="td-grid ap-wrap">
 <section class="td-wait" aria-labelledby="w-h">
-<h2 id="w-h">{icon('Task', 20)}Waiting for you</h2>
+<h2 id="w-h">{icon('Task', 20)}{t('Waiting for you')}</h2>
 <ol class="jobs" data-wait></ol>
 <div class="td-empty" data-empty hidden></div>
 </section>
 <aside class="td-side">
-<section aria-labelledby="c-h"><h2 id="c-h">{icon('Move job', 20)}Coming to you</h2><ol class="mini" data-coming></ol></section>
-<section aria-labelledby="d-h"><h2 id="d-h">{icon('Done', 20)}Done today</h2><ol class="mini" data-done></ol></section>
+<section aria-labelledby="c-h"><h2 id="c-h">{icon('Move job', 20)}{t('Coming to you')}</h2><ol class="mini" data-coming></ol></section>
+<section aria-labelledby="d-h"><h2 id="d-h">{icon('Done', 20)}{t('Done today')}</h2><ol class="mini" data-done></ol></section>
 </aside>
 </div>
 <p class="sr" data-live aria-live="polite"></p>
 </div>'''
-    who = ' · '.join(f'<a href="today.html?as={k}">{n}</a>' for k, n in CAST)
-    foot = f'<div class="sign-off">{runs_badge()}</div><p class="td-as">Prototype: see Today as {who}.</p>'
-    return shell('td', 'Today · Sufra', app_top('Today'), body, ('sufra', 'jobs', 'today'), foot=foot, css=('app', 'today'))
+    who = ' · '.join(f'<a href="today.html?as={k}">{t(n)}</a>' for k, n in CAST)
+    foot = f'<div class="sign-off">{runs_badge()}</div><p class="td-as">{t("Prototype: see Today as {who}.", who=who)}</p>'
+    return shell('td', f"{t('Today')} · {t('Sufra')}", app_top('Today'), body, ('sufra', 'jobs', 'today'), foot=foot, css=('app', 'today'))

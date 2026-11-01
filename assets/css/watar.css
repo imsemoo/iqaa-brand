@@ -2,7 +2,8 @@
    orders.css; sizes are quarter-beat multiples, durations fractions of the beat. Violet is only where a person is or
    must act: a draft's arch or loop, Approve, the asker's initial, a person's stations; Watar itself speaks in grey. */
 main.aw { background: #fff; }
-.aw time, .aw code { font-family: 'Fragment Mono', monospace; }
+/* times and codes in Fragment Mono; an Arabic day or month inside a time falls through to Atkinson's own name (Readex Pro) */
+.aw time, .aw code { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; }
 
 /* ---------- head: the day and the time, the name, one sentence; nothing more ---------- */
 .aw-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
@@ -69,7 +70,7 @@ main.aw { background: #fff; }
 .aw-ts .up { fill: var(--iqaa-n100); }
 .aw-ts .ev { stroke: var(--iqaa-ink); stroke-width: 1.5; }
 .aw-ts .now { stroke: var(--iqaa-ink); stroke-width: 1; stroke-dasharray: 2 3; }
-.aw-ts text { font-family: 'Fragment Mono', monospace; font-size: 12px; fill: var(--iqaa-ink); }
+.aw-ts text { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 12px; fill: var(--iqaa-ink); }
 .aw-ts .dl { fill: var(--iqaa-n600); }
 .aw-ts .rl { fill: var(--iqaa-n700); }
 @container fig (max-width: 559px) { .aw-why { margin-inline-start: 0; padding-inline: var(--s-3); max-width: none; } }
@@ -147,7 +148,7 @@ main.aw { background: #fff; }
 .aw-lt tbody th { font-weight: 400; white-space: normal; }
 .aw-lt tbody th a { display: block; color: var(--iqaa-ink); }
 .aw-lt tbody th span { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
-.aw-lt td { font-family: 'Fragment Mono', monospace; font-size: 13px; white-space: nowrap; text-align: end; }
+.aw-lt td { font-family: 'Fragment Mono', 'Atkinson Hyperlegible Next', monospace; font-size: 13px; white-space: nowrap; text-align: end; }
 .aw-lt thead th:not(:first-child) { text-align: end; }
 @media (hover: hover) and (pointer: fine) { .aw-tm:hover, .aw-st a:hover { background: var(--iqaa-n50); } .aw-tm:hover b, .aw-st a:hover .aw-st-n { text-decoration: underline; } }
 .aw-tm:focus-visible, .aw-st a:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
@@ -272,6 +273,9 @@ main.aw { background: #fff; }
 .aw-reads-d summary svg { flex: none; color: var(--iqaa-n600); }
 .aw-reads-d summary::after { content: ''; margin-inline-start: auto; width: 8px; height: 8px; border-inline-end: 1.5px solid var(--iqaa-n600); border-block-end: 1.5px solid var(--iqaa-n600); transform: translateY(-2px) rotate(45deg); }
 .aw-reads-d[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+/* the chevron is drawn from its end corners: right to left, the same turn points it the other way, so it turns back */
+[dir='rtl'] .aw-reads-d summary::after { transform: translateY(-2px) rotate(-45deg); }
+[dir='rtl'] .aw-reads-d[open] summary::after { transform: translateY(2px) rotate(135deg); }
 .aw-reads-d [data-reads] { padding: 0 var(--s-3) var(--s-3); }
 .aw-as a { color: inherit; }
 
