@@ -185,3 +185,17 @@ tr.out td { color: var(--c-text-3); }
 .foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-4); }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; } }
+
+/* Iqaa's hand: the capitals and figures organization marks are written in */
+.hand { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: var(--s-4) var(--s-2); color: var(--iqaa-ink); }
+.hand figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--s-1); }
+.hand svg { display: block; max-width: 100%; overflow: visible; }
+.hand .gd { stroke: var(--iqaa-lilac); stroke-width: 0.3; }
+.hand figcaption { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--c-text-2); }
+.om-rows { display: flex; flex-direction: column; gap: var(--s-8); }
+.om-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-8); align-items: center; }
+.om-row .cap { gap: var(--s-3); }
+.om-row .cap .k { color: var(--c-text-2); }
+.om-row .spec { align-self: flex-start; padding: var(--s-4); }
+.om-row .spec svg { max-width: 100%; height: auto; }
+@media (max-width: 700px) { .om-row { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); } }

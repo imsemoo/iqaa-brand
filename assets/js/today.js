@@ -350,7 +350,8 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
   const blocks = own ? own.blocks : main.map((s) => ({ name: s.name, steps: s.steps.map((x) => x.kind) }));
   Beats.sig($('[data-org-mark]'), blocks, { mode: 'mark', size: 32, name: own ? own.name : 'Sufra', label: `${own ? own.name : 'Sufra'}’s mark` });
   $('[data-me-av]').textContent = (me.name || own.name).charAt(0);
-  $('[data-me-sr]').textContent = me.name ? `Signed in as ${me.name}, ${me.role.toLowerCase()}` : 'Signed in';
+  $('[data-me-name]').textContent = me.name || 'You';
+  $('[data-me-role]').textContent = me.role || '';
   document.title = `Today · ${own ? own.name : 'Sufra'}`;
   if (own) jobs = [];
   renderAll();

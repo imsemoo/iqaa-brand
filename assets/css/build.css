@@ -3,6 +3,7 @@
 main.bd { background: #fff; }
 main.bd + .a-foot { display: none; }
 .bd-page { display: flex; flex-direction: column; height: 100vh; }
+@media (min-width: 900px) { body.app:has(.ap-side) .bd-page { height: calc(100vh - 2 * var(--s-2)); } }
 
 .bd-head { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding: var(--s-3) var(--s-6); background: #fff; border-block-end: 1px solid var(--iqaa-n200); box-shadow: 0 8px 20px -18px rgba(25, 23, 46, 0.35); }
 .bd-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); min-width: 0; }

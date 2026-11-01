@@ -98,16 +98,48 @@
     }
     return out;
   }
+  // ---------- organization marks: the initial in Iqaa's hand, written in the order its line opens ----------
+  const HAND = window.IQAA.letters || {};
+  const TILE_R = 22.37, CAP = 30, INITIAL = 50, LIFT = 1.5, PEN_RATIO = M.mark_stroke / LOOP_H;
+  const isPerson = (kind) => kind === 'struck' || kind === 'held';
+  // each step of the opening takes an equal share of the letter's length, in the colour of who does it
+  function initial(ch, kinds, size, p) {
+    const L = HAND[ch], k = INITIAL / CAP;
+    const pen = Math.max(PEN_RATIO * INITIAL, 150 / size);   // never thinner than 1.5 px
+    const cx = ((L.x0 + L.x1) / 2 + L.cx) / 2;                 // halfway between the box and the ink
+    const cols = kinds.length ? kinds.map((kd) => (isPerson(kd) ? p.person : p.run)) : [p.run];
+    const share = L.len.reduce((a, b) => a + b, 0) / cols.length, runs = [];
+    cols.forEach((c, i) => {
+      const last = runs[runs.length - 1];
+      if (last && last[0] === c) last[2] = (i + 1) * share; else runs.push([c, i * share, (i + 1) * share]);
+    });
+    let out = '', s = 0;
+    L.d.forEach((d, i) => {
+      const ln = L.len[i], e = s + ln;
+      runs.forEach(([c, a, b]) => {
+        const lo = Math.max(a, s) - s, hi = Math.min(b, e) - s;
+        if (hi - lo < 0.01) return;
+        let dash = '';
+        if (lo > 0.01 || hi < ln - 0.01) {
+          const far = n(ln * 2);
+          dash = ` data-seg="1" stroke-dasharray="${n(hi - lo)} ${far}" stroke-dashoffset="${n(-lo)}"`;
+        }
+        out += `<path d="${d}" fill="none" stroke="${c}"${dash}/>`;
+      });
+      s = e;
+    });
+    return `<g transform="translate(${n(50 - cx * k)} ${n(50 + INITIAL / 2 - LIFT)}) scale(${n(k)})" stroke-width="${n(pen / k)}" stroke-linecap="round" stroke-linejoin="round">${out}</g>`;
+  }
   function avatar(blocks, opts) {
     const o = Object.assign({ size: 40, pal: 'dark', ground: '#19172E', label: '', name: '' }, opts);
     const p = window.IQAA.pal[o.pal];
     if (o.name) {
-      // the organization's initial, signed underneath with the opening of its own line: it reads at 40 px
-      const opening = lead(blocks, 3), w = layout(opening).w, k = Math.min(0.78, 70 / w);
+      const ch = o.name.trim().charAt(0).toUpperCase(), kinds = lead(blocks, 3).flat();
       const lab = o.label ? ` role="img" aria-label="${esc(o.label)}"` : ' aria-hidden="true"';
-      return `<svg class="avatar" viewBox="0 0 100 100" width="${o.size}" height="${o.size}"${lab}><rect width="100" height="100" rx="24" fill="${o.ground}"/>` +
-        `<text x="50" y="48" text-anchor="middle" font-size="44" font-weight="600" fill="${p.run}" font-family="Atkinson Hyperlegible Next, sans-serif">${esc(o.name.trim().charAt(0).toUpperCase())}</text>` +
-        `<g transform="translate(${n((100 - w * k) / 2)} 78)">${body(opening, k, p, false, Math.max(W, 4.4))}</g></svg>`;
+      // a script the hand does not write yet: the letter set in type, in the colour of the line's first step
+      const inner = HAND[ch] ? initial(ch, kinds, o.size, p)
+        : `<text x="50" y="68" text-anchor="middle" font-size="52" font-weight="600" fill="${kinds.length && isPerson(kinds[0]) ? p.person : p.run}" font-family="Atkinson Hyperlegible Next, Noto Sans Arabic, sans-serif">${esc(ch)}</text>`;
+      return `<svg class="avatar" viewBox="0 0 100 100" width="${o.size}" height="${o.size}"${lab}><rect width="100" height="100" rx="${TILE_R}" fill="${o.ground}"/>${inner}</svg>`;
     }
     const rs = rows(blocks), widths = rs.map((r) => layout(r).w), gap = 10;
     const k = Math.min(74 / Math.max(...widths), 70 / ((LOOP_H + W) * rs.length + gap * (rs.length - 1)));
@@ -116,7 +148,7 @@
     const y0 = (100 - totalH) / 2 + LOOP_H * k + (sw * k) / 2;
     const g = rs.map((r, i) => `<g transform="translate(${n((100 - widths[i] * k) / 2)} ${n(y0 + i * (rowH + gap * k))})">${body(r, k, p, false, sw)}</g>`).join('');
     const lab = o.label ? ` role="img" aria-label="${esc(o.label)}"` : ' aria-hidden="true"';
-    return `<svg class="avatar" viewBox="0 0 100 100" width="${o.size}" height="${o.size}"${lab}><rect width="100" height="100" rx="24" fill="${o.ground}"/>${g}</svg>`;
+    return `<svg class="avatar" viewBox="0 0 100 100" width="${o.size}" height="${o.size}"${lab}><rect width="100" height="100" rx="${TILE_R}" fill="${o.ground}"/>${g}</svg>`;
   }
 
   // One step on its own, for buttons and legends.

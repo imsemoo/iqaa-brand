@@ -35,6 +35,12 @@
         return m.animate([{ strokeDasharray: `${len} ${len}`, strokeDashoffset: len }, { strokeDasharray: `${len} ${len}`, strokeDashoffset: 0 }],
           { duration: opt.each, delay, easing: M.ease_move, fill: 'backwards' }).finished;
       }
+      if (m.dataset.seg) {
+        // a share of a letter: its dash grows from where the share starts to where it ends
+        const [dash, far] = m.getAttribute('stroke-dasharray').split(' ');
+        return m.animate([{ strokeDasharray: `0 ${far}` }, { strokeDasharray: `${dash} ${far}` }],
+          { duration: opt.each, delay, easing: M.ease_move, fill: 'backwards' }).finished;
+      }
       return m.animate([{ opacity: 0 }, { opacity: 1 }], { duration: opt.each, delay, easing: M.ease_arrive, fill: 'backwards' }).finished;
     });
     const limit = opt.delay + marks.length * opt.gap + opt.each + M.quarter;

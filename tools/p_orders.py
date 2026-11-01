@@ -37,14 +37,18 @@ def order():
 
 
 def overview():
-    body = '''<div class="ov-page">
-<header class="ov-head ap-wrap"><p class="td-day" data-day></p><h1>Good morning, Hala</h1><p class="or-sum" data-sum></p></header>
-<section class="om-wrap" aria-labelledby="ovm-h"><div class="ap-wrap"><h2 id="ovm-h">The line now</h2><p class="hint">How many jobs wait at each station. Press one to see them.</p></div><div class="om" data-map></div></section>
-<section class="ov-team ap-wrap" aria-labelledby="tm-h"><div class="ov-k"><h2 id="tm-h">The team today</h2><p class="hint">Each person’s day as a line in time: what they finished at its hour, and what is still theirs in grey after now (09:41).</p></div><ol class="tm-list" data-team></ol></section>
-<div class="ov-grid ap-wrap">
-<section aria-labelledby="due-h"><h2 id="due-h">Due by tomorrow <span data-n-due></span></h2><ol class="or-list" data-due></ol></section>
-<section aria-labelledby="cl-h"><h2 id="cl-h">Waiting on clients <span data-n-clients></span></h2><ol class="or-list" data-clients></ol></section>
+    body = '''<div class="ov-page ap-wrap">
+<header class="ov-head"><div><p class="td-day" data-day></p><h1>Good morning, Hala</h1></div><a class="ov-all" href="orders.html">All orders</a></header>
+<ul class="ov-kpi" data-kpi aria-label="The line in numbers"></ul>
+<section class="pn ov-map" aria-labelledby="ovm-h"><div class="pn-hd"><h2 id="ovm-h">The line now</h2><p class="hint">Jobs waiting at each station. Press one to see them.</p></div><div class="om" data-map></div><ol class="om-v" data-map-v></ol></section>
+<div class="ov-cols">
+<div class="ov-main">
+<section class="pn ov-team" aria-labelledby="tm-h"><div class="pn-hd"><h2 id="tm-h">The team today</h2><p class="hint">Done at its hour in colour; still theirs, after now, in grey.</p></div><ol class="tm-list" data-team></ol></section>
+<section class="pn ov-done" id="done" aria-labelledby="dn-h"><div class="pn-hd"><h2 id="dn-h">Finished this week <span data-n-done></span></h2></div><ol class="dn-list" data-done></ol></section>
 </div>
-<section class="ap-wrap ov-done" aria-labelledby="dn-h"><h2 id="dn-h">Finished this week <span data-n-done></span></h2><ol class="or-list" data-done></ol></section>
+<section class="pn ov-att ov-side" id="attention" aria-labelledby="at-h"><div class="pn-hd"><h2 id="at-h">Needs attention</h2></div>
+<h3 id="due">Due by tomorrow <span data-n-due></span></h3><ol class="at-list" data-due></ol>
+<h3 id="clients">Waiting on clients <span data-n-clients></span></h3><ol class="at-list" data-clients></ol></section>
+</div>
 </div>'''
     return shell('ov', 'Overview · Sufra', app_top('Overview'), body, ('sufra', 'jobs', 'overview'), foot=f'<div class="sign-off">{runs_badge()}</div>', css=('app', 'orders'))

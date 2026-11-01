@@ -212,6 +212,13 @@ def decisions():
         f'On ink the person colour is lilac: {contrast(T.BRAND["lilac"], ink):.2f}:1, the strongest pair in the palette.',
         'At 16 px the mark’s pen would fall under a pixel; the small icons widen it to 1.6 px so the loop stays open.',
     ])
+    org = decision('orgmark', 'Organization marks', 'An organization without a logo signs with its initial, written as one stroke in Iqaa’s hand, in the order its line opens.', [
+        'The first version set a typed letter (weight 600, a stem of about 5.3 units) over its opening drawn at 0.78 with a 3.4-unit pen: two pens and two objects. It was turned down in review on 1 November.',
+        'Six directions were then drawn at 128, 64, 40, 32 and 20 px for five initials (research/org-mark). Every one that kept a letter and a line side by side read as a letter with a doodle, and at 32 px the opening’s loop fell to 7.5 px.',
+        f'Written with the mark’s own pen ({brand.MW / brand.LOOP_H:.3f} of the height, the ratio the wordmark’s stem is solved to), the letter is the whole mark: at 32 px it stands 16 px tall instead of 9.4, with a 2.5 px pen instead of 1.1.',
+        'The colour still comes from the real line: each of its first steps takes an equal share of the letter, lilac for a person and white for a step that runs, so two kitchens with different first steps get different marks.',
+        'The hand has 26 capitals and 10 figures. A name in another script is set in type until its letters are drawn. Below 32 px the pen is held at 1.5 px.',
+    ])
     rtl = decision('rtl', 'Right to left', 'The mark never mirrors. Signatures do.', [
         'One trademark, one app icon file, in every language.',
         'A signature is data, so it is written in reading order: left to right in English and Turkish, right to left in Arabic.',
@@ -242,6 +249,6 @@ def decisions():
             + sec('Evidence', 'The round that chose the pen', candidate_table())
             + sec('Colour', 'What colour means', violet + gradient + alert + neutrals)
             + sec('Type and numbers', 'Faces, weight, beat and tempo', typ + font_table() + wordmark + beat)
-            + sec('Rules of use', 'Icon, direction, architecture, tests, the map', icon + rtl + arch + test + metro + open_)
+            + sec('Rules of use', 'Icon, marks, direction, architecture, tests, the map', icon + org + rtl + arch + test + metro + open_)
             + '</div>')
     return body

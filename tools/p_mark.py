@@ -184,6 +184,49 @@ def templates():
     return out
 
 
+def hand_sheet():
+    """Every capital and figure of Iqaa's hand, on the loop's height, with the mark's pen."""
+    cells = ''
+    for ch, v in brand.hand().items():
+        pad = 6
+        x, w = v['x0'] - pad, v['x1'] - v['x0'] + 2 * pad
+        strokes = ''.join(f'<path d="{d}"/>' for d in v['d'])
+        cells += (f'<figure><svg viewBox="{f(x)} -36 {f(w)} 42" height="64" aria-hidden="true">'
+                  f'<path class="gd" d="M{f(x)} 0H{f(x + w)}M{f(x)} -30H{f(x + w)}"/>'
+                  f'<g fill="none" stroke="currentColor" stroke-width="{MW}" stroke-linecap="round" stroke-linejoin="round">{strokes}</g></svg>'
+                  f'<figcaption>{esc(ch)}</figcaption></figure>')
+    return (f'<div class="spec white"><div class="hand" role="img" aria-label="Iqaa’s hand: the capitals A to Z and the figures 0 to 9, each a single stroke">{cells}</div></div>'
+            f'<p class="note">Single strokes on the loop’s height, 30 units, with the mark’s pen of {MW}: the same weight as Iqaa’s own mark, {MW / LOOP_H:.3f} of the height. '
+            'Round letters overshoot the cap height and the baseline by half a unit. A letter is centred halfway between its box and the centre of its ink, so an L or a P does not look pushed aside. '
+            'A name that starts in a script the hand does not write yet is set in type, in the colour of the line’s first step.</p>')
+
+
+def share_said(kinds):
+    who = {'a person' if k in ('struck', 'held') else 'itself' for k in kinds}
+    if len(who) == 1:
+        return 'Every step is a person’s, so the whole letter is lilac.' if who == {'a person'} else 'Every step runs by itself, so the whole letter is white.'
+    return f'Each step takes {"half" if len(kinds) == 2 else "a third"} of the letter, in order.'
+
+
+def org_marks():
+    """How three lines write their initials: the opening beside the mark it makes."""
+    rows = ''
+    for key in ('catering', 'software', 'video'):
+        L = LINES[key]
+        blocks = [[s[0] for s in b['steps']] for b in L['blocks']]
+        opening = brand.lead(blocks)
+        names = [s[1] for b in L['blocks'][:len(opening)] for s in b['steps'][:3]][:sum(len(b) for b in opening)]
+        kinds = [k for b in opening for k in b]
+        said = ' → '.join(f'{esc(n)} <span class="k">({"a person" if k in ("struck", "held") else "runs by itself"})</span>' for n, k in zip(names, kinds))
+        share = len(kinds)
+        rows += (f'<div class="om-row"><div class="row mid" style="gap:var(--s-4)">{brand.avatar_svg(blocks, 96, L["org"] + " mark", name=L["org"])}'
+                 f'{brand.avatar_svg(blocks, 40, "", name=L["org"])}{brand.avatar_svg(blocks, 20, "", name=L["org"])}</div>'
+                 f'<div class="cap"><b>{esc(L["org"])} · {esc(L["template"])}</b><span>Opens with {said}. '
+                 f'{share_said(kinds)}</span>'
+                 f'<div class="spec white tight">{brand.line_svg(opening, k=1.2)}</div></div></div>')
+    return f'<div class="om-rows">{rows}</div>'
+
+
 def grammar_sheet():
     kinds = [('run', 'Runs'), ('held', 'Waits'), ('struck', 'By hand'), ('rest', 'Pause'), ('failed', 'Fails'), ('test', 'Test')]
     head_ = ''.join(f'<th>{n}</th>' for _, n in kinds)
@@ -207,7 +250,7 @@ ENCODE = [
     'One step is one stretch of the pen. Its kind sets its shape: a step that runs by itself is a straight stroke; a task for a person is a loop of the hand; an approval, a review or a Watar draft — a step that waits for a person — is an open arch; a timed wait lifts the pen and leaves a dot.',
     'Steps follow the order of the line, on one baseline. Between stations the pen runs half a step of straight: the handoff.',
     'The pen never shrinks to fit: a long line is drawn smaller, never cramped.',
-    'An organization’s mark is its initial on an ink tile, signed underneath with the opening of its own line: whole stations, up to three steps.',
+    'An organization without a logo signs with its initial, written in Iqaa’s hand with the mark’s pen, in the order its line opens: each of its first steps (whole stations, up to three) takes an equal share of the letter, lilac where a person does it, white where it runs by itself.',
     'Publishing a new version of a line changes its signature. Jobs already running keep the version — and the signature — they started on.',
     'Arabic: the same strokes, written right to left; the loops turn the other way.',
     'On ink, strokes that run by themselves turn white and a person’s strokes lilac. Nothing else changes.',
@@ -255,6 +298,8 @@ def signature():
     return (head('Signature', 'Every line signs its own name', 'The pen that draws Iqaa’s mark writes any line. A kitchen, a software house and a video studio get three different signatures from the same strokes — and each one is the true shape of its work.')
             + sec('Grammar', 'Six states, told apart by the stroke', legend() + grammar_sheet())
             + sec('Rules', 'How a line becomes a signature', f'<ol class="rules">{enc}</ol>')
+            + sec('Marks', 'An organization signs with its initial', org_marks(), 'Until an organization adds a logo, its mark is its initial on an ink tile, written with the pen in the order its own line opens. Two kitchens with different first steps get different marks from the same letter.')
+            + sec('Hand', 'Iqaa’s hand', hand_sheet())
             + sec('Try it', 'Write a line, see its signature', gen, 'Edit the stations and their steps. The mark, the client header and the sign-in screen follow.')
             + sec('Templates', 'Three lines from the client deck', templates())
             + sec('Use', 'Where signatures go', where)

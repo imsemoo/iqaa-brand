@@ -20,6 +20,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tokens import BRAND, MARK, NEUTRAL, RED, RED_DARK  # noqa: E402
+import letters  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'assets', 'brand')
@@ -157,24 +158,66 @@ def lead(blocks, limit=3):
     return out
 
 
+# ---------- organization marks: the initial written in Iqaa's hand ----------
+TILE_R = 22.37          # the app icon's corner, the curve iOS and macOS apply
+INITIAL_CAP = 50        # the initial stands half the tile tall
+INITIAL_LIFT = 1.5      # a touch above centre, where the eye puts the middle
+PEN_RATIO = MW / LOOP_H  # Iqaa's pen against its loop: the hand is written with the mark's own weight
+
+
+@functools.lru_cache(maxsize=None)
+def hand():
+    return letters.data()
+
+
+def initial_body(ch, kinds, size, pal='dark'):
+    """One capital in Iqaa's hand, written in the order its line opens: each step of the opening an equal share
+    of the letter's length, in the colour of who does it. Partial strokes carry data-seg so the pen can write them."""
+    p, L = PAL[pal], hand()[ch]
+    k = INITIAL_CAP / letters.CAP
+    pen = max(PEN_RATIO * INITIAL_CAP, 1.5 * 100 / size)   # never thinner than 1.5 px
+    cx = ((L['x0'] + L['x1']) / 2 + L['cx']) / 2            # halfway between the box and the ink: optical centre
+    cols = [p['person'] if kd in ('struck', 'held') else p['run'] for kd in kinds] or [p['run']]
+    total = sum(L['len'])
+    share = total / len(cols)
+    runs = []
+    for i, c in enumerate(cols):
+        if runs and runs[-1][0] == c:
+            runs[-1][2] = (i + 1) * share
+        else:
+            runs.append([c, i * share, (i + 1) * share])
+    out, s = '', 0.0
+    for d, ln in zip(L['d'], L['len']):
+        e = s + ln
+        for c, a, b in runs:
+            lo, hi = max(a, s) - s, min(b, e) - s
+            if hi - lo < 0.01:
+                continue
+            dash = ''
+            if lo > 0.01 or hi < ln - 0.01:
+                far = f(ln * 2)
+                dash = f' data-seg="1" stroke-dasharray="{f(hi - lo)} {far}" stroke-dashoffset="{f(-lo)}"'
+            out += f'<path d="{d}" fill="none" stroke="{c}"{dash}/>'
+        s = e
+    return (f'<g transform="translate({f(50 - cx * k)} {f(50 + INITIAL_CAP / 2 - INITIAL_LIFT)}) scale({f(k)})" '
+            f'stroke-width="{f(pen / k)}" stroke-linecap="round" stroke-linejoin="round">{out}</g>')
+
+
 def avatar_svg(blocks, size=40, label='', ground=BRAND['ink'], pal='dark', name=''):
-    """An organization's mark. With a name: its initial, signed underneath with the opening of its own line,
-    so it reads at 40 px. Without one: the whole line signed across the tile."""
+    """An organization's mark. With a name: its initial in Iqaa's hand, written in the order its line opens.
+    Without one: the whole line signed across the tile."""
     if name:
-        p = PAL[pal]
-        opening = lead(blocks)
-        w = line_layout(opening)[1]
-        # initial: cap 0.668 em at 44 → 29.4 tall, top 18.6, baseline 48; the line's baseline at 78, so the
-        # loop (30 units × k, plus half the pen) stops 4 short of the letter at k = 0.78
-        k = min(0.78, 70 / w)
-        sw = max(W, 4.4)
-        b, _ = line_body(opening, k, pal, sw=sw)
+        ch = name.strip()[:1].upper()
+        kinds = [kd for b in lead(blocks) for kd in b]
         lab = f' role="img" aria-label="{label}"' if label else ' aria-hidden="true"'
+        if ch in hand():
+            inner = initial_body(ch, kinds, size, pal)
+        else:  # a script the hand does not write yet: the letter set in type, in the colour of the line's first step
+            c = PAL[pal]['person'] if kinds[:1] and kinds[0] in ('struck', 'held') else PAL[pal]['run']
+            inner = (f'<text x="50" y="68" text-anchor="middle" font-size="52" font-weight="600" fill="{c}" '
+                     f'font-family="Atkinson Hyperlegible Next, Noto Sans Arabic, sans-serif">{ch}</text>')
         return (f'<svg class="avatar" viewBox="0 0 100 100" width="{size}" height="{size}"{lab}>'
-                f'<rect width="100" height="100" rx="24" fill="{ground}"/>'
-                f'<text x="50" y="48" text-anchor="middle" font-size="44" font-weight="600" fill="{p["run"]}" '
-                f'font-family="Atkinson Hyperlegible Next, sans-serif">{name.strip()[:1].upper()}</text>'
-                f'<g transform="translate({f((100 - w * k) / 2)} 78)">{b}</g></svg>')
+                f'<rect width="100" height="100" rx="{TILE_R}" fill="{ground}"/>{inner}</svg>')
     steps = sum(len(b) for b in blocks)
     rows = rows_of(blocks, 1 if steps <= 6 else 2)
     widths = [line_layout(r)[1] for r in rows]
@@ -191,7 +234,7 @@ def avatar_svg(blocks, size=40, label='', ground=BRAND['ink'], pal='dark', name=
         body += f'<g transform="translate({f(x0)} {f(y0 + i * (row_h + gap * k))})">{b}</g>'
     lab = f' role="img" aria-label="{label}"' if label else ' aria-hidden="true"'
     return (f'<svg class="avatar" viewBox="0 0 100 100" width="{size}" height="{size}"{lab}>'
-            f'<rect width="100" height="100" rx="24" fill="{ground}"/>{body}</svg>')
+            f'<rect width="100" height="100" rx="{TILE_R}" fill="{ground}"/>{body}</svg>')
 
 
 def fold_svg(kinds, k=2.0, pal='light', pad=0, cls='fold', label=None):

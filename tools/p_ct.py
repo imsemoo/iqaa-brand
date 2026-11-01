@@ -190,11 +190,14 @@ ICONS = {
     'Retry': '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4v4.5H15"/>',
     'Run log': '<path d="M9 6h11M9 12h11M9 18h11M4 6h1.5M4 12h1.5M4 18h1.5"/>',
     'Late': '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
+    'Search': '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+    'Switch': '<path d="M8 9.5l4-4 4 4M8 14.5l4 4 4-4"/>',
+    'Sign out': '<path d="M10 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H10M14.5 8l4 4-4 4M18.5 12H9"/>',
 }
 GROUPS = [
     ('Navigation', ['Overview', 'Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
     ('Steps', ['Send', 'Wait', 'Remind', 'Condition', 'Create', 'Move job', 'Task', 'Webhook', 'HTTP']),
-    ('Actions and states', ['Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late']),
+    ('Actions and states', ['Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late', 'Search', 'Switch', 'Sign out']),
 ]
 
 

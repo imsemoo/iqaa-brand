@@ -7,31 +7,49 @@ import brand
 from p_auth import runs_badge, shell
 from shell import inline
 
-NAV = ['Overview', 'Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']
-
-
+NAV = ['Overview', 'Today', 'Line', 'Orders']
+NEXT = ['Clients', 'Settings', 'Ask Watar']
 PAGES = {'Overview': 'overview.html', 'Today': 'today.html', 'Line': 'line.html', 'Orders': 'orders.html'}
 
 
 def app_top(current):
-    """The organization's sidebar: Sufra leads, then the screens, each with its stroke icon; screens not designed
-    yet are named but not linked. On a phone the links become a tab bar along the bottom."""
+    """The organization's sidebar, on the desk beside the sheet: the organization and its menu, search, the screens
+    with what waits in each, the screens still to come, and the person signed in. On a phone the organization sits in
+    a slim bar on top and the screens become a tab bar along the bottom."""
     from p_ct import icon
 
     def item(n):
-        ic = icon(n, 20)
-        if n not in PAGES:
-            return f'<li class="off"><span class="ap-l" title="{n}: not designed yet">{ic}<span>{n}</span></span></li>'
         cur = ' aria-current="page"' if n == current else ''
-        return f'<li><a class="ap-l" href="{PAGES[n]}" title="{n}"{cur}>{ic}<span>{n}</span></a></li>'
-    nav = ''.join(item(n) for n in NAV)
+        today = ' data-today' if n == 'Today' else ''
+        count = {'Today': '<i class="ap-n me" data-n-today></i>', 'Orders': '<i class="ap-n" data-n-orders></i>'}.get(n, '')
+        return f'<li><a class="ap-l" href="{PAGES[n]}" title="{n}"{cur}{today}>{icon(n, 20)}<span>{n}</span>{count}</a></li>'
+
+    def soon(n):
+        return f'<li><span class="ap-l" aria-disabled="true" title="{n}: coming next">{icon(n, 20)}<span>{n}</span><em>Soon</em></span></li>'
     fold = ('<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" '
             'stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg>')
     return f'''<div class="ap-side">
-<a class="ap-org" href="overview.html"><span class="org-mark" data-org-mark></span><span class="ap-org-t"><b data-org-name>Sufra</b><span>sufra.iqaa.app</span></span></a>
-<nav class="ap-nav" aria-label="Sufra"><ul class="ap-links">{nav}</ul></nav>
-<div class="ap-foot"><span class="ap-me"><span class="me-av" aria-hidden="true" data-me-av>H</span><span class="ap-me-t" data-me-sr>Signed in as Hala, owner</span></span>
-<button type="button" class="ap-fold" data-fold aria-pressed="false" aria-label="Fold the sidebar" title="Fold the sidebar">{fold}</button></div>
+<div class="ap-head">
+<button type="button" class="ap-org" data-org-menu aria-expanded="false" aria-controls="ap-org-menu" title="Sufra">
+<span class="org-mark" data-org-mark></span><span class="ap-org-t"><b data-org-name>Sufra</b><span>sufra.iqaa.app</span></span>{icon('Switch', 16)}</button>
+<div class="ap-menu" id="ap-org-menu" hidden>
+<p class="ap-menu-h">You are in <b>sufra.iqaa.app</b></p>
+<a href="signup.html">{icon('Create', 18)}<span>Start another organization</span></a>
+<span aria-disabled="true">{icon('Settings', 18)}<span>Organization settings</span><em>Soon</em></span>
+<hr>
+<a href="signin.html">{icon('Sign out', 18)}<span>Sign out</span></a>
+</div>
+<button type="button" class="ap-search" data-palette aria-keyshortcuts="Control+K Meta+K" title="Search">{icon('Search', 18)}<span>Search</span><kbd data-kbd>Ctrl K</kbd></button>
+</div>
+<nav class="ap-nav" aria-label="Sufra">
+<ul class="ap-links">{''.join(item(n) for n in NAV)}</ul>
+<p class="ap-group" id="ap-next">Coming next</p>
+<ul class="ap-links ap-soon" aria-labelledby="ap-next">{''.join(soon(n) for n in NEXT)}</ul>
+</nav>
+<div class="ap-foot">
+<span class="ap-me"><span class="me-av" aria-hidden="true" data-me-av>H</span><span class="ap-me-t"><span class="sr">Signed in as </span><b data-me-name>Hala</b><span data-me-role>Owner</span></span></span>
+<button type="button" class="ap-fold" data-fold aria-pressed="false" aria-label="Fold the sidebar" title="Fold the sidebar">{fold}</button>
+</div>
 </div>'''
 
 
