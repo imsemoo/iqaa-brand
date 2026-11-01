@@ -17,6 +17,9 @@ from p_auth import signin, signup  # noqa: E402
 from p_line import line  # noqa: E402
 from p_today import today  # noqa: E402
 from p_orders import order, orders, overview  # noqa: E402
+from p_clients import client, clients  # noqa: E402
+from p_watar import watar  # noqa: E402
+from p_settings import settings  # noqa: E402
 from p_build import build  # noqa: E402
 from p_screens import screens  # noqa: E402
 from shell import ROOT, page, tokens_js  # noqa: E402
@@ -46,7 +49,8 @@ if __name__ == '__main__':
         with open(os.path.join(ROOT, f'{slug}.html'), 'w', encoding='utf-8') as fh:
             fh.write(html)
         print(slug, len(html))
-    for slug, fn in (('signin', signin), ('signup', signup), ('line', line), ('today', today), ('orders', orders), ('order', order), ('overview', overview), ('build', build)):
+    for slug, fn in (('signin', signin), ('signup', signup), ('line', line), ('today', today), ('orders', orders), ('order', order), ('overview', overview), ('build', build),
+                     ('clients', clients), ('client', client), ('watar', watar), ('settings', settings)):
         html = fn()
         with open(os.path.join(ROOT, f'{slug}.html'), 'w', encoding='utf-8') as fh:
             fh.write(html)

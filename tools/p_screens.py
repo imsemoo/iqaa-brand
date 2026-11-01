@@ -1,4 +1,4 @@
-"""The book's Screens page: the four product screens built so far, in the order an organization meets them,
+"""The book's Screens page: the product screens built so far, in the order an organization meets them,
 each with where the identity lives in it. Images come from tools/screens.py; every screen links to the live one.
 """
 from shell import esc, head
@@ -88,11 +88,48 @@ SCREENS = [
         'alt_d': 'Orders on a desktop: Sufra’s line with a count over each station, and every job below with its strip, due time and who it waits for.',
         'alt_m': 'An order on a phone: the wedding lunch, its line written in time and its stations down the page.',
     },
+    {
+        'id': 'clients', 'name': 'Know every client', 'url': 'sufra.iqaa.app/clients', 'href': 'clients.html',
+        'open': 'Open Clients',
+        'what': 'The owner sees whose move it is with every client, and opens one to see its open order, its line with Sufra and every order before.',
+        'ids': [
+            'Each client’s history is written in the signature’s hand: an arch for every answer Sufra waited for, a lifted pen and a straight where Iqaa had to remind them, a red snap where Sufra arrived late.',
+            'History is evidence at the step it predicts: under “Omar approves”, that Omar answered both earlier quotes only after the reminder.',
+            'The decision is violet, the act is ink: reminding Omar early is a person’s button, and the pen writes the reminder into his line.',
+        ],
+        'alt_d': 'Clients on a desktop: every client grouped by whose move it is, each with its history in small strokes.',
+        'alt_m': 'Darb Studio on a phone: its line with Sufra in strokes, and the open office lunch with Remind Omar now.',
+    },
+    {
+        'id': 'watar', 'name': 'Ask Watar', 'url': 'sufra.iqaa.app/watar', 'href': 'watar.html',
+        'open': 'Open Ask Watar',
+        'what': 'Anyone on the team asks about the work in their own words; Watar answers from the line and its orders, and drafts what could be done for a person to approve.',
+        'ids': [
+            'Watar speaks in grey, behind its own arch; violet marks only what waits for a person: a draft’s arch, Approve, the asker.',
+            'A risk is drawn as the grammar’s lifted pen at its real length: the lunch falls under the pen, and the reminder lands after it.',
+            'Every draft is written in the dashed grey pen down its edge; approving rewrites the arch as a loop and the pen in ink.',
+        ],
+        'alt_d': 'Ask Watar on a desktop: who is late today, answered with two orders at risk, their time strips, and two drafts waiting for approval.',
+        'alt_m': 'Ask Watar on a phone: why the Nakhla lunch is stuck, answered with its metro strip, its steps at Quote and the facts.',
+    },
+    {
+        'id': 'settings', 'name': 'Set up the organization', 'url': 'sufra.iqaa.app/settings', 'href': 'settings.html',
+        'open': 'Open Settings',
+        'what': 'The owner sees who is on the team and what each holds on the line, how the line reaches clients, the organization’s name and mark, and what it pays Iqaa. Every change applies on its own and can be taken back.',
+        'ids': [
+            'Each person carries the line’s metro strip without a train, their stations ringed violet; removing someone stays locked while the line still gives them steps.',
+            'An invitation is a short line: Iqaa’s straight, then an arch that waits for the person; accepting rewrites the arch as a loop.',
+            'The mark is explained by the line that writes it, on an ink plate beside the opening that colours it, and shown only where and at the size it is really used.',
+        ],
+        'alt_d': 'Settings on a desktop: the four areas beside Team, each person with the stations they hold ringed on the line, and Nour’s invitation waiting.',
+        'alt_m': 'Settings on a phone: the Organization area, Sufra’s S on an ink plate beside the two steps that colour it.',
+    },
 ]
+COUNT = {7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve'}
 
 
 def screens():
-    out = head('Screens', 'The identity at work', 'Seven screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, and the owner sees the whole organization and follows every order. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
+    out = head('Screens', 'The identity at work', f'{COUNT[len(SCREENS)]} screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, the owner sees the whole organization, follows every order and knows every client, anyone can ask Watar about the work, and the owner sets the organization up. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
     out += '</div>'
     for i, s in enumerate(SCREENS):
         ids = ''.join(f'<li>{esc(t)}</li>' for t in s['ids'])

@@ -71,6 +71,17 @@
   let version = org.demo ? 3 : 1;
   let sel = line.stations[Math.min(2, line.stations.length - 1)].id;
   let undo = null, test = null;
+  // Ask Watar hands a change on in the address (?wait=approval:A%20day): the station's timed wait takes that length
+  // in the draft of the next version, to be published or discarded here like any other edit
+  let fromWatar = '';
+  const wq = /^([\w-]+):(.+)$/.exec(new URLSearchParams(location.search).get('wait') || '');
+  if (wq && org.demo) {
+    const st = line.stations.find((s) => s.id === wq[1]), x = st && st.steps.find((y) => y.kind === 'rest');
+    if (x && WHO.rest.includes(wq[2]) && x.who !== wq[2]) {
+      fromWatar = `Watar’s change is in the draft: ${st.name} waits ${wq[2].toLowerCase()} instead of ${x.who.toLowerCase()}. Publish it, or discard the draft.`;
+      x.who = wq[2]; x.name = `Wait ${wq[2].toLowerCase()}`; sel = st.id;
+    }
+  }
 
   // ---------- reading the line ----------
   const routesFrom = (id) => line.routes.filter((r) => r.from === id);
@@ -744,6 +755,7 @@ ${routeAdds(f)}
   renderDetail(false);
   placeDetail();
   draw();
+  if (fromWatar) note(fromWatar, false);
   vertical.addEventListener('change', () => { placeDetail(); draw(); });
   new ResizeObserver(requestDraw).observe($('[data-map-in]'));
   addEventListener('resize', requestDraw);

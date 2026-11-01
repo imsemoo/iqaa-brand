@@ -38,7 +38,7 @@
       : ({ Send: 'send', Create: 'create', Remind: 'remind', Move: 'move' }[x.who] || 'send'));
     const st = (s, x, y) => ({ id: s.id, name: s.name, x, y, end: false, steps: s.steps.map((p) => ({
       id: p.id, type: typeOf(p), name: p.name, who: TYPES[typeOf(p)].person ? p.who : '', wait: p.kind === 'rest' ? p.who : '',
-      msg: p.kind === 'run' && /Send|Remind/.test(p.who) ? `Hello {client.name}, ${p.name.toLowerCase()} for {order.title}.` : '',
+      msg: p.msg || (p.kind === 'run' && /Send|Remind/.test(p.who) ? `Hello {client.name}, ${p.name.toLowerCase()} for {order.title}.` : ''),
       channel: 'Email', make: p.who === 'Create' ? (/invoice/i.test(p.name) ? 'An invoice' : 'A shopping list') : '', change: false, retry: true,
     })) });
     const stations = L.stations.map((s, i) => st(s, 80 + i * 288, 120));

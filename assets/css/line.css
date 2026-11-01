@@ -20,10 +20,6 @@ main.ln { background: #fff; }
 @media (max-width: 480px) { .ln-act .btn { padding-inline: var(--s-3); font-size: 15px; } }
 
 .ln-confirm { padding-block-end: var(--s-4); }
-.cf-in { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4) var(--s-6); flex-wrap: wrap; padding: var(--s-4) var(--s-6); border: 1px solid var(--iqaa-ink); border-radius: 14px; background: var(--iqaa-n50); }
-.cf-in p { font-size: 15px; line-height: 22px; max-width: 64ch; }
-.cf-in p span { color: var(--iqaa-n700); }
-.cf-act { display: flex; gap: var(--s-3); }
 .ln-note { display: flex; align-items: center; gap: var(--s-3); font-size: 14px; line-height: 20px; padding-block-end: var(--s-4); }
 .ln-note .link { padding-block: 0; }
 

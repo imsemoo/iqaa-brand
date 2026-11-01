@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>qa watar</title>
+<style>html,body{margin:0;background:#fff}iframe{border:0;display:block}</style>
+<iframe id="f"></iframe>
+<script>
+// QA only: drives watar.html through a scenario so headless shots can capture each state.
+// ?w=&h= size, q= a question asked on arrival, as= the person, do= approve,discard,line,new,scroll, y= scroll offset.
+const q = new URLSearchParams(location.search), f = document.getElementById('f');
+f.style.width = q.get('w') + 'px'; f.style.height = q.get('h') + 'px';
+const S = {
+  approve(d) { d.querySelector('[data-approve]').click(); },
+  discard(d) { d.querySelector('[data-discard]').click(); },
+  // hands the line change on: the capture then shows line.html with the draft
+  line(d) { d.querySelector('[data-handoff]').click(); },
+  new(d) { d.querySelector('[data-new]').click(); },
+  scroll(d) { d.defaultView.scrollTo(0, +q.get('y') || 0); },
+};
+let ran = false;
+f.onload = () => setTimeout(() => {
+  const d = f.contentDocument;
+  // headless virtual time runs no frames, so transitions would freeze half way in a capture
+  d.head.insertAdjacentHTML('beforeend', '<style>*,*::before,*::after{transition:none!important}</style>');
+  if (!ran) { ran = true; (q.get('do') || '').split(',').filter(Boolean).forEach((k, i) => setTimeout(() => S[k](f.contentDocument), 400 + i * 300)); }
+  // no frames means no resize observer: tell the page its layout settled
+  setTimeout(() => f.contentWindow.dispatchEvent(new Event('resize')), 1200);
+  // a capture shows the state, not the focus ring a script left
+  setTimeout(() => { const a = f.contentDocument.activeElement; if (a) a.blur(); if (q.get('y')) f.contentWindow.scrollTo(0, +q.get('y')); }, 1800);
+}, 300);
+const p = new URLSearchParams();
+if (q.get('q')) p.set('q', q.get('q'));
+if (q.get('as')) p.set('as', q.get('as'));
+f.src = `../watar.html${p.toString() ? `?${p}` : ''}`;
+</script>

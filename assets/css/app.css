@@ -59,8 +59,13 @@ html.side-folded .a-top:has(.ap-side) { width: 72px; }
 .ap-l[aria-current] { background: #fff; color: var(--iqaa-ink); font-weight: 700; box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.07), 0 1px 3px rgba(25, 23, 46, 0.08); }
 .ap-l[aria-current] svg { color: var(--iqaa-ink); }
 .ap-n { margin-inline-start: auto; font-style: normal; font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; font-weight: 400; color: var(--iqaa-n600); }
-.ap-n.me { color: var(--iqaa-violet); }
+/* what waits for you: an ink number after a violet dot (violet text on the desk would be 4.12:1 at 12 px) */
+.ap-n.me { color: var(--iqaa-n800); }
+.ap-n.me:not(:empty) { display: inline-flex; align-items: center; gap: 5px; }
+.ap-n.me::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--iqaa-violet); }
 .ap-n:empty { display: none; }
+/* Ask Watar beside Search: only on phones, where the tab bar is full */
+.ap-ask { display: none; }
 .ap-group { margin: var(--s-6) 0 var(--s-1); padding-inline: 10px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
 .ap-soon .ap-l { color: var(--iqaa-n600); cursor: default; }
 .ap-soon .ap-l svg { color: var(--iqaa-n400); }
@@ -102,6 +107,15 @@ html.side-folded .ap-fold svg { transform: scaleX(-1); }
   .ap-l[aria-current] { box-shadow: none; background: var(--iqaa-n100); }
   .ap-n:not(.me) { display: none; }
   .ap-n.me { position: absolute; inset-block-start: 4px; inset-inline-start: calc(50% + 6px); min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--iqaa-violet); color: #fff; font-size: 10px; text-align: center; }
+  .ap-n.me:not(:empty) { display: block; }
+  .ap-n.me::before { display: none; }
+  /* six screens would need 384 px of tabs: Ask Watar leaves the bar for the top, beside Search; Settings is reached
+     from the organization's menu and from search */
+  .ap-li-watar, .ap-links > .ap-wide { display: none; }
+  .ap-ask { position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: none; border-radius: 10px; color: var(--iqaa-ink); }
+  .ap-ask[aria-current] { background: var(--iqaa-n100); }
+  .ap-ask:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+  .ap-dot { position: absolute; inset-block-start: 8px; inset-inline-end: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--iqaa-violet); box-shadow: 0 0 0 2px #fff; }
   .ap-foot { margin: 0; padding: 0; border: 0; }
   .ap-me-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .ap-fold { display: none; }
@@ -134,6 +148,15 @@ html.side-folded .ap-fold svg { transform: scaleX(-1); }
 .cmdk-foot { display: flex; gap: var(--s-6); margin: 0; padding: var(--s-2) var(--s-4); border-block-start: 1px solid var(--iqaa-n100); font-size: 12px; line-height: 16px; color: var(--iqaa-n600); }
 .cmdk-foot span { display: flex; align-items: center; gap: 4px; }
 @media (max-width: 699px) { .cmdk { margin-block-start: var(--s-4); max-height: calc(100vh - 2 * var(--s-4)); } .cmdk-foot { display: none; } }
+
+/* phones of 320 px: five tabs share the bar equally instead of keeping 64 px each */
+@media (max-width: 359px) { .ap-links > li { flex: 1 1 0; min-width: 0; } .ap-links .ap-l { min-width: 0; } }
+
+/* a confirm in place, before something that cannot be taken back (publishing a line, reminding a client) */
+.cf-in { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4) var(--s-6); flex-wrap: wrap; padding: var(--s-4) var(--s-6); border: 1px solid var(--iqaa-ink); border-radius: 14px; background: var(--iqaa-n50); }
+.cf-in p { font-size: 15px; line-height: 22px; max-width: 64ch; }
+.cf-in p span { color: var(--iqaa-n700); }
+.cf-act { display: flex; gap: var(--s-3); }
 
 .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 .btn.primary[disabled] { opacity: 1; background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n600); }

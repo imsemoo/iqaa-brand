@@ -97,3 +97,9 @@ main.td { background: #fff; }
 @media (prefers-reduced-motion: reduce) { .g.running svg { animation: none; } }
 .jb-code { text-decoration: none; }
 .jb-code:hover code { text-decoration: underline; }
+
+/* headings and the due line led by a house icon */
+.db-k h2 > svg, .td-grid h2 > svg { display: inline-block; vertical-align: -3px; margin-inline-end: var(--s-2); color: var(--iqaa-n600); }
+.jb-top .due { display: inline-flex; align-items: center; gap: 6px; }
+.jb-top .due > svg { flex: none; color: var(--iqaa-n500); }
+.jb-act .btn svg, .row-act .btn svg, .td-empty .btn svg { flex: none; }

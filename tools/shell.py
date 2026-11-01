@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brand  # noqa: E402
 import tokens as T  # noqa: E402
 
-V = 97
+V = 105
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 esc = lambda s: html.escape(str(s), quote=True)
 
@@ -114,5 +114,6 @@ def inline(svg, cls='', label=None):
 def tokens_js():
     """The grammar's constants and palettes for the browser, from the same source as the SVG files."""
     hand = {ch: {k: v[k] for k in ('d', 'len', 'x0', 'x1', 'cx')} for ch, v in brand.hand().items()}
-    data = {'mark': T.MARK, 'pal': brand.PAL, 'motion': T.MOTION, 'lines': LINES, 'letters': hand}
+    from p_ct import ICONS  # the icon family, so screens drawn in the browser use the same strokes as the book
+    data = {'mark': T.MARK, 'pal': brand.PAL, 'motion': T.MOTION, 'lines': LINES, 'letters': hand, 'icons': ICONS}
     return 'window.IQAA = ' + json.dumps(data, ensure_ascii=False) + ';\n'

@@ -87,10 +87,10 @@
 <p>${esc(d.note)}</p>${chg}
 <p class="dr-tot">Total <b>${esc(d.total)}</b> <span class="hint">from Sufra’s price list</span></p>
 </div>
-<div class="jb-act"><button class="btn primary" type="button" data-approve${d.busy ? ' disabled' : ''}>Approve the draft</button><button class="btn" type="button" data-change aria-expanded="false"${d.busy ? ' disabled' : ''}>Ask Watar for a change</button></div>
+<div class="jb-act"><button class="btn primary" type="button" data-approve${d.busy ? ' disabled' : ''}>${IQ.icon('Done', 18)}<span>Approve the draft</span></button><button class="btn" type="button" data-change aria-expanded="false"${d.busy ? ' disabled' : ''}>${IQ.icon('Ask Watar', 18)}<span>Ask Watar for a change</span></button></div>
 <form class="jb-chg" data-chg-form hidden novalidate>
 <div class="field"><label for="chg-${j.code}">What should change?</label><textarea id="chg-${j.code}" rows="2" data-chg-text placeholder="For example: no nuts, and lunch at 12:00 instead."></textarea><p class="err" hidden data-chg-err></p></div>
-<div class="row-act"><button class="btn" type="button" data-chg-cancel>Cancel</button><button class="btn ink" type="submit">Send to Watar</button></div>
+<div class="row-act"><button class="btn" type="button" data-chg-cancel>Cancel</button><button class="btn ink" type="submit">${IQ.icon('Send', 18)}<span>Send to Watar</span></button></div>
 </form>`;
     }
     const items = (x.check || ['Done as the step says']).map((t, i) => `<label class="chk"><input type="checkbox" data-check="${i}"><span>${esc(t)}</span></label>`).join('');
@@ -103,14 +103,14 @@
       : '';
     return `<fieldset class="chk-l"><legend>Before you hand it on</legend>${items}</fieldset>
 <p class="err" data-check-err hidden></p>
-<div class="jb-act"><button class="btn primary" type="button" data-finish>Mark done</button></div>
+<div class="jb-act"><button class="btn primary" type="button" data-finish>${IQ.icon('Done', 18)}<span>Mark done</span></button></div>
 <p class="hint">${then} The checklist locks when the job moves on.</p>`;
   }
 
   function jobLi(j) {
     const x = stepOf(j), on = open === j.code;
     return `<li class="job${on ? ' open' : ''}" data-job="${j.code}">
-<div class="jb-top"><a class="jb-code" href="order.html?code=${j.code}"><code>${j.code}</code></a><span>${esc(j.client)}, ${esc(j.of)}</span><span class="due">${esc(j.due)} · ${when(j.iso)}</span></div>
+<div class="jb-top"><a class="jb-code" href="order.html?code=${j.code}"><code>${j.code}</code></a><span>${esc(j.client)}, ${esc(j.of)}</span><span class="due">${IQ.icon('Date', 16)}<span>${esc(j.due)} · ${when(j.iso)}</span></span></div>
 <h3><button type="button" class="jb-h" data-open="${j.code}" aria-expanded="${on}" aria-controls="p-${j.code}">${esc(j.title)} · ${j.people} people</button></h3>
 <div class="jb-pos">${strip(j)}<p>${where(j)}</p></div>
 <div class="jb-for">${glyph(x.kind)}<p><b>For you:</b> ${esc(forYou(j, x))}</p></div>
@@ -192,8 +192,8 @@
     if (!w.length) {
       const c = coming()[0];
       empty.innerHTML = own
-        ? `<p>Jobs appear here when your team adds an order. Until then, try your line with a test job.</p><a class="btn" href="line.html">Open the line</a>`
-        : `<p><b>Your station is clear.</b></p><p class="hint">${c ? `Next: ${esc(c.j.title)} (<code>${c.j.code}</code>) reaches you at ${esc(c.at.name)}.` : 'No job is heading your way yet.'}</p><a class="btn" href="line.html">See the whole line</a>`;
+        ? `<p>Jobs appear here when your team adds an order. Until then, try your line with a test job.</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>Open the line</span></a>`
+        : `<p><b>Your station is clear.</b></p><p class="hint">${c ? `Next: ${esc(c.j.title)} (<code>${c.j.code}</code>) reaches you at ${esc(c.at.name)}.` : 'No job is heading your way yet.'}</p><a class="btn" href="line.html">${IQ.icon('Line', 18)}<span>See the whole line</span></a>`;
     }
   }
   function renderComing() {
@@ -351,7 +351,7 @@ ${d.undo && latest[d.code] === done.length - 1 - i ? `<button class="link" type=
   Beats.sig($('[data-org-mark]'), blocks, { mode: 'mark', size: 32, name: own ? own.name : 'Sufra', label: `${own ? own.name : 'Sufra'}’s mark` });
   $('[data-me-av]').textContent = (me.name || own.name).charAt(0);
   $('[data-me-name]').textContent = me.name || 'You';
-  $('[data-me-role]').textContent = me.role || '';
+  $('[data-me-role]').textContent = me.access === 'owner' ? 'Owner' : me.role || '';
   document.title = `Today · ${own ? own.name : 'Sufra'}`;
   if (own) jobs = [];
   renderAll();

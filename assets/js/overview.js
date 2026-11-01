@@ -1,6 +1,6 @@
 // Overview: the owner's view of the whole organization. The day in five numbers, the line's load as a map, the
 // team's day as lines in time (each person's finished steps at their hour, what is still theirs ahead in grey),
-// what needs attention, and what finished this week.
+// what needs attention, and what finished in the last 7 days.
 (function () {
   const root = document.querySelector('main.ov');
   if (!root || !window.IQ || !window.Beats || !window.SUFRA || !window.JOBS) return;
@@ -12,17 +12,13 @@
   const NOW = 9 * 60 + 41;
   const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
   const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
-  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
   const team = Object.keys(S.people).map((k) => ({ k, ...S.people[k] }));
   const waitingFor = (name) => live.filter((j) => { const x = J.stepOf(j); return x && isPerson(x.kind) && x.who === name; });
-  const idx = (id) => J.main.findIndex((s) => s.id === id);
-  // past delivery only the paperwork is left, so the event's date no longer makes a job due or late
-  const delivered = (j) => idx(j.at) > idx('deliver');
-  const isLate = (j) => V.days(j.iso) < 0 && !delivered(j);
+  // past delivery only the paperwork is left, so the event's date no longer makes a job due or late (the shared views)
   const timeOf = (j) => j.due.split(', ')[1];
-  const soon = live.filter((j) => V.days(j.iso) <= 1 && !delivered(j)).sort((a, b) => a.iso.localeCompare(b.iso));
-  const late = soon.filter(isLate), next = soon.find((j) => V.days(j.iso) >= 0);
+  const soon = live.filter((j) => V.days(j.iso) <= 1 && !V.delivered(j)).sort((a, b) => a.iso.localeCompare(b.iso));
+  const late = soon.filter(V.late), next = soon.find((j) => V.days(j.iso) >= 0);
   const clients = live.filter((j) => { const x = J.stepOf(j); return x && x.who === 'The client'; });
   const withTeam = live.filter((j) => { const x = J.stepOf(j); return x && isPerson(x.kind) && x.who !== 'The client'; });
   const stations = line.stations.length + line.routes.filter((r) => r.type === 'branch').reduce((n, r) => n + r.stations.length, 0);
@@ -30,14 +26,14 @@
 
   // ---------- the day in five numbers; each one opens the place that explains it ----------
   const kpi = [
-    ['On the line', live.length, `across ${stations} stations`, 'orders.html'],
-    ['Due by tomorrow', soon.length, late.length ? `<b class="bad">${late.length} late</b>` : next ? `next ${V.when(next.iso)}, ${timeOf(next)}` : 'nothing close', '#due'],
-    ['With the team', withTeam.length, `across ${team.length} people`, '#tm-h'],
-    ['Waiting on clients', clients.length, clients.length ? 'Iqaa reminds them' : 'none', '#clients'],
-    ['Finished this week', fin.length, 'walked the whole line', '#done'],
+    ['On the line', live.length, `across ${stations} stations`, 'orders.html', 'Line'],
+    ['Due by tomorrow', soon.length, late.length ? `<b class="bad">${late.length} late</b>` : next ? `next ${V.when(next.iso)}, ${timeOf(next)}` : 'nothing close', '#due', 'Date'],
+    ['With the team', withTeam.length, `across ${team.length} people`, '#tm-h', 'People'],
+    ['Waiting on clients', clients.length, clients.length ? 'Iqaa reminds them' : 'none', 'clients.html', 'Clients'],
+    ['Finished, last 7 days', fin.length, 'walked the whole line', '#done', 'Done'],
   ];
-  $('[data-kpi]').innerHTML = kpi.map(([k, n, note, href]) =>
-    `<li><a class="kp" href="${href}"><span class="kp-k">${k}</span><span class="kp-n">${n}</span><span class="kp-s">${note}</span></a></li>`).join('');
+  $('[data-kpi]').innerHTML = kpi.map(([k, n, note, href, ic]) =>
+    `<li><a class="kp" href="${href}"><span class="kp-k">${IQ.icon(ic, 16)}${k}</span><span class="kp-n">${n}</span><span class="kp-s">${note}</span></a></li>`).join('');
 
   // ---------- the line now: across on wide screens, down the screen on phones; stations open Orders filtered ----------
   $('[data-map]').innerHTML = V.loadMap(jobs, null);
@@ -106,22 +102,15 @@
   if (window.ResizeObserver) new ResizeObserver(() => { const w = $('[data-team]').clientWidth; if (w !== tw) { tw = w; renderTeam(); } }).observe($('[data-team]'));
 
   // ---------- needs attention: compact rows, the date first because that is what the owner scans for ----------
-  function att(j) {
-    const p = J.station(j.at), w = V.waitingOn(j), d = V.days(j.iso), time = timeOf(j), late = isLate(j);
-    const day = d < 0 ? j.due.split(', ')[0] : cap(V.when(j.iso));
-    return `<li><a class="at${late ? ' late' : ''}" href="order.html?code=${j.code}" aria-label="${esc(j.title)} for ${esc(j.client)}, due ${esc(j.due)}${late ? ', late' : ''}. At ${esc(p.st.name)}, ${w.text}.">
-<span class="at-d"><b>${esc(day)}</b><time>${esc(time)}</time></span>
-<span class="at-t"><b>${esc(j.title)}</b><span>${esc(j.client)}, ${esc(j.of)} · ${j.people} people</span></span>
-<span class="at-p"><span class="at-st">At <b>${esc(p.st.name)}</b></span><span class="or-who">${w.html}</span></span></a></li>`;
-  }
-  $('[data-due]').innerHTML = soon.map(att).join('') || '<li class="ov-none">Nothing is due by tomorrow.</li>';
-  $('[data-clients]').innerHTML = clients.map(att).join('') || '<li class="ov-none">No job is waiting on a client.</li>';
+  $('[data-due]').innerHTML = soon.map(V.dueRow).join('') || '<li class="ov-none">Nothing is due by tomorrow.</li>';
+  $('[data-clients]').innerHTML = clients.map(V.dueRow).join('') || '<li class="ov-none">No job is waiting on a client.</li>';
 
-  // ---------- finished this week: one line each ----------
+  // ---------- finished in the last 7 days: one line each ----------
   $('[data-done]').innerHTML = fin.map((j) => `<li><a class="dn" href="order.html?code=${j.code}" aria-label="${esc(j.title)} for ${esc(j.client)}, finished ${esc(j.finished)}.">
 <span class="dn-t"><b>${esc(j.title)}</b><span>${esc(j.client)}, ${esc(j.of)} · ${j.people} people</span></span>
-<span class="dn-d"><span>Event</span>${esc(j.due)}</span><span class="dn-d"><span>Finished</span>${esc(j.finished)}</span><code>${j.code}</code></a></li>`).join('');
+<span class="dn-d"><span>${IQ.icon('Date', 14)}Event</span>${esc(j.due)}</span><span class="dn-d"><span>${IQ.icon('Done', 14)}Finished</span>${esc(j.finished)}</span><code>${j.code}</code></a></li>`).join('');
   $('[data-n-due]').textContent = soon.length;
-  $('[data-n-clients]').textContent = clients.length;
+  // the sidebar's Clients item carries a count of the same name: this one is the panel's
+  $('[data-n-clients]', root).textContent = clients.length;
   $('[data-n-done]').textContent = fin.length;
 })();

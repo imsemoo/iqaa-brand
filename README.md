@@ -35,9 +35,16 @@ stages, captured by `python -I tools/screens.py` into `assets/screens/`, preview
 signin (a tenant's sign-in, sufra.iqaa.app) · signup (self-serve: account, your work, your line) · today (one
 person's station as a platform board: waiting, coming, done today; `?as=salma|yusuf|hala`) · line (the
 Line screen of the app: the line as a metro map with branches and ways back, the selected station's steps,
-a test job that sends nothing, versions). Both read the Sufra demo world from `assets/js/sufra.js`.
-`research/qa-line.html` and `research/qa-today.html` (`?w=&h=&do=`) drive the screens through a scenario
-for headless captures.
+a test job that sends nothing, versions) · clients (`clients.html`: every client grouped by whose move it is;
+`client.html?c=darb-studio`: one client's line with Sufra, its open order with the history that bears on each step,
+every order and the contact) · ask watar (`watar.html`: a conversation with Watar, answered in the browser by fixed
+rules from the demo world; every action Watar drafts waits in the dashed grey pen for a person; `?as=`, and `?q=`
+asks once on arrival) · settings (`settings.html#team|channels|organization|billing`: the team and its invitations,
+the ways the line reaches clients with a preview of each message, the organization's name and mark, and billing;
+every change applies on its own with Undo, in page memory; `?as=reem` shows a member's read-only view). All read
+the Sufra demo world from `assets/js/sufra.js`, and every time comes from the one clock in `assets/js/jobs.js`.
+`research/qa-line.html`, `research/qa-today.html` and `research/qa-watar.html` (`?w=&h=&do=`) drive the screens
+through a scenario for headless captures.
 
 ## Real and illustrative
 

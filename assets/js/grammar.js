@@ -162,5 +162,11 @@
   function fold(kinds, opts) { return avatar([kinds], { size: Math.max(24, Math.round(((opts && opts.k) || 2) * 20)) }); }
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  window.IQ = { cell, line, avatar, glyph, fold, lineLayout: layout, describe, STEP, HANDOFF, WIDTH };
+  // An icon of the family (tools/p_ct.py ICONS): 24 px grid, 1.5 px pen, round ends, never filled.
+  function icon(name, size) {
+    const d = (window.IQAA.icons || {})[name], s = size || 20;
+    return d ? `<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>` : '';
+  }
+
+  window.IQ = { cell, line, avatar, glyph, fold, icon, lead, lineLayout: layout, describe, STEP, HANDOFF, WIDTH };
 })();

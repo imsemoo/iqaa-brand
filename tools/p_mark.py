@@ -252,6 +252,8 @@ ENCODE = [
     'The pen never shrinks to fit: a long line is drawn smaller, never cramped.',
     'An organization without a logo signs with its initial, written in Iqaa’s hand with the mark’s pen, in the order its line opens: each of its first steps (whole stations, up to three) takes an equal share of the letter, lilac where a person does it, white where it runs by itself.',
     'Publishing a new version of a line changes its signature. Jobs already running keep the version — and the signature — they started on.',
+    'A client’s history is written order by order with the steps that reached the client: an arch for each answer the line waited for, a lifted pen and a straight where the wait ran out and Iqaa reminded them, then the delivery — a loop, or the snapped red stroke when it arrived late. The pen lifts between orders, because each is its own job.',
+    'A timed wait can be drawn at its real length, on a day line: the pen stays up for the whole wait, a quiet band marks the time it is up and the dot sits in its middle; the step before ends where the wait starts, the step after starts where it ends. A risk reads as a picture: the event falls under the lifted pen.',
     'Arabic: the same strokes, written right to left; the loops turn the other way.',
     'On ink, strokes that run by themselves turn white and a person’s strokes lilac. Nothing else changes.',
 ]

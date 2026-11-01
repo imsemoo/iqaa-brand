@@ -32,13 +32,13 @@
     empty.hidden = list.length > 0;
     if (!list.length) {
       const st = at && J.station(at).st;
-      empty.innerHTML = `<p><b>${st ? `No job is at ${esc(st.name)} right now.` : 'No order matches.'}</b></p><button type="button" class="btn small" data-clear>Show every order</button>`;
+      empty.innerHTML = `<p><b>${st ? `No job is at ${esc(st.name)} right now.` : 'No order matches.'}</b></p><button type="button" class="btn small" data-clear>${IQ.icon('Orders', 18)}<span>Show every order</span></button>`;
     }
     const live = jobs.filter((j) => !j.finished), fin = jobs.filter((j) => j.finished);
     $('[data-n="line"]').textContent = live.length;
     $('[data-n="done"]').textContent = fin.length;
-    const soon = live.filter((j) => V.days(j.iso) <= 1).length;
-    $('[data-sum]').textContent = `${live.length} on the line, ${soon} due by tomorrow · ${fin.length} done this week`;
+    const soon = live.filter((j) => V.days(j.iso) <= 1 && !V.delivered(j)).length;
+    $('[data-sum]').textContent = `${live.length} on the line, ${soon} due by tomorrow · ${fin.length} done in the last 7 days`;
     const f = $('[data-filter]');
     if (at) {
       f.hidden = false;

@@ -8,7 +8,11 @@ main.or, main.od { background: #fff; }
 .or-sum { font-size: var(--t-base); line-height: var(--lh-base); color: var(--iqaa-n700); }
 .or-find input { font: inherit; font-size: 15px; width: min(360px, 100%); height: 44px; padding: 0 var(--s-4); border: 1px solid var(--iqaa-n300); border-radius: 12px; background: #fff; color: var(--iqaa-ink); }
 .or-find input:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; border-color: var(--iqaa-ink); }
-.or-find { min-width: 0; flex: 0 1 360px; }
+.or-find { position: relative; min-width: 0; flex: 0 1 360px; }
+.or-find > svg { position: absolute; inset-inline-start: 14px; inset-block-start: 13px; color: var(--iqaa-n600); pointer-events: none; }
+.or-find > svg ~ input { padding-inline-start: 42px; }
+/* the word 'late' for a delivery recorded late: the only red text, always beside the snapped stroke */
+.t-late { color: var(--iqaa-red); }
 
 .om-wrap { border-block: 1px solid var(--iqaa-n200); background: var(--iqaa-n50); padding-block: var(--s-6) var(--s-4); }
 .om-wrap h2 { font-size: 15px; line-height: 22px; font-weight: 700; }
@@ -37,7 +41,7 @@ main.or, main.od { background: #fff; }
 
 .or-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding-block: var(--s-6) var(--s-2); }
 .or-tabs { display: flex; gap: var(--s-1); }
-.or-tabs button { font: inherit; font-size: 15px; min-height: 40px; padding: 0 var(--s-4); border: 0; border-radius: 10px; background: none; color: var(--iqaa-n700); cursor: pointer; }
+.or-tabs button { display: inline-flex; align-items: center; gap: var(--s-2); font: inherit; font-size: 15px; min-height: 40px; padding: 0 var(--s-4); border: 0; border-radius: 10px; background: none; color: var(--iqaa-n700); cursor: pointer; }
 .or-tabs button[aria-selected='true'] { background: var(--iqaa-n100); color: var(--iqaa-ink); font-weight: 700; }
 .or-tabs span { font-family: 'Fragment Mono', monospace; font-size: 13px; margin-inline-start: var(--s-1); }
 .or-filter { font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
@@ -71,6 +75,7 @@ main.or, main.od { background: #fff; }
 /* ---------- the order page ---------- */
 .od-back { padding-block-start: var(--s-6); font-size: 14px; }
 .od-back a::before { content: '← '; }
+.od-back a { display: inline-block; padding-block: 13px; margin-block: -13px; }
 .od-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: var(--s-4) var(--s-8); padding-block: var(--s-3) var(--s-6); }
 .od-t { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
 .od-code code { font-size: 13px; color: var(--iqaa-n700); }
@@ -123,6 +128,12 @@ main.or, main.od { background: #fff; }
 .od-dl dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .od-dl code { font-size: 12px; }
 .od-meta { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+/* what the client asked for, or how late the delivery arrived: said under the step it belongs to */
+.od-asked { margin-block-start: var(--s-1); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.od-asked time { font-family: 'Fragment Mono', monospace; font-size: 12px; }
+.od-all { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; font-size: 14px; font-weight: 700; color: var(--iqaa-ink); text-underline-offset: 0.18em; }
+.od-all svg { flex: none; color: var(--iqaa-n600); }
+.od-all:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; border-radius: 6px; }
 @media (max-width: 1000px) {
   .od-grid { grid-template-columns: minmax(0, 1fr); }
   .od-side { position: static; }
@@ -136,7 +147,7 @@ main.ov { background: var(--iqaa-n50); }
 .ov-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-4); padding-block-end: var(--s-2); }
 .ov-head h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; max-width: none; }
 .td-day { font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
-.ov-all { flex: none; display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--s-4); border: 1px solid var(--iqaa-n300); border-radius: 10px; background: #fff; color: var(--iqaa-ink); font-size: 14px; font-weight: 700; text-decoration: none; }
+.ov-all { flex: none; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 40px; padding: 0 var(--s-4); border: 1px solid var(--iqaa-n300); border-radius: 10px; background: #fff; color: var(--iqaa-ink); font-size: 14px; font-weight: 700; text-decoration: none; }
 @media (hover: hover) and (pointer: fine) { .ov-all:hover { border-color: var(--iqaa-ink); } }
 .ov-all:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
 
@@ -271,4 +282,20 @@ main.ov { background: var(--iqaa-n50); }
   .ov-head h1 { font-size: var(--t-lg); line-height: var(--lh-lg); }
   .ov-page { padding-block-start: var(--s-6); gap: var(--s-3); }
   .pn-hd { padding: var(--s-3) var(--s-4); }
+}
+
+/* headings, tabs and labels led by a house icon: grey, on the text's middle, a small step before the words */
+.pn-hd h2 > svg, .ov-att h3 > svg, .om-wrap h2 > svg, .od-jk h2 > svg, .od-stations h2 > svg, .od-card h2 > svg { display: inline-block; vertical-align: -3px; margin-inline-end: var(--s-2); color: var(--iqaa-n600); }
+.ov-att h3 > svg { vertical-align: -2px; margin-inline-end: 6px; }
+.ov-all svg, .or-tabs button svg { flex: none; color: var(--iqaa-n600); }
+.or-tabs button[aria-selected='true'] svg { color: var(--iqaa-ink); }
+.kp-k { display: flex; align-items: center; gap: 6px; }
+.kp-k svg { flex: none; color: var(--iqaa-n500); }
+.dn-d > span:first-child { display: inline-flex; align-items: center; gap: 4px; }
+.dn-d > span:first-child svg { flex: none; color: var(--iqaa-n500); }
+.od-card .btn svg, .or-empty .btn svg { flex: none; }
+/* phones: All orders keeps its icon and its name for screen readers, so the greeting stays on one line */
+@media (max-width: 480px) {
+  .ov-all { width: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .ov-all span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }

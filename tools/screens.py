@@ -27,6 +27,12 @@ STATES = {
     'build-m': ('research/qa.html?w=375&h=812&src=build.html', 375, 812, 2),
     'orders-d': ('research/qa.html?w=1440&h=900&src=orders.html', 1440, 900, 1),
     'orders-m': ('research/qa.html?w=375&h=812&src=order.html%3Fcode%3DSFR-26-0029', 375, 812, 2),
+    'clients-d': ('research/qa.html?w=1440&h=900&src=clients.html', 1440, 900, 1),
+    'clients-m': ('research/qa.html?w=375&h=812&src=client.html%3Fc%3Ddarb-studio', 375, 812, 2),
+    'watar-d': ('research/qa-watar.html?w=1440&h=900&q=Who%20is%20late%20today%3F', 1440, 900, 1),
+    'watar-m': ('research/qa-watar.html?w=375&h=812&q=Why%20is%20Nakhla%E2%80%99s%20order%20stuck%3F', 375, 812, 2),
+    'settings-d': ('research/qa.html?w=1440&h=900&src=settings.html', 1440, 900, 1),
+    'settings-m': ('research/qa.html?w=375&h=812&src=settings.html%23organization', 375, 812, 2),
 }
 
 
