@@ -1,0 +1,186 @@
+/* Build: the line on a free canvas. Built on tokens.css, brand.css, auth.css and app.css; sizes are quarter-beat
+   multiples, durations fractions of the beat. */
+main.bd { background: #fff; }
+main.bd + .a-foot { display: none; }
+.bd-page { display: flex; flex-direction: column; height: 100vh; }
+
+.bd-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3) var(--s-6); padding: var(--s-3) var(--s-6); border-block-end: 1px solid var(--iqaa-n200); }
+.bd-title { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); min-width: 0; }
+.bd-title h1 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 600; max-width: none; }
+.bd-state { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.bd-tools { display: flex; align-items: center; gap: var(--s-1); }
+.bd-t, .bd-z { height: 36px; min-width: 36px; display: inline-grid; place-items: center; padding: 0 var(--s-2); border: 0; border-radius: 9px; background: none; font: inherit; font-size: 13px; color: var(--iqaa-ink); cursor: pointer; }
+.bd-z { font-family: 'Fragment Mono', monospace; min-width: 56px; }
+.bd-t:hover:not([disabled]), .bd-z:hover { background: var(--iqaa-n100); }
+.bd-t[disabled] { color: var(--iqaa-n400); cursor: default; }
+.bd-sep { width: 1px; height: 20px; background: var(--iqaa-n200); margin-inline: var(--s-1); }
+.bd-checks-btn { display: inline-flex; align-items: center; gap: var(--s-2); height: 36px; padding: 0 var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px; background: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.bd-checks-btn svg { height: 18px; width: auto; }
+.bd-checks-btn.bad { border-color: var(--iqaa-red); color: var(--iqaa-red); }
+.bd-checks-btn > span { display: inline-flex; align-items: center; gap: var(--s-2); }
+
+.bd-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 312px; }
+
+/* the library: every block, grouped by who does the work */
+.bd-lib { overflow-y: auto; padding: var(--s-4); border-inline-end: 1px solid var(--iqaa-n200); background: var(--iqaa-n50); display: flex; flex-direction: column; gap: var(--s-2); }
+.bd-lib h2 { font-size: 15px; line-height: 22px; font-weight: 700; }
+.bd-lib h3 { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); margin-block-start: var(--s-3); }
+.bd-lib ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lib-it { width: 100%; display: flex; align-items: flex-start; gap: var(--s-3); padding: var(--s-2); border: 1px solid transparent; border-radius: 10px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200); font: inherit; text-align: start; color: var(--iqaa-ink); cursor: grab; touch-action: none; }
+.lib-it:hover { box-shadow: 0 0 0 1px var(--iqaa-n400); }
+.lib-it:active { cursor: grabbing; }
+.lib-it:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.lib-ic { flex: none; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; background: var(--iqaa-n50); }
+.lib-it b { display: block; font-size: 14px; line-height: 18px; }
+.lib-it span span { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.lib-new .lib-it { background: var(--iqaa-ink); color: #fff; box-shadow: none; }
+.lib-new .lib-it span span { color: var(--iqaa-n300); }
+.lib-new .lib-ic { background: rgba(255, 255, 255, 0.1); }
+
+/* the canvas: a quiet dotted ground that pans and zooms */
+.bd-canvas { position: relative; overflow: hidden; cursor: grab; touch-action: none; outline: none;
+  background: linear-gradient(var(--iqaa-n100) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(90deg, var(--iqaa-n100) 1px, transparent 1px) 0 0 / 24px 24px, #fff; }
+.bd-canvas.panning { cursor: grabbing; }
+.bd-canvas:focus-visible { box-shadow: inset 0 0 0 2px var(--iqaa-violet); }
+.bd-world { position: absolute; inset-block-start: 0; inset-inline-start: 0; transform-origin: 0 0; }
+/* the track layer covers the whole world, so every connection paints wherever the blocks are */
+.bd-edges { position: absolute; inset-block-start: -4000px; inset-inline-start: -4000px; width: 12000px; height: 10000px; max-width: none; overflow: visible; pointer-events: none; }
+.bd-edges > g { transform: translate(4000px, 4000px); }
+.ed { fill: none; stroke: var(--iqaa-ink); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.ed.back { stroke-width: 3; }
+.ed.on { stroke: var(--iqaa-violet); }
+.ed.tmp { stroke: var(--iqaa-n500); stroke-dasharray: 6 7; }
+.ed-hit { fill: none; stroke: transparent; stroke-width: 16; cursor: pointer; pointer-events: stroke; }
+.bk-ports .bk-port:not(.nx) { inset-block-start: 15px; }
+.bd-tip { position: absolute; inset-inline-start: var(--s-4); inset-block-end: var(--s-4); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); background: rgba(255, 255, 255, 0.9); padding: 6px 10px; border-radius: 8px; pointer-events: none; }
+
+/* a station is a metro station: its name above, its ring on the track, its steps hanging under the ring on a rail */
+.bk { position: absolute; inset-block-start: 0; inset-inline-start: 0; width: 200px; cursor: default; }
+.bk-h { display: flex; align-items: center; gap: 6px; height: 24px; margin: 0; padding: 0 6px 0 2px; border-radius: 8px; cursor: grab; touch-action: none; width: max-content; max-width: 200px; }
+.bk-h b { font-size: 15px; line-height: 20px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bk-h:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.bk.on .bk-h { background: var(--iqaa-n100); }
+.bk-tag { font-size: 11px; line-height: 16px; padding: 0 6px; border-radius: 6px; background: var(--iqaa-ink); color: #fff; font-weight: 600; }
+/* the ring is where jobs come in, and where the track to the next station is drawn from */
+.bk-ring { position: absolute; inset-block-start: 25px; inset-inline-start: 1px; z-index: 2; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 4px var(--iqaa-ink); cursor: crosshair; touch-action: none; transition: box-shadow var(--m-quarter) var(--ease-arrive); }
+.bk.on .bk-ring { box-shadow: inset 0 0 0 9px var(--iqaa-ink); }
+.bk-ring:hover, .bk-ring:focus-visible { box-shadow: inset 0 0 0 4px var(--iqaa-ink), 0 0 0 4px var(--iqaa-lavender); outline: none; }
+.bk.end .bk-ring { box-shadow: inset 0 0 0 4px var(--iqaa-ink), 0 0 0 3px #fff, 0 0 0 5px var(--iqaa-ink); }
+.bk-steps { position: relative; list-style: none; margin: 30px 0 0; padding: 4px 0 4px 26px; }
+.bk-steps::before { content: ''; position: absolute; inset-inline-start: 9px; inset-block: -6px 14px; width: 2px; border-radius: 1px; background: var(--iqaa-n300); }
+.bk-step { position: relative; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: start; gap: var(--s-2); padding: 5px 6px; border-radius: 8px; cursor: pointer; }
+.bk-step::before { content: ''; position: absolute; inset-inline-start: -16px; inset-block-start: 15px; width: 10px; height: 2px; background: var(--iqaa-n300); }
+.bk-step:hover { background: rgba(236, 233, 245, 0.7); }
+.bk-step.on { background: var(--iqaa-n100); }
+.bk-g svg, .in-k .bk-g svg { display: block; height: 20px; width: auto; margin-inline: auto; }
+.bk-n { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.bk-n b { font-size: 13px; line-height: 18px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 136px; }
+.bk-n > span { font-size: 11px; line-height: 15px; color: var(--iqaa-n700); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 136px; }
+.bk-x svg { height: 14px; width: auto; display: block; margin-block-start: 3px; }
+.bk-step.bad .bk-n b { color: var(--iqaa-red); }
+.bk.bad .bk-h b { color: var(--iqaa-red); }
+/* an outlet of a step: Yes of a condition, Change asked of an approval; drag it to a station */
+.bk-out { margin-block-start: 4px; padding: 1px 8px; border: 0; border-radius: 6px; background: var(--iqaa-ink); color: #fff; font: inherit; font-size: 11px; line-height: 16px; font-weight: 600; cursor: crosshair; touch-action: none; }
+.bk-out:hover, .bk-out:focus-visible { background: var(--iqaa-violet); outline: none; }
+.bk-grip { position: absolute; inset-block: 4px; inset-inline-end: -10px; width: 8px; cursor: grab; touch-action: none; border-radius: 4px;
+  background: radial-gradient(circle, var(--iqaa-n400) 1px, transparent 1.3px) 0 0 / 4px 4px; opacity: 0; }
+.bk-step:hover .bk-grip, .bk-step.on .bk-grip { opacity: 1; }
+.bk-empty { padding: var(--s-2) var(--s-3); font-size: 12px; color: var(--iqaa-n600); }
+.bk.drop .bk-steps { background: rgba(136, 69, 248, 0.06); border-radius: 10px; box-shadow: inset 0 0 0 1.5px var(--iqaa-violet); }
+.ed-l { font-family: 'Atkinson Hyperlegible Next', sans-serif; font-size: 11px; font-weight: 700; fill: var(--iqaa-n700); paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+
+/* the inspector */
+.bd-insp { overflow-y: auto; padding: var(--s-5, 20px); border-inline-start: 1px solid var(--iqaa-n200); display: flex; flex-direction: column; gap: var(--s-4); }
+.in-k { display: flex; align-items: center; gap: var(--s-2); font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); }
+.in-f { display: flex; flex-direction: column; gap: 6px; }
+.in-f label, .in-l { font-size: 13px; line-height: 18px; font-weight: 700; }
+.bd-insp .sn, .bd-insp .sw { font: inherit; font-size: 14px; color: var(--iqaa-ink); width: 100%; min-height: 40px; border: 1px solid var(--iqaa-n300); border-radius: 10px; padding: 0 var(--s-3); background: #fff; }
+.bd-insp .sw { appearance: none; padding-inline-end: var(--s-8); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2319172E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 8px center / 18px; }
+.bd-insp textarea.sn { padding-block: var(--s-2); line-height: 20px; resize: vertical; min-height: 96px; }
+.bd-insp .sn:focus-visible, .bd-insp .sw:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; border-color: var(--iqaa-ink); }
+.in-vars { display: flex; flex-wrap: wrap; gap: 4px; }
+.var { font-family: 'Fragment Mono', monospace; font-size: 11px; padding: 4px 6px; border: 0; border-radius: 6px; background: var(--iqaa-n100); color: var(--iqaa-ink); cursor: pointer; }
+.var:hover { background: var(--iqaa-lavender); }
+.in-rule { display: grid; grid-template-columns: minmax(0, 1fr) 64px 72px; gap: 6px; }
+.in-rule .sw { padding-inline-end: var(--s-6); }
+.in-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.in-bad { list-style: none; margin: 0; padding: var(--s-3); border-radius: 10px; background: #FFF1F2; display: flex; flex-direction: column; gap: var(--s-2); }
+.in-bad li { display: flex; gap: var(--s-2); font-size: 13px; line-height: 18px; color: var(--iqaa-ink); }
+.in-bad svg { height: 16px; width: auto; flex: none; margin-block-start: 2px; }
+.bd-insp .chk { font-size: 14px; align-items: flex-start; }
+.bd-insp .chk input { margin-block-start: 2px; }
+
+/* the checks, opened from the toolbar */
+.bd-checks { position: absolute; inset-block-start: var(--s-3); inset-inline-end: var(--s-3); width: min(360px, calc(100% - 24px)); max-height: 60%; overflow-y: auto; padding: var(--s-4); border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200), 0 16px 40px -16px rgba(25, 23, 46, 0.3); cursor: default; }
+.bd-checks h2 { font-size: 14px; font-weight: 700; margin-block-end: var(--s-2); }
+.bd-checks ul { margin: 0; padding-inline-start: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px; }
+.bd-checks .link { text-align: start; padding: 0; font-size: 13px; }
+.bd-checks p { font-size: 13px; color: var(--iqaa-n700); }
+
+.bd-ghost { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 50; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: var(--iqaa-ink); color: #fff; font-size: 13px; font-weight: 600; box-shadow: 0 8px 20px -8px rgba(25, 23, 46, 0.4); }
+
+@media (max-width: 1279px) { .bd-body { grid-template-columns: 220px minmax(0, 1fr) 280px; } }
+/* below a laptop the panels stack under the canvas; building wants a larger screen, and says so */
+@media (max-width: 1023px) {
+  .bd-page { height: auto; }
+  .bd-body { grid-template-columns: minmax(0, 1fr); }
+  .bd-canvas { height: 62vh; order: -1; }
+  .bd-lib { border: 0; border-block-start: 1px solid var(--iqaa-n200); }
+  .bd-lib ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .bd-insp { border: 0; border-block-start: 1px solid var(--iqaa-n200); }
+}
+@media (max-width: 600px) { .bd-head { padding: var(--s-3) var(--s-4); } .bd-tools { flex-wrap: wrap; } }
+
+/* ---------- phase two: Watar, drafts, the test job, the minimap ---------- */
+.b-arch { display: inline-block; width: 14px; height: 9px; border: 2.5px solid currentColor; border-block-end: 0; border-radius: 9px 9px 0 0; }
+.bd-watar .b-arch { color: var(--iqaa-violet); margin-inline-end: 6px; }
+.bd-watar-p { position: absolute; inset-block-start: var(--s-3); inset-inline-start: 50%; transform: translateX(-50%); z-index: 6; width: min(520px, calc(100% - 24px)); padding: var(--s-4); border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200), 0 16px 40px -16px rgba(25, 23, 46, 0.3); display: flex; flex-direction: column; gap: var(--s-2); cursor: default; }
+.wt-k { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; }
+.wt-k .b-arch { color: var(--iqaa-violet); }
+.bd-watar-p textarea { font: inherit; font-size: 14px; line-height: 20px; padding: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n300); border-radius: 10px; resize: vertical; min-height: 72px; color: var(--iqaa-ink); }
+.bd-watar-p textarea:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+.wt-ex { display: flex; flex-wrap: wrap; gap: 6px; }
+.wt-ex button { font: inherit; font-size: 12px; line-height: 16px; padding: 6px 8px; border: 0; border-radius: 8px; background: var(--iqaa-n100); color: var(--iqaa-ink); cursor: pointer; text-align: start; }
+.wt-ex button:hover { background: var(--iqaa-lavender); }
+.wt-out { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.wt-out:empty { display: none; }
+.wt-act { display: flex; justify-content: flex-end; gap: var(--s-2); }
+.bd-draft { position: absolute; inset-block-end: var(--s-4); inset-inline-start: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: var(--s-3); padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4); border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n300), 0 12px 32px -12px rgba(25, 23, 46, 0.3); cursor: default; max-width: calc(100% - 24px); }
+.bd-draft .b-arch { color: var(--iqaa-violet); flex: none; }
+.bd-draft p { font-size: 13px; line-height: 18px; }
+/* Watar's draft is drawn with the dashed grey pen until a person accepts it */
+.bk.draft .bk-ring { box-shadow: inset 0 0 0 3px var(--iqaa-n400); }
+.bk.draft .bk-h b { color: var(--iqaa-n600); }
+.bk.draft .bk-steps::before { background: repeating-linear-gradient(var(--iqaa-n400) 0 4px, transparent 4px 8px); }
+.bk-step.draft { outline: 1.5px dashed var(--iqaa-n400); outline-offset: -2px; background: var(--iqaa-n50); }
+.ed.draft { stroke: var(--iqaa-n400); stroke-dasharray: 7 7; }
+/* the test job */
+.bd-test { position: absolute; inset-inline: 0; inset-block-end: 0; z-index: 7; display: flex; align-items: center; gap: var(--s-4); flex-wrap: wrap; padding: var(--s-2) var(--s-4); background: var(--iqaa-ink); color: #fff; cursor: default; }
+.tb-set { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; font-size: 13px; }
+.tb-set label { display: inline-flex; align-items: center; gap: 6px; }
+.tb-set .sn.num { width: 64px; height: 32px; border-radius: 8px; border: 0; padding: 0 8px; font: inherit; }
+.tb-set .chk { min-height: 32px; font-size: 13px; }
+.bd-test .btn:not(.ink) { background: transparent; color: #fff; border-color: var(--iqaa-n600); }
+.bd-test .btn.ink { background: #fff; color: var(--iqaa-ink); border-color: #fff; }
+.tb-now { font-size: 13px; line-height: 18px; color: var(--iqaa-n200); flex: 1; min-width: 200px; }
+.bd-token { position: absolute; inset-block-start: 0; inset-inline-start: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--iqaa-n500); box-shadow: 0 0 0 4px #fff, 0 4px 10px rgba(25, 23, 46, 0.3); z-index: 3; pointer-events: none; }
+.ed.walked { stroke: var(--iqaa-n300); stroke-width: 5; stroke-dasharray: 6 8; stroke-linecap: butt; }
+.bk-step.here { background: var(--iqaa-n100); box-shadow: inset 3px 0 0 var(--iqaa-n500); }
+/* the minimap */
+.bd-mini { position: absolute; inset-inline-end: var(--s-3); inset-block-end: var(--s-3); z-index: 5; width: 200px; height: 120px; border-radius: 10px; background: rgba(255, 255, 255, 0.94); box-shadow: 0 0 0 1px var(--iqaa-n200), 0 8px 20px -10px rgba(25, 23, 46, 0.25); cursor: pointer; overflow: hidden; }
+.bd-mini svg { display: block; width: 100%; height: 100%; max-width: none; }
+.bd-mini .mm-b { fill: var(--iqaa-n200); }
+.bd-mini .mm-b.on { fill: var(--iqaa-ink); }
+.bd-mini .mm-e { fill: none; stroke: var(--iqaa-n500); stroke-width: 6; }
+.bd-mini .mm-v { fill: rgba(136, 69, 248, 0.08); stroke: var(--iqaa-violet); stroke-width: 6; }
+.bk { transition: none; }
+.tidying .bk { transition: transform var(--m-half) var(--ease-move); }
+@media (max-width: 1023px) { .bd-mini { display: none; } }
+@media (prefers-reduced-motion: reduce) { .tidying .bk { transition: none; } }
+/* the library reads like the grammar: each group headed and each block shown by its stroke */
+.bd-lib h3 { display: flex; align-items: center; gap: 6px; }
+.lib-g svg { display: block; height: 14px; width: auto; }
+.lib-ic svg { display: block; height: 22px; width: auto; }
+.lib-it { box-shadow: none; border: 0; background: transparent; padding: 6px var(--s-2); }
+.lib-it:hover { background: #fff; box-shadow: 0 0 0 1px var(--iqaa-n200); }
+.lib-ic { background: transparent; }

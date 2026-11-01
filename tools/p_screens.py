@@ -29,6 +29,18 @@ SCREENS = [
         'alt_m': 'The Line screen on a phone: the map turned vertical, the open station’s steps beside the rail.',
     },
     {
+        'id': 'build', 'name': 'Build it freely', 'url': 'sufra.iqaa.app/line/build', 'href': 'build.html',
+        'open': 'Open Build',
+        'what': 'The line on Iqaa’s own drawing board: stations placed anywhere, steps dragged in from a library that reads like the grammar, Watar drafting changes from a sentence, and a test job walking it.',
+        'ids': [
+            'Not boxes and wires: each station is a metro ring with its steps hanging under it in their own strokes, on the identity’s construction grid.',
+            'Track routes itself from ring to ring through the gaps, never across a step; a way back runs under the stations it passes.',
+            'Watar’s drafts arrive in the dashed grey pen until accepted; anything that would stop a job snaps red where it is.',
+        ],
+        'alt_d': 'Build on a desktop: the library by strokes, Sufra’s stations as metro rings with their steps hanging under them, and the selected station’s settings.',
+        'alt_m': 'Build on a phone: the canvas above, the library and settings below.',
+    },
+    {
         'id': 'signin', 'name': 'Arrive at your organization', 'url': 'sufra.iqaa.app', 'href': 'signin.html',
         'open': 'Open sign-in',
         'what': 'The people who work the line sign in on their organization’s own address, often on a phone.',
@@ -80,7 +92,7 @@ SCREENS = [
 
 
 def screens():
-    out = head('Screens', 'The identity at work', 'Six screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, and the owner sees the whole organization and follows every order. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
+    out = head('Screens', 'The identity at work', 'Seven screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, and the owner sees the whole organization and follows every order. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
     out += '</div>'
     for i, s in enumerate(SCREENS):
         ids = ''.join(f'<li>{esc(t)}</li>' for t in s['ids'])

@@ -3,7 +3,10 @@
 (function () {
   const html = document.documentElement, fold = document.querySelector('[data-fold]');
   let folded = false;
-  try { folded = localStorage.getItem('iqaa-side') === 'folded'; } catch (e) { /* storage blocked: the sidebar stays open */ }
+  // the Build canvas wants the width, so the sidebar starts folded there unless the person has chosen
+  let saved = null;
+  try { saved = localStorage.getItem('iqaa-side'); } catch (e) { /* storage blocked: the default stands */ }
+  folded = saved ? saved === 'folded' : !!document.querySelector('main.bd');
   const set = (on) => {
     html.classList.toggle('side-folded', on);
     if (fold) { fold.setAttribute('aria-pressed', String(on)); fold.setAttribute('aria-label', on ? 'Open the sidebar' : 'Fold the sidebar'); fold.title = fold.getAttribute('aria-label'); }

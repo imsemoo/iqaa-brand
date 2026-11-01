@@ -40,8 +40,34 @@
 
   let org = { name: 'Sufra', demo: true };
   try { const o = JSON.parse(sessionStorage.getItem('iqaa-org') || 'null'); if (o && !o.demo && o.blocks && o.blocks.length) org = o; } catch (e) { /* storage blocked: the demo stays */ }
-  let line = org.demo ? sufra() : fromSignup(org);
-  let published = clone(line);
+  // what Build made comes in as a draft of the next version, ready to test and publish here
+  function fromBuild(b) {
+    const byId = (id) => b.stations.find((s) => s.id === id);
+    const nextOf = (id) => (b.edges.find((e) => e.from === id && e.port === 'next' && !e.draft) || {}).to;
+    const main = [], seen = new Set();
+    let at = b.start;
+    while (at && !seen.has(at) && byId(at)) { seen.add(at); main.push(byId(at)); at = nextOf(at); }
+    const KIND = { task: 'struck', approval: 'held', watar: 'held', wait: 'rest' };
+    const RUN = { send: 'Send', remind: 'Remind', create: 'Create', move: 'Move' };
+    const whoOf = (p) => (p.type === 'wait' ? p.wait || 'A day' : KIND[p.type] ? p.who || 'Hala' : RUN[p.type] || 'Send');
+    const conv = (s) => ({ id: s.id, name: s.name, steps: s.steps.filter((p) => !p.draft).map((p) => ({ id: p.id, kind: KIND[p.type] || 'run', name: p.name, who: whoOf(p) })) });
+    const routes = [];
+    b.edges.filter((e) => !e.draft).forEach((e) => {
+      if (e.port.endsWith(':change') && seen.has(e.to)) routes.push({ id: e.id, type: 'back', from: e.from, to: e.to, when: 'A change is asked for' });
+      if (e.port.endsWith(':yes') && !seen.has(e.to)) {
+        const stations = [];
+        let x = e.to, g = 0;
+        while (x && !seen.has(x) && byId(x) && g++ < 10) { stations.push(conv(byId(x))); x = nextOf(x); }
+        const p = byId(e.from).steps.find((s) => e.port.startsWith(`${s.id}:`));
+        if (x && seen.has(x)) routes.push({ id: e.id, type: 'branch', from: e.from, to: x, over: (p && p.rule && +p.rule.value) || 30, stations });
+      }
+    });
+    return main.length ? { stations: main.map(conv), routes } : null;
+  }
+  let built = null;
+  try { const b = JSON.parse(sessionStorage.getItem('iqaa-build') || 'null'); if (b && org.demo && b.stations) built = fromBuild(b); } catch (e) { /* no build: the published line */ }
+  let line = built || (org.demo ? sufra() : fromSignup(org));
+  let published = built ? sufra() : clone(line);
   let version = org.demo ? 3 : 1;
   let sel = line.stations[Math.min(2, line.stations.length - 1)].id;
   let undo = null, test = null;

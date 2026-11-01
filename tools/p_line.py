@@ -35,6 +35,13 @@ def app_top(current):
 </div>'''
 
 
+def view_switch(current):
+    """Map reads, tests and publishes the line; Build edits it on a free canvas."""
+    return ('<nav class="vw" aria-label="View of the line">'
+            + ''.join(f'<a href="{h}"{' aria-current="page"' if n == current else ''}>{n}</a>' for n, h in (('Map', 'line.html'), ('Build', 'build.html')))
+            + '</nav>')
+
+
 def legend():
     rows = [
         ('<svg viewBox="0 0 40 20" aria-hidden="true"><path d="M2 10h36" stroke="#19172E" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="10" r="7" fill="#fff" stroke="#19172E" stroke-width="4"/></svg>',
@@ -54,7 +61,7 @@ def line():
     body = f'''<div class="ln-page">
 <header class="ln-head ap-wrap">
 <div class="ln-title">
-<h1 id="ln-h"><span data-org-name>Sufra</span>’s line</h1>
+<div class="ln-hr"><h1 id="ln-h"><span data-org-name>Sufra</span>’s line</h1>{view_switch('Map')}</div>
 <p class="ln-state" data-state aria-live="polite"></p>
 </div>
 <figure class="ln-sig"><div data-head-sig></div><figcaption data-sig-cap></figcaption></figure>

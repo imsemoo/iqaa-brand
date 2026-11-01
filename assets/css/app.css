@@ -66,3 +66,8 @@ html.side-folded .ap-fold svg { transform: scaleX(-1); }
 .strip .train.done { fill: var(--iqaa-n500); }
 .g { flex: none; display: inline-grid; place-items: center; width: 24px; }
 .g svg { display: block; height: 22px; width: auto; }
+/* the Map / Build switch on the Line screen */
+.vw { display: inline-flex; padding: 3px; border-radius: 12px; background: var(--iqaa-n100); gap: 2px; }
+.vw a { display: inline-flex; align-items: center; min-height: 34px; padding: 0 var(--s-4); border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); text-decoration: none; }
+.vw a[aria-current] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.ln-hr { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
