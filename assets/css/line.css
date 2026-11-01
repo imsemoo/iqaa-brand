@@ -177,3 +177,4 @@ main.ln { background: #fff; }
 @media (prefers-reduced-motion: reduce) { .tb-dot { animation: none; } }
 
 main.ln + .a-foot .sign-off { display: flex; }
+@media (max-width: 899px) { .test-bar { inset-block-end: 68px; } }

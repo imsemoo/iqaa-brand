@@ -7,24 +7,31 @@ import brand
 from p_auth import runs_badge, shell
 from shell import inline
 
-NAV = ['Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']
+NAV = ['Overview', 'Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']
 
 
-PAGES = {'Today': 'today.html', 'Line': 'line.html'}
+PAGES = {'Overview': 'overview.html', 'Today': 'today.html', 'Line': 'line.html', 'Orders': 'orders.html'}
 
 
 def app_top(current):
-    """The organization's app bar: Sufra leads; screens not designed yet are named but not linked."""
+    """The organization's sidebar: Sufra leads, then the screens, each with its stroke icon; screens not designed
+    yet are named but not linked. On a phone the links become a tab bar along the bottom."""
+    from p_ct import icon
+
     def item(n):
+        ic = icon(n, 20)
         if n not in PAGES:
-            return f'<li><span class="nav-off" title="Not designed yet">{n}</span></li>'
+            return f'<li class="off"><span class="ap-l" title="{n}: not designed yet">{ic}<span>{n}</span></span></li>'
         cur = ' aria-current="page"' if n == current else ''
-        return f'<li><a href="{PAGES[n]}"{cur}>{n}</a></li>'
+        return f'<li><a class="ap-l" href="{PAGES[n]}" title="{n}"{cur}>{ic}<span>{n}</span></a></li>'
     nav = ''.join(item(n) for n in NAV)
-    return f'''<div class="ap-wrap ap-top">
-<a class="ap-org" href="today.html"><span class="org-mark" data-org-mark></span><b data-org-name>Sufra</b></a>
-<nav class="ap-nav" aria-label="Sufra"><ul>{nav}</ul></nav>
-<span class="ap-me"><span class="me-av" aria-hidden="true" data-me-av>H</span><span class="sr" data-me-sr>Signed in as Hala, owner</span></span>
+    fold = ('<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" '
+            'stroke-linejoin="round" aria-hidden="true"><path d="M14 7l-5 5 5 5M19 5v14"/></svg>')
+    return f'''<div class="ap-side">
+<a class="ap-org" href="overview.html"><span class="org-mark" data-org-mark></span><span class="ap-org-t"><b data-org-name>Sufra</b><span>sufra.iqaa.app</span></span></a>
+<nav class="ap-nav" aria-label="Sufra"><ul class="ap-links">{nav}</ul></nav>
+<div class="ap-foot"><span class="ap-me"><span class="me-av" aria-hidden="true" data-me-av>H</span><span class="ap-me-t" data-me-sr>Signed in as Hala, owner</span></span>
+<button type="button" class="ap-fold" data-fold aria-pressed="false" aria-label="Fold the sidebar" title="Fold the sidebar">{fold}</button></div>
 </div>'''
 
 

@@ -41,18 +41,8 @@ main.td { background: #fff; }
 .jb-pos { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .jb-pos b { color: var(--iqaa-ink); }
 .jb-for { display: flex; align-items: flex-start; gap: var(--s-3); font-size: 15px; line-height: 22px; }
-.g { flex: none; display: inline-grid; place-items: center; width: 24px; }
-.g svg { display: block; height: 22px; width: auto; }
 .g.running svg { animation: tick var(--m-beat) step-end infinite; }
 
-/* the metro strip: the line's stations, yours ringed violet, the job a filled stop */
-.strip { display: block; width: 100%; max-width: 222px; height: auto; overflow: visible; }
-.strip .tr { fill: none; stroke: var(--iqaa-ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-.strip .tr.br { stroke-width: 1.5; }
-.strip .stn { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 2; }
-.strip .stn.me { stroke: var(--iqaa-violet); stroke-width: 2.5; }
-.strip .train { fill: var(--iqaa-ink); stroke: #fff; stroke-width: 2; }
-.strip .train.hand { fill: var(--iqaa-violet); }
 
 /* the open job: the draft or the checklist, and the one move */
 .jb-panel { display: flex; flex-direction: column; gap: var(--s-4); padding-block-start: var(--s-3); border-block-start: 1px solid var(--iqaa-n200); }
@@ -105,3 +95,5 @@ main.td { background: #fff; }
   .dn-n, .dn .link { padding-inline-start: 0; margin-inline-start: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .g.running svg { animation: none; } }
+.jb-code { text-decoration: none; }
+.jb-code:hover code { text-decoration: underline; }

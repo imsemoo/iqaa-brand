@@ -15,6 +15,8 @@ FIELDS = [
 
 
 def shell(slug, title, top, body, scripts, foot='', css=()):
+    # the organization's app adds app.js last: it folds the sidebar and signs the organization's mark if a page did not
+    scripts = scripts + (('app',) if top and 'ap-side' in top else ())
     js = ''.join(f'<script src="assets/js/{s}.js?v={V}" defer></script>' for s in ('iqaa-data', 'grammar', 'beats') + scripts)
     extra = ''.join(f'\n<link rel="stylesheet" href="assets/css/{c}.css?v={V}">' for c in css)
     return f'''<!doctype html>

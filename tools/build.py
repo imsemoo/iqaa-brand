@@ -16,6 +16,7 @@ from p_ms import motion, system  # noqa: E402
 from p_auth import signin, signup  # noqa: E402
 from p_line import line  # noqa: E402
 from p_today import today  # noqa: E402
+from p_orders import order, orders, overview  # noqa: E402
 from p_screens import screens  # noqa: E402
 from shell import ROOT, page, tokens_js  # noqa: E402
 
@@ -44,7 +45,7 @@ if __name__ == '__main__':
         with open(os.path.join(ROOT, f'{slug}.html'), 'w', encoding='utf-8') as fh:
             fh.write(html)
         print(slug, len(html))
-    for slug, fn in (('signin', signin), ('signup', signup), ('line', line), ('today', today)):
+    for slug, fn in (('signin', signin), ('signup', signup), ('line', line), ('today', today), ('orders', orders), ('order', order), ('overview', overview)):
         html = fn()
         with open(os.path.join(ROOT, f'{slug}.html'), 'w', encoding='utf-8') as fh:
             fh.write(html)

@@ -165,6 +165,7 @@ def type_():
 
 
 ICONS = {
+    'Overview': '<path d="M6 12h4M14 12h4"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="20" cy="12" r="2"/>',
     'Today': '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/><circle cx="12" cy="15" r="1.5"/>',
     'Line': '<path d="M2 16h3c.6-4 5.4-4 6 0c2.5 0 4.5-2 4.5-4.5 0-2-1.5-3-2.5-3-1.5 0-2.3 1.3-2 3 .5 3 2.5 4.5 6 4.5h4"/>',
     'Orders': '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 9h6M9 13h6M9 17h3"/>',
@@ -191,7 +192,7 @@ ICONS = {
     'Late': '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
 }
 GROUPS = [
-    ('Navigation', ['Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
+    ('Navigation', ['Overview', 'Today', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
     ('Steps', ['Send', 'Wait', 'Remind', 'Condition', 'Create', 'Move job', 'Task', 'Webhook', 'HTTP']),
     ('Actions and states', ['Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late']),
 ]

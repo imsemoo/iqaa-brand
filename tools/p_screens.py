@@ -52,11 +52,35 @@ SCREENS = [
         'alt_d': 'Today on a desktop: Reem’s day as a line in time, the jobs waiting at Quote, and what is coming and done beside them.',
         'alt_m': 'Today on a phone: the greeting, the day’s line in time and the first job open with Watar’s draft.',
     },
+    {
+        'id': 'overview', 'name': 'See the whole organization', 'url': 'sufra.iqaa.app', 'href': 'overview.html',
+        'open': 'Open Overview',
+        'what': 'The owner’s first screen: where the jobs are on the line, what the team has done today and what is still theirs, and what needs attention.',
+        'ids': [
+            'The line’s load is a metro map with a count over each station; pressing one opens those orders.',
+            'Each person’s day is a line in time on one shared clock: finished steps at their hour, the rest in grey after now.',
+            'The app frame is Sufra’s: its mark leads the sidebar, the icons are drawn with the line’s strokes.',
+        ],
+        'alt_d': 'Overview on a desktop: the sidebar, the line with a count over each station, the team’s day as four lines in time, and orders due by tomorrow.',
+        'alt_m': 'Overview on a phone: the greeting, the line’s load and the team’s day, with the tab bar along the bottom.',
+    },
+    {
+        'id': 'orders', 'name': 'Follow every order', 'url': 'sufra.iqaa.app/orders', 'href': 'orders.html',
+        'open': 'Open Orders',
+        'what': 'The owner sees every job on the line, finds one in a second, and opens it to see where it stands and what is left.',
+        'ids': [
+            'The line itself is the filter: each station shows how many jobs are there, and pressing it lists only those.',
+            'Every row carries the job’s metro strip; the stop is violet when it waits for a person, ink when it runs by itself.',
+            'An order page writes the job’s own line in time: done as real strokes, the pen where the job is, the rest in grey.',
+        ],
+        'alt_d': 'Orders on a desktop: Sufra’s line with a count over each station, and every job below with its strip, due time and who it waits for.',
+        'alt_m': 'An order on a phone: the wedding lunch, its line written in time and its stations down the page.',
+    },
 ]
 
 
 def screens():
-    out = head('Screens', 'The identity at work', 'Four screens of the product, in the order an organization meets them: the owner starts it and builds the line, then the team signs in and works the day. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
+    out = head('Screens', 'The identity at work', 'Six screens of the product, in the order an organization meets them: the owner starts it and builds the line, the team signs in and works the day, and the owner sees the whole organization and follows every order. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
     out += '</div>'
     for i, s in enumerate(SCREENS):
         ids = ''.join(f'<li>{esc(t)}</li>' for t in s['ids'])

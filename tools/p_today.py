@@ -37,4 +37,4 @@ def today():
 </div>'''
     who = ' · '.join(f'<a href="today.html?as={k}">{n}</a>' for k, n in CAST)
     foot = f'<div class="sign-off">{runs_badge()}</div><p class="td-as">Prototype: see Today as {who}.</p>'
-    return shell('td', 'Today · Sufra', app_top('Today'), body, ('sufra', 'today'), foot=foot, css=('app', 'today'))
+    return shell('td', 'Today · Sufra', app_top('Today'), body, ('sufra', 'jobs', 'today'), foot=foot, css=('app', 'today'))

@@ -21,6 +21,10 @@ STATES = {
     'line-m': ('research/qa-line.html?w=375&h=812', 375, 812, 2),
     'today-d': ('research/qa-today.html?w=1440&h=900&do=approve', 1440, 900, 1),
     'today-m': ('research/qa-today.html?w=375&h=812', 375, 812, 2),
+    'overview-d': ('research/qa.html?w=1440&h=900&src=overview.html', 1440, 900, 1),
+    'overview-m': ('research/qa.html?w=375&h=812&src=overview.html', 375, 812, 2),
+    'orders-d': ('research/qa.html?w=1440&h=900&src=orders.html', 1440, 900, 1),
+    'orders-m': ('research/qa.html?w=375&h=812&src=order.html%3Fcode%3DSFR-26-0029', 375, 812, 2),
 }
 
 

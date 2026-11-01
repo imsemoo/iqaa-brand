@@ -3,7 +3,7 @@
 // along its metro strip, and a handoff can be taken back.
 (function () {
   const root = document.querySelector('main.td');
-  if (!root || !window.IQ || !window.Beats || !window.SUFRA) return;
+  if (!root || !window.IQ || !window.Beats || !window.SUFRA || !window.JOBS) return;
   const M = window.IQAA.motion, S = window.SUFRA;
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
@@ -22,44 +22,15 @@
 
   const line = S.line();
   const main = line.stations;
-  let jobs = S.jobs.map(clone);
+  let jobs = S.jobs.filter((j) => !j.finished).map(clone);
   const done = S.done.filter((d) => d.who === me.name).map(clone);
   let open = null;
 
-  // ---------- reading the line ----------
-  function station(id) {
-    const i = main.findIndex((s) => s.id === id);
-    if (i >= 0) return { st: main[i], i };
-    for (const r of line.routes) {
-      if (r.type !== 'branch') continue;
-      const j = r.stations.findIndex((s) => s.id === id);
-      if (j >= 0) return { st: r.stations[j], i: main.findIndex((s) => s.id === r.from) + 0.5, route: r, j };
-    }
-    return null;
-  }
-  const stepOf = (j) => station(j.at).st.steps[j.step];
+  // ---------- reading the line, through the shared jobs.js ----------
+  const J = window.JOBS.on(line);
+  const { station, stepOf, nextStation, ahead, pos } = J;
   const mine = (j) => { const x = stepOf(j); return !!x && isPerson(x.kind) && x.who === me.name; };
   const worksAt = (st) => st.steps.some((x) => isPerson(x.kind) && x.who === me.name);
-
-  // the station after this one for this job: a big order takes the branch, a branch rejoins the line
-  function nextStation(j, id) {
-    const p = station(id);
-    if (p.route) return p.j + 1 < p.route.stations.length ? p.route.stations[p.j + 1].id : p.route.to;
-    const br = line.routes.find((r) => r.type === 'branch' && r.from === id && j.people > r.over);
-    if (br) return br.stations[0].id;
-    return p.i + 1 < main.length ? main[p.i + 1].id : null;
-  }
-  // the steps ahead of a job, in order, as far as the end of the line
-  function ahead(j) {
-    const out = [];
-    let at = j.at, k = j.step + 1, guard = 0;
-    while (at && guard++ < 40) {
-      const st = station(at).st;
-      for (; k < st.steps.length; k++) out.push({ st, x: st.steps[k] });
-      at = nextStation(j, at); k = 0;
-    }
-    return out;
-  }
 
   // ---------- words ----------
   // "Reem checks the prices" said to Reem: "Check the prices"; "Salma prepares" says what: "Prepare the family dinner"
@@ -98,29 +69,8 @@
   }
   const glyph = (k, test) => `<span class="g" aria-hidden="true">${IQ.glyph(k, { test: !!test })}</span>`;
 
-  // ---------- the metro strip: the line's stations, yours ringed violet, the job a filled stop ----------
-  const GAP = 22, PAD = 9, Y = 9;
-  const xAt = (i) => PAD + GAP * i;
-  function pos(j) {
-    const p = station(j.at);
-    if (!p.route) return [xAt(p.i), Y];
-    const a = main.findIndex((s) => s.id === p.route.from), b = main.findIndex((s) => s.id === p.route.to);
-    return [xAt(a) + ((xAt(b) - xAt(a)) * (p.j + 1)) / (p.route.stations.length + 1), Y + 11];
-  }
-  function strip(j) {
-    const w = PAD * 2 + GAP * (main.length - 1);
-    let svg = `<svg class="strip" viewBox="0 0 ${w} 26" width="${w}" height="26" aria-hidden="true"><path class="tr" d="M${PAD} ${Y}H${w - PAD}"/>`;
-    const p = station(j.at);
-    if (p.route) {
-      const a = xAt(main.findIndex((s) => s.id === p.route.from)), b = xAt(main.findIndex((s) => s.id === p.route.to));
-      svg += `<path class="tr br" d="M${a} ${Y}L${a + 8} ${Y + 11}H${b - 8}L${b} ${Y}"/>`;
-      if (worksAt(p.st)) { const [x, y] = pos(j); svg += `<circle class="stn me" cx="${x}" cy="${y}" r="4"/>`; }
-    }
-    main.forEach((st, i) => { svg += `<circle class="stn${worksAt(st) ? ' me' : ''}" cx="${xAt(i)}" cy="${Y}" r="4"/>`; });
-    const [x, y] = pos(j), st = stepOf(j);
-    // the stop carries the colour of the step it is on: violet for a person, ink for one that runs by itself
-    return `${svg}<circle class="train${st && isPerson(st.kind) ? ' hand' : ''}" cx="${x}" cy="${y}" r="5.5"/></svg>`;
-  }
+  // the metro strip: the line's stations, yours ringed violet, the job a filled stop
+  const strip = (j) => J.strip(j, worksAt);
   function where(j) {
     const p = station(j.at), st = p.st;
     return `At <b>${esc(st.name)}</b>${p.route ? ', on the branch for big orders' : ''} · step ${j.step + 1} of ${st.steps.length}`;
@@ -160,7 +110,7 @@
   function jobLi(j) {
     const x = stepOf(j), on = open === j.code;
     return `<li class="job${on ? ' open' : ''}" data-job="${j.code}">
-<div class="jb-top"><code>${j.code}</code><span>${esc(j.client)}, ${esc(j.of)}</span><span class="due">${esc(j.due)} · ${when(j.iso)}</span></div>
+<div class="jb-top"><a class="jb-code" href="order.html?code=${j.code}"><code>${j.code}</code></a><span>${esc(j.client)}, ${esc(j.of)}</span><span class="due">${esc(j.due)} · ${when(j.iso)}</span></div>
 <h3><button type="button" class="jb-h" data-open="${j.code}" aria-expanded="${on}" aria-controls="p-${j.code}">${esc(j.title)} · ${j.people} people</button></h3>
 <div class="jb-pos">${strip(j)}<p>${where(j)}</p></div>
 <div class="jb-for">${glyph(x.kind)}<p><b>For you:</b> ${esc(forYou(j, x))}</p></div>
