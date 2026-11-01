@@ -70,7 +70,7 @@
   const people = Object.keys(S.people).map((k) => Object.assign({ k }, S.people[k]));
   const personKey = (name) => (people.find((p) => p.name === name) || {}).k;
   const mineOf = (name) => live.filter((j) => { const x = J.stepOf(j); return isPerson(x.kind) && x.who === name; }).sort(byIso);
-  const sinceOf = (j) => { const s = V.clock(j), n = s.findIndex((x) => x.state === 'now'); const p = s.slice(0, n < 0 ? s.length : n).filter((x) => x.t != null).pop(); return p ? p.t : null; };
+  const sinceOf = (j) => V.since(j);
   const dayStart = (t) => Math.floor(t / DAY) * DAY;
   const hourOf = (v) => { const [h, m] = v.split(':').map(Number); return h * HOUR + m * 6e4; };
   const OPEN = hourOf(S.hours.open), CLOSE = hourOf(S.hours.close);

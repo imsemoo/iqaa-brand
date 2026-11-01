@@ -139,6 +139,8 @@ ${addr ? `<div><dt>${icon('Place', 16)}<span>Where</span></dt><dd>${esc(addr)}</
       let kind = s.x.kind, ahead = s.state === 'next', right = '', cls = s.state, attr = '';
       if (s.state === 'done') right = doneAt(s.t);
       if (s.state === 'now') right = '<b>Now</b>';
+      // a change sends the job back to Quote (sufra.js); the quote the client answered still went out
+      if (name === 'Send the quote link' && state === 'change') { kind = 'run'; ahead = false; cls = 'done'; right = doneAt(V.U(last.sent).getTime()); }
       if (name === 'The client approves') {
         attr = ' data-answer-g';
         if (state === 'waiting') { kind = 'held'; ahead = false; cls = 'you'; right = '<b>Waiting for you</b>'; }
@@ -223,9 +225,10 @@ ${state === 'waiting' ? quote(true) + actions() : state === 'received' || state 
     e.target.removeAttribute('aria-invalid');
   });
   main.addEventListener('keydown', (e) => { if (e.key === 'Escape' && e.target.id === 'qt-note') { e.preventDefault(); openChange(false); } });
-  // the prototype's way back to the start: the answer given here is forgotten
+  // the prototype's way back to the start: the answer given here is forgotten, and the page loads again because
+  // sufra.js moved the job by that answer when it loaded
   const reset = $('[data-reset]');
-  if (reset) reset.addEventListener('click', () => { keep(null); render(); $('#qt-h').focus(); say('Back to the start.'); });
+  if (reset) reset.addEventListener('click', () => { keep(null); location.reload(); });
 
   render();
 })();

@@ -323,6 +323,15 @@
     // The job's line written in time, as the order page draws it: one stroke; what is done is real, the pen stands
     // where the job is, and what is ahead is in the dashed grey pen. A step the line did not need is left out, and a
     // delivery that arrived late is the failed snap. Returns the svg and its caption.
+    // when the job reached the step it is on: the last time written before it, or, for a job a client's change sent
+    // back to Quote by the line's way back, the moment the client answered
+    function since(j) {
+      const r = j.log && j.log.rounds, last = r && r[r.length - 1];
+      if (last && last.change && last.answer && !j.finished && j.at === 'quote' && j.step === 0) return ms(last.answer);
+      const s = clock(j), n = s.findIndex((x) => x.state === 'now');
+      const p = s.slice(0, n < 0 ? s.length : n).filter((x) => x.t != null).pop();
+      return p ? p.t : null;
+    }
     function journey(j) {
       const steps = clock(j), pal = window.IQAA.pal.light, k = 1, cur = J.stepOf(j);
       const nowAt = j.finished ? steps.length : steps.findIndex((s) => s.state === 'now');
@@ -354,7 +363,7 @@
       };
     }
     return { days, when, glyph, waitingOn, short, row, loadMap, U, hm, day, label, iso, at, fromLabel, now, words, clock,
-      delivered, late, restHours, REST: REST_H, dueRow, gate, chase, risk, fill, span, journey };
+      delivered, late, restHours, REST: REST_H, dueRow, gate, chase, risk, fill, span, since, journey };
   }
 
   // ---------- clients: what passed between Sufra and each client, read from their orders ----------
@@ -567,7 +576,7 @@
       const told = V.clock(j).find((s) => s.x.name === 'Send the arrival time' && s.state === 'done');
       const l2 = delivered(j) && f.arrived ? `Delivered ${V.at(f.arrived)}`
         : told ? `${C} has had the arrival time since ${V.at(told.t)}`
-          : f.answered ? `${C} approved the quote ${V.at(f.rounds[f.rounds.length - 1].answer)}`
+          : f.answered ? `${C} ${f.rounds[f.rounds.length - 1].change ? 'asked for a change' : 'approved the quote'} ${V.at(f.rounds[f.rounds.length - 1].answer)}`
             : !f.rounds.length ? `The quote hasn’t gone to ${C} yet` : `The quote went to ${C} ${V.at(f.rounds[0].sent)}`;
       return { lead: isPerson(x.kind) ? av(x.who) : glyph(x.kind), l1, l2, risk: false, who: isPerson(x.kind) ? x.who : null };
     }

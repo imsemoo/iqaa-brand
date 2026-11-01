@@ -107,6 +107,34 @@
   };
   jobs.forEach((j) => { const q = quotes[j.code.slice(-4)]; if (q) j.quote = Object.assign({ total: '[TOTAL]' }, q); });
 
+  // A client's answer from their link (quote.html), kept for the visit in sessionStorage 'iqaa-answers', moves the
+  // job as the line moves it, so every screen reads it as it would read the server: approved goes on to the next
+  // station (the branch, for a big order) past the steps that run by themselves; a change goes back to Quote by the
+  // line's way back, and Watar's next draft carries the client's note for Reem.
+  let answers = {};
+  try { answers = JSON.parse(sessionStorage.getItem('iqaa-answers') || '{}') || {}; } catch (e) { /* storage blocked: no answers */ }
+  if (Object.keys(answers).length) {
+    // read the line without spending step ids: Build keeps its own copy of the line keyed by them
+    const ids = n, ln = line();
+    n = ids;
+    const approval = ln.stations.findIndex((s) => s.id === 'approval');
+    jobs.forEach((j) => {
+      const a = answers[j.code];
+      if (!a || j.at !== 'approval' || !j.log) return;
+      const round = j.log.rounds[j.log.rounds.length - 1];
+      round.answer = new Date(a.t).toISOString().slice(0, 16);
+      if (a.a === 'change') {
+        round.change = a.note;
+        Object.assign(j, { at: 'quote', step: 0, asked: a.note });
+        if (j.quote) j.draft = Object.assign({}, j.quote, { note: `For the client’s note, “${a.note}”: ${j.quote.note}` });
+        return;
+      }
+      const br = ln.routes.find((r) => r.type === 'branch' && r.from === 'approval' && j.people > r.over);
+      const next = br ? br.stations[0] : ln.stations[approval + 1];
+      Object.assign(j, { at: next.id, step: Math.max(0, next.steps.findIndex((x) => x.kind !== 'run')) });
+    });
+  }
+
   // the orders before today's: SFR-26-0001 to 0022, the codes today's jobs follow (the demo history starts on 26 Aug)
   const past = [
     { code: 'SFR-26-0001', title: 'Board breakfast', people: 12, due: 'Tue 1 Sep, 08:30', iso: '2026-09-01T08:30', client: 'Rami', of: 'Wadi Partners', opened: '2026-08-26T10:15', finished: 'Wed 2 Sep, 10:00', log: { rounds: [{ sent: '2026-08-27T11:00', answer: '2026-08-27T11:40' }], arrived: '2026-09-01T08:10' } },

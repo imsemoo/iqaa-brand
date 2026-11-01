@@ -30,7 +30,7 @@
   const steps = V.clock(j);
   const nowAt = j.finished ? steps.length : steps.findIndex((s) => s.state === 'now');
   const state = (i) => steps[i].state;
-  const since = steps.slice(0, Math.max(nowAt, 0)).filter((s) => s.t != null).pop();
+  const since = V.since(j);
   // the delivery that arrived late is drawn as the failed snap, never as a loop that ticked 'Arrived on time'
   const kindOf = (s) => (s.x.name === 'Yusuf delivers' && f.late && s.state === 'done' ? 'failed' : s.x.kind);
   const reminded = f.rounds.find((r) => r.reminded);
@@ -84,7 +84,7 @@
     const k = isPerson(cur.kind) && keyOf(cur.who);
     const what = isPerson(cur.kind) ? (cur.who === 'The client' ? `Waiting for ${esc(V.short(j))}` : `With ${esc(cur.who)}`) : cur.kind === 'rest' ? `A timed wait: ${esc(cur.who.toLowerCase())}` : 'Running by itself';
     const ask = `watar.html?q=${encodeURIComponent(`Why is ${j.title} waiting?`)}`;
-    now = `<section class="od-card"><h2>${IQ.icon('Today', 18)}Now</h2><p class="od-now">${glyph(cur.kind)}<span><b>${what}</b><br>${esc(cur.name)}${since ? ` · since ${time(since.t)}` : ''}</span></p>
+    now = `<section class="od-card"><h2>${IQ.icon('Today', 18)}Now</h2><p class="od-now">${glyph(cur.kind)}<span><b>${what}</b><br>${esc(cur.name)}${since != null ? ` · since ${time(since)}` : ''}</span></p>
 ${k ? `<a class="btn" href="today.html?as=${k}">${IQ.icon('Today', 18)}<span>Open ${esc(cur.who)}’s Today</span></a>` : ''}<a class="od-all" href="${ask}">${IQ.icon('Ask Watar', 18)}<span>Ask Watar why it waits</span></a></section>`;
   }
   const draft = j.draft ? `<section class="od-card"><h2>${IQ.icon('Draft', 18)}Watar’s draft of the quote</h2><ul class="od-draft">${j.draft.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul><p class="hint">${esc(j.draft.note)} Total ${esc(j.draft.total)}.</p></section>` : '';
