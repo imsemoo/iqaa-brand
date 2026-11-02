@@ -1,0 +1,161 @@
+/* Home: the owner's morning. The numbers in one divided strip, the line block by block, what waits for a decision, and
+   Watar's suggestion in the dashed grey pen. Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn);
+   sizes are quarter-beat multiples. */
+main.hm { background: #fff; }
+.hm-page { container: hm / inline-size; padding-block-end: var(--s-12); }
+.hm-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.hm-day { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.hm-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.hm-sum { margin-block-start: var(--s-1); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+
+/* what the prototype does not do yet: the system's disabled look (app.css), still in reach of the keyboard, said to be coming */
+.hm-page .btn svg { flex: none; }
+.hm-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.hm-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+.hm-page .btn[aria-disabled='true']:hover { border-color: var(--iqaa-n100); }
+body.app .hm-page .btn[aria-disabled='true']:active { transform: none; }
+.hm-page .btn:focus-visible, .hm-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* ---------- the numbers: one strip, divided by the hairlines between them, not a row of cards ---------- */
+.hm-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1px;
+  background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
+.hm-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: #fff; }
+.hm-k { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.hm-k svg { flex: none; color: var(--iqaa-n600); }
+.hm-n { font-family: 'Fragment Mono', monospace; font-size: 32px; line-height: 40px; color: var(--iqaa-ink); }
+.hm-n.bad { color: var(--iqaa-red); }
+.hm-s { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+/* ---------- the line beside what waits for the owner, then Watar under it; one column when the sheet is narrow ---------- */
+.hm-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); grid-template-rows: auto 1fr; grid-template-areas: 'ln dc' 'ln wr';
+  gap: var(--s-6); align-items: start; margin-block-start: var(--s-6); }
+.hm-cols > * { min-width: 0; }
+.hm-dc { grid-area: dc; }
+.hm-ln { grid-area: ln; container: ln / inline-size; }
+.hm-wr { grid-area: wr; }
+@container hm (max-width: 960px) {
+  .hm-cols { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: 'dc' 'ln' 'wr'; }
+}
+/* a pack's own card (home.js) sits under what waits for the owner; narrow, it comes last */
+.hm-pk { grid-area: pk; }
+.hm-cols.has-pk { grid-template-rows: auto auto 1fr; grid-template-areas: 'ln dc' 'ln pk' 'ln wr'; }
+@container hm (max-width: 960px) {
+  .hm-cols.has-pk { grid-template-rows: none; grid-template-areas: 'dc' 'ln' 'wr' 'pk'; }
+}
+
+/* a panel: white on the white sheet, held by its hairline; its head set off by a lighter one */
+.hm-pn { background: #fff; border: 1px solid var(--iqaa-n200); border-radius: 16px; }
+.hm-ph { display: flex; flex-direction: column; gap: 2px; padding: var(--s-4) var(--s-5, 20px); border-block-end: 1px solid var(--iqaa-n100); }
+.hm-ph h2, .hm-wr h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
+.hm-ph h2 svg, .hm-wr h2 svg { flex: none; color: var(--iqaa-n600); }
+.hm-ph h2 span { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n700); }
+.hm-ph p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.hm-g { display: block; flex: none; }
+.hm-g svg { display: block; height: 20px; width: auto; overflow: visible; }
+[dir='rtl'] .hm-g svg { transform: scaleX(-1); }
+
+/* ---------- where work stands: a row per block, in the line's order ---------- */
+.hm-lg { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s-4); margin-block-start: var(--s-1); font-size: 12px; line-height: 16px; }
+.hm-lg span { display: inline-flex; align-items: center; gap: var(--s-2); }
+.hm-lg-b { width: 16px; height: 6px; border-radius: 3px; background: var(--iqaa-n400); }
+.hm-lg-t { width: 2px; height: 12px; border-radius: 1px; background: var(--iqaa-ink); }
+.hm-bl { list-style: none; margin: 0; padding: var(--s-2); }
+.hm-bl li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.hm-b { display: grid; grid-template-columns: 24px minmax(0, 1fr) minmax(88px, auto) minmax(0, 1.2fr); grid-template-areas: 'g n c t'; align-items: center;
+  gap: var(--s-1) var(--s-4); min-height: 56px; padding: var(--s-3); border-radius: 12px; color: inherit; text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .hm-b:hover { background: var(--iqaa-n50); } .hm-b:hover .hm-b-n b { text-decoration: underline; text-underline-offset: 3px; } }
+.hm-b:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.hm-b > .hm-g { grid-area: g; justify-self: center; }
+.hm-b-n { grid-area: n; display: flex; flex-direction: column; min-width: 0; }
+.hm-b-n b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.hm-b-n small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.hm-b-c { grid-area: c; display: flex; flex-direction: column; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap; }
+.hm-b-c b { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-red); }
+.hm-b.is-empty .hm-b-c { font-weight: 400; color: var(--iqaa-n600); }
+.hm-b-t { grid-area: t; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.hm-tt { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.hm-tt.none { color: var(--iqaa-n600); }
+.hm-slow { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--iqaa-red); white-space: nowrap; }
+.hm-slow svg { flex: none; }
+/* the bar: the time the items have been here on average; what the block expects always stands at its middle (the ink
+   mark), so every row reads the same; past the mark the bar is red, and it stops at twice the expected time */
+.hm-bar { position: relative; display: block; width: 100%; max-width: 240px; height: 6px; border-radius: 3px; background: var(--iqaa-n100); }
+.hm-bar i { position: absolute; inset-block: 0; border-radius: 3px; }
+.hm-bar i:first-child { inset-inline-start: 0; width: calc(min(var(--f), 50) * 1%); background: var(--iqaa-n400); }
+.hm-bar i:last-child { inset-inline-start: 50%; width: calc(max(var(--f) - 50, 0) * 1%); background: var(--iqaa-red); }
+.hm-bar::after { content: ''; position: absolute; inset-block: -3px; inset-inline-start: calc(50% - 1px); width: 2px; border-radius: 1px; background: var(--iqaa-ink); }
+/* a narrow panel: the time moves under the name */
+@container ln (max-width: 560px) {
+  .hm-b { grid-template-columns: 24px minmax(0, 1fr) auto; grid-template-areas: 'g n c' '. t t'; row-gap: var(--s-2); }
+  .hm-b-c { align-items: flex-end; }
+}
+
+/* ---------- waiting for the owner's decision ---------- */
+.hm-dl { list-style: none; margin: 0; padding: var(--s-2); }
+.hm-dl li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.hm-d { display: grid; grid-template-columns: 24px minmax(0, 1fr); grid-template-areas: 'g t' '. x'; align-items: center; gap: var(--s-1) var(--s-3); padding: var(--s-3);
+  border-radius: 12px; color: inherit; text-decoration: none; }
+a.hm-d:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { a.hm-d:hover { background: var(--iqaa-n50); } a.hm-d:hover .hm-d-t b { text-decoration: underline; text-underline-offset: 3px; } }
+.hm-d > .hm-g, .hm-d > svg { grid-area: g; justify-self: center; }
+.hm-d > svg { color: var(--iqaa-n600); }
+.hm-d-t { grid-area: t; display: flex; flex-direction: column; min-width: 0; }
+.hm-d-t b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.hm-d-t small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.hm-d-x { grid-area: x; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.hm-d-x svg { flex: none; color: var(--iqaa-n600); }
+.hm-d-x.late { color: var(--iqaa-red); font-weight: 700; }
+.hm-d-x.late svg { color: var(--iqaa-red); }
+.hm-d-x em { font-style: normal; font-size: 11px; line-height: 16px; color: var(--iqaa-n600); }
+.hm-none { display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); font-size: 14px; line-height: 20px; }
+.hm-none p:first-child { display: flex; align-items: center; gap: var(--s-2); }
+.hm-none p:first-child svg { flex: none; color: var(--iqaa-n600); }
+.hm-none p + p { color: var(--iqaa-n700); max-width: 52ch; }
+
+/* ---------- the pack's card: rows as the decisions', the money in the house's figures at the end ---------- */
+.hm-cl { list-style: none; margin: 0; padding: var(--s-2); }
+.hm-cl li { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); }
+.hm-cl li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.hm-cl li > svg { flex: none; color: var(--iqaa-n600); }
+.hm-cl-t { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; }
+.hm-cl-t b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.hm-cl-t small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.hm-cl-m { flex: none; font-family: 'Fragment Mono', monospace; font-size: 15px; line-height: 20px; color: var(--iqaa-ink); }
+
+/* ---------- Watar's suggestion: no box, the dashed grey pen of a draft down its edge (as on Ask Watar) ---------- */
+.hm-wr { padding-block-start: var(--s-2); }
+.hm-wr h2 { margin-block-end: var(--s-3); }
+.hm-wr-b { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); padding-inline-start: var(--s-5, 20px); }
+/* the pen: 3 px of n500, dashed at the grammar's 1.4 × stroke */
+.hm-wr-b::before { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; border-radius: 2px;
+  background: repeating-linear-gradient(var(--iqaa-n500) 0 4.5px, transparent 4.5px 9px); }
+.hm-wr-s { font-size: 15px; line-height: 22px; max-width: 60ch; }
+.hm-wr-q { font-size: 15px; line-height: 22px; font-weight: 700; max-width: 60ch; }
+.hm-wr-m { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.hm-wr-n { font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.hm-wr-n .link { padding-block: 0; min-height: 44px; }
+.hm-wr-a { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-5, 20px); }
+.hm-wr-a .link { min-height: 44px; padding-block: 0; }
+/* the change on the line: the block before, the new approval in the dashed grey pen, the block it comes before; the
+   hand-offs into and out of the new one are drawn in the same pen */
+.hm-wr-l { list-style: none; margin: var(--s-1) 0; padding: 0; display: flex; align-items: flex-start; align-self: stretch; max-width: 360px; }
+.hm-wr-l li { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hm-wr-l .hm-g svg { height: 22px; }
+.hm-wr-l li + li::before { content: ''; position: absolute; inset-block-start: 16px; inset-inline-end: calc(50% + 14px); width: calc(100% - 28px); height: 2px;
+  border-radius: 1px; background: var(--iqaa-ink); }
+.hm-wr-l li.new::before, .hm-wr-l li.new + li::before { background: repeating-linear-gradient(to right, var(--iqaa-n500) 0 4.5px, transparent 4.5px 9px); }
+.hm-wr-l li > span:last-child { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); text-align: center; overflow-wrap: anywhere; }
+.hm-wr-l li.new > span:last-child { color: var(--iqaa-ink); font-weight: 700; }
+
+/* ---------- a phone: one column, the numbers two to a row ---------- */
+@media (max-width: 700px) {
+  .hm-head { padding-block: var(--s-6) var(--s-4); }
+  .hm-new, .hm-new .btn { width: 100%; }
+  .hm-kpi { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hm-kpi li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .hm-kpi li { padding: var(--s-3) var(--s-4); }
+  .hm-n { font-size: 26px; line-height: 32px; }
+  .hm-ph { padding: var(--s-3) var(--s-4); }
+  .hm-bl, .hm-dl { padding: var(--s-1); }
+}
+@media (pointer: coarse) { .hm-page .btn.small { min-height: 44px; } }

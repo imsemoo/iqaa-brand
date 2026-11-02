@@ -1,0 +1,157 @@
+/* Reports: the line's last 30 days for its owner. The core's numbers in one divided strip (Home's), the blocks in one
+   table with Home's bar of time against what each block expects, and the pack's results under their own tab. Built on
+   tokens.css, brand.css, auth.css and app.css (the frame, .btn); sizes are quarter-beat multiples. */
+main.rp { background: #fff; }
+.rp-page { container: rp / inline-size; padding-block-end: var(--s-12); }
+.rp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-4); }
+.rp-ht { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
+.rp-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; max-width: none; }
+.rp-ht h1:focus { outline: none; }
+.rp-period { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-ink); font-weight: 600; }
+.rp-period svg { flex: none; color: var(--iqaa-n600); }
+.rp-dates { font-weight: 400; color: var(--iqaa-n700); }
+
+/* what the prototype does not do yet: the system's disabled look (app.css), still in reach of the keyboard, said to be coming */
+.rp-page .btn svg { flex: none; }
+.rp-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.rp-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+.rp-page .btn[aria-disabled='true']:hover { border-color: var(--iqaa-n100); }
+body.app .rp-page .btn[aria-disabled='true']:active { transform: none; }
+.rp-page .btn:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* ---------- the tabs (the item page's): the line, its people (coming), the pack's results ---------- */
+.rp-tabs { display: flex; gap: var(--s-1); overflow-x: auto; scrollbar-width: none; box-shadow: inset 0 -1px 0 var(--iqaa-n200); }
+.rp-tabs::-webkit-scrollbar { display: none; }
+.rp-tabs button { flex: none; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3); border: 0; border-block-end: 2px solid transparent;
+  background: none; font: inherit; font-size: 15px; color: var(--iqaa-n700); cursor: pointer; }
+.rp-tabs button svg { flex: none; color: var(--iqaa-n600); }
+.rp-tabs button[aria-selected='true'] { color: var(--iqaa-ink); font-weight: 700; border-block-end-color: var(--iqaa-ink); }
+.rp-tabs button[aria-selected='true'] svg { color: var(--iqaa-ink); }
+.rp-tabs button[aria-disabled='true'] { cursor: default; color: var(--iqaa-n600); }
+.rp-tabs button em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+@media (hover: hover) and (pointer: fine) { .rp-tabs button[aria-selected='false']:not([aria-disabled='true']):hover { background: var(--iqaa-n50); color: var(--iqaa-ink); } }
+.rp-tabs button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: -2px; }
+.rp-panel { display: flex; flex-direction: column; gap: var(--s-6); padding-block-start: var(--s-6); }
+.rp-panel[hidden] { display: none; }
+.rp-panel:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 4px; border-radius: 4px; }
+.rp-none, .rp-closed { font-size: 15px; line-height: 22px; color: var(--iqaa-n700); max-width: 60ch; }
+.rp-closed { display: flex; align-items: center; gap: var(--s-2); padding-block-start: var(--s-6); }
+.rp-closed svg { flex: none; color: var(--iqaa-n600); }
+
+/* ---------- the numbers: one strip, divided by the hairlines between them, not a row of cards (Home's) ---------- */
+.rp-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1px;
+  background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
+.rp-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: #fff; }
+.rp-k { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.rp-k svg { flex: none; color: var(--iqaa-n600); }
+.rp-n { font-family: 'Fragment Mono', monospace; font-size: 32px; line-height: 40px; color: var(--iqaa-ink); overflow-wrap: anywhere; }
+.rp-n.word { font-family: inherit; font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+.rp-n small { font-family: 'Atkinson Hyperlegible Next', system-ui, sans-serif; font-size: 15px; line-height: 20px; font-weight: 600; }
+.rp-s { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+/* a panel: white on the white sheet, held by its hairline; its head set off by a lighter one (Home's) */
+.rp-pn { background: #fff; border: 1px solid var(--iqaa-n200); border-radius: 16px; min-width: 0; }
+.rp-ph { display: flex; flex-direction: column; gap: 2px; padding: var(--s-4) var(--s-5, 20px); border-block-end: 1px solid var(--iqaa-n100); }
+.rp-ph h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
+.rp-ph h2 svg { flex: none; color: var(--iqaa-n600); }
+.rp-ph p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.rp-g { display: block; flex: none; width: 24px; }
+.rp-g svg { display: block; height: 20px; width: auto; overflow: visible; margin-inline: auto; }
+[dir='rtl'] .rp-g svg { transform: scaleX(-1); }
+.rp-lg { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s-4); margin-block-start: var(--s-1); font-size: 12px; line-height: 16px; }
+.rp-lg span { display: inline-flex; align-items: center; gap: var(--s-2); }
+.rp-lg-b { width: 16px; height: 6px; border-radius: 3px; background: var(--iqaa-n400); }
+.rp-lg-t { width: 2px; height: 12px; border-radius: 1px; background: var(--iqaa-ink); }
+
+/* ---------- each block: one row in the line's order ---------- */
+.rp-pn:has(.rp-t) { container: rpt / inline-size; }
+.rp-t { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; line-height: 20px; font-variant-numeric: tabular-nums; border-block-end: 1px solid var(--iqaa-n100); }
+/* the book's table rules (brand.css) draw a rule under every cell and keep header cells on one line: not here */
+.rp-t th, .rp-t td { border: 0; white-space: normal; }
+.rp-t thead th { padding: var(--s-3) var(--s-4); font-size: 12px; line-height: 16px; font-weight: 600; color: var(--iqaa-n700); text-align: end; white-space: nowrap; border-block-end: 1px solid var(--iqaa-n100); }
+.rp-t thead th:first-child { text-align: start; padding-inline-start: var(--s-5, 20px); }
+.rp-t tbody th, .rp-t td { padding: var(--s-3) var(--s-4); vertical-align: middle; }
+.rp-t tbody tr + tr > * { border-block-start: 1px solid var(--iqaa-n100); }
+.rp-t tbody th { text-align: start; font-weight: 400; padding-inline-start: var(--s-5, 20px); }
+.rp-t td { text-align: end; white-space: nowrap; }
+.rp-t td:last-child { padding-inline-end: var(--s-5, 20px); }
+.rp-bk { display: flex; align-items: flex-start; gap: var(--s-3); }
+.rp-bk .rp-g { margin-block-start: 0; }
+.rp-bn { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--s-2); min-width: 0; }
+.rp-bn b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.rp-bn small { flex-basis: 100%; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+/* the bottleneck: the one problem on the page, so the one place red is used */
+.rp-neck { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-red); white-space: nowrap; }
+.rp-neck svg { flex: none; }
+.is-neck .rp-v { color: var(--iqaa-red); font-weight: 700; }
+.rp-av { display: inline-flex; align-items: center; justify-content: flex-end; gap: var(--s-3); }
+.rp-v { min-width: 3.5em; }
+/* the bar (Home's): the time on average; what the block expects always stands at its middle (the ink mark), so every
+   row reads the same; past the mark the bar is red, and it stops at twice the expected time */
+.rp-bar { position: relative; display: block; width: 128px; height: 6px; border-radius: 3px; background: var(--iqaa-n100); flex: none; }
+.rp-bar i { position: absolute; inset-block: 0; border-radius: 3px; }
+.rp-bar i:first-child { inset-inline-start: 0; width: calc(min(var(--f), 50) * 1%); background: var(--iqaa-n400); }
+.rp-bar i:last-child { inset-inline-start: 50%; width: calc(max(var(--f) - 50, 0) * 1%); background: var(--iqaa-red); }
+.rp-bar::after { content: ''; position: absolute; inset-block: -3px; inset-inline-start: calc(50% - 1px); width: 2px; border-radius: 1px; background: var(--iqaa-ink); }
+.rp-fn { padding: var(--s-3) var(--s-5, 20px) var(--s-4); font-size: 12px; line-height: 18px; color: var(--iqaa-n700); max-width: calc(90ch + 2 * var(--s-5, 20px)); }
+
+/* a narrow panel: each block is a row of its own, its four numbers under its name, each with its column's name */
+@container rpt (max-width: 640px) {
+  .rp-t, .rp-t tbody { display: block; }
+  .rp-t thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .rp-t tbody tr { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2) var(--s-3); padding: var(--s-3) var(--s-4); }
+  .rp-t tbody tr + tr { border-block-start: 1px solid var(--iqaa-n100); }
+  .rp-t tbody tr + tr > * { border-block-start: 0; }
+  .rp-t tbody th { grid-column: 1 / -1; padding: 0; }
+  .rp-t td { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 0; text-align: start; white-space: normal; }
+  .rp-t td:last-child { padding: 0; }
+  .rp-t td::before { content: attr(data-k); font-size: 11px; line-height: 16px; color: var(--iqaa-n700); }
+  .rp-t td, .rp-v { font-size: 14px; }
+  .rp-av { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .rp-bar { width: 100%; max-width: 96px; }
+  .rp-bk { padding-inline-start: 0; }
+  .rp-t tbody tr { padding-inline-start: var(--s-4); }
+}
+
+/* ---------- the pack's results ---------- */
+.rp-src { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.rp-src svg { flex: none; color: var(--iqaa-n600); }
+.rp-panel > .rp-src { margin-block-end: calc(-1 * var(--s-2)); }
+/* two to a row on a wide sheet; a pack with one list keeps it at half the width, so its bars stay readable */
+.rp-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: var(--s-6); align-items: start; }
+.rp-cols > * { min-width: 0; }
+/* a ranked list: the name, a bar scaled to the largest, the number */
+.rp-rk { list-style: none; margin: 0; padding: var(--s-2) var(--s-5, 20px) var(--s-4); }
+.rp-rk li { display: grid; grid-template-columns: minmax(96px, 0.8fr) minmax(0, 1.4fr) 7.5em; align-items: center; gap: var(--s-4); min-height: 44px; }
+.rp-rk li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.rp-rk-n { display: flex; flex-direction: column; min-width: 0; font-size: 14px; line-height: 20px; font-weight: 600; overflow-wrap: anywhere; }
+.rp-rk-n code { font-size: 13px; font-weight: 400; color: var(--iqaa-ink); }
+.rp-rk-n small { font-size: 12px; line-height: 16px; font-weight: 400; color: var(--iqaa-n700); }
+.rp-rk-b { position: relative; display: block; height: 6px; border-radius: 3px; background: var(--iqaa-n100); }
+.rp-rk-b i { position: absolute; inset-block: 0; inset-inline-start: 0; width: calc(var(--f) * 1%); border-radius: 3px; background: var(--iqaa-n400); }
+.rp-rk-v { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); white-space: nowrap; text-align: end; font-variant-numeric: tabular-nums; }
+.rp-best { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); }
+.rp-bt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); }
+.rp-bt b { font-size: 17px; line-height: 24px; overflow-wrap: anywhere; }
+.rp-bt code { font-size: 12px; color: var(--iqaa-n700); }
+.rp-bm { font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.rp-best > div { margin-block-start: var(--s-2); }
+
+/* ---------- a phone: the numbers two to a row ---------- */
+@media (max-width: 700px) {
+  .rp-head { padding-block: var(--s-6) var(--s-3); }
+  .rp-act, .rp-act .btn { width: 100%; }
+  .rp-kpi { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rp-kpi li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .rp-kpi li { padding: var(--s-3) var(--s-4); }
+  .rp-n { font-size: 26px; line-height: 32px; }
+  .rp-n.word { font-size: 22px; line-height: 32px; }
+  .rp-ph { padding: var(--s-3) var(--s-4); }
+  .rp-tabs { margin-inline: calc(var(--s-4) * -1); padding-inline: var(--s-4); }
+  .rp-tabs button { padding: 0 var(--s-2); font-size: 14px; }
+  .rp-rk { padding-inline: var(--s-4); }
+  .rp-rk li { grid-template-columns: minmax(80px, 1fr) minmax(0, 1fr) 6.5em; gap: var(--s-3); }
+  .rp-fn { padding-inline: var(--s-4); }
+  .rp-best { padding-inline: var(--s-4); }
+}
+@media (pointer: coarse) { .rp-page .btn.small { min-height: 44px; } }

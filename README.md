@@ -10,6 +10,16 @@ wait; between stations the pen runs half a step of straight, the handoff. Iqaa's
 run, a loop, a rising finish); an organization's mark is its initial signed with the opening of its line.
 Violet means a person; everything automatic is ink.
 
+The product's model, from the owner's full plan (1 Nov 2026): Iqaa serves the **digital production** family first
+(media and journalism, montage, design, software, agencies); its first packs are Software and Media and production.
+An **organization** (its own address) has **departments** and teams, and runs **lines**. A line has a published
+version and a draft; lines connect by a call, a launch or an aggregate. A line is **blocks** in order, and each block
+has its roles and people, the fields each role sees, its tools and how it runs (one of five modes: Manual, Trial,
+Assisted, Automatic with review, Fully automatic). What walks a line is named by the organization: Al-Khatt Media's
+pieces (MAD), Masar's tickets (DEV), Wamda's campaigns. A **pack** adds blocks, screens, reports and integrations and
+never changes the core. My work is the screen people open most; Watar (the AI) drafts in the dashed grey pen and never
+publishes.
+
 ## Build
 
 ```
@@ -17,7 +27,7 @@ python -I tools/fetch_fonts.py   # candidate faces from google/fonts into resear
 python -I tools/font_facts.py    # measures them -> research/font-facts.json (the type decision)
 python -I tools/fonts.py         # WOFF2 subsets of Atkinson Hyperlegible Next and Fragment Mono
 python tools/build.py            # tokens, logo files and every page, in en/, ar/ and tr/
-python tools/build.py --only inbox,watar   # just those product screens, in every language; skips the book
+python tools/build.py --only work,item   # just those product screens, in every language; skips the book
 python -I tools/shot.py mark.html research/shots/mark.png 1280 6000   # headless QA shot (preview on :8341)
 ```
 
@@ -32,12 +42,16 @@ the browser, and `i18n/*.json` (core first, then one file per group of screens) 
 CLDR plural forms for counts (`I18N.n()`; Arabic has zero, one, two, few, many, other). The build writes English at
 the root, `ar/` and `tr/` beside it, and `assets/js/i18n-<lang>.js` for the browser; a text translated differently
 in two files keeps the first and the build says so. The data stays English (logic compares names) and is translated
-where it is shown; every date goes through `V.label/day/at/when/due` in `assets/js/jobs.js`. Arabic sets the page
+where it is shown; every date and time goes through `FLOW.when/ago/late/hm/date/dayOf` in `assets/js/flow.js`. A
+sentence about what walks the line is written with "job" and said with the organization's noun (`I18N.noun()`), so
+the dictionaries hold it once per noun (piece, ticket, campaign). Arabic sets the page
 `dir="rtl"`, mirrors the line drawings (`svg.flow`) with their words kept upright, and uses Readex Pro through the
 body face's Arabic `unicode-range`. The language switch sits in the sidebar foot (outside the app, at the top):
 each language by its flag (Arabic: Palestine; English: the United Kingdom; Turkish: Turkey), and it keeps the page's
 query and hash. `assets/js/ui.js` gives every screen the same menus and replaces native selects with the house
-dropdown while keeping their value and events.
+dropdown while keeping their value and events. Dictionaries of the screens: core, auth, studio (frame, My work, Home,
+queue), item, start, canvas, people, reports, automate, agency (templates, integrations, Wamda), and the older line, work, settings, clients, inbox and watar,
+whose keys the screens still share.
 
 ## Pages
 
@@ -48,31 +62,55 @@ stages, captured by `python -I tools/screens.py` into `assets/screens/`, preview
 
 ## Screens
 
-signin (a tenant's sign-in, sufra.iqaa.app) · signup (self-serve: account, your work, your line) · inbox
-(`inbox.html`: emails and form entries before they are orders; Watar reads each into a draft order with the words
-it read underlined, a person makes the order, which joins the line at Quote, or sets the message aside; `#new` a
-blank order, `#m2` one message; what is made is kept for the visit under `iqaa-intake` and shows on every screen) · today (one
-person's station as a platform board: waiting, coming, done today; `?as=salma|yusuf|hala`) · line (the
-Line screen of the app: the line as a metro map with branches and ways back, the selected station's steps,
-a test job that sends nothing, versions) · clients (`clients.html`: every client grouped by whose move it is;
-`client.html?c=darb-studio`: one client's line with Sufra, its open order with the history that bears on each step,
-every order and the contact) · ask watar (`watar.html`: a conversation with Watar, answered in the browser by fixed
-rules from the demo world; every action Watar drafts waits in the dashed grey pen for a person; `?as=`, and `?q=`
-asks once on arrival) · settings (`settings.html#team|channels|organization|billing`: the team and its invitations,
-the ways the line reaches clients with a preview of each message, the organization's name and mark, and billing;
-every change applies on its own with Undo, in page memory; `?as=reem` shows a member's read-only view) · quote
-(`quote.html?q=0030`: the client's link at sufra.iqaa.app/q/0030, opened without an account; Sufra's quote with
-Approve and Ask for a change, then the order's steps that reach the client until the invoice; `?q=0035|0028|0027|0026`
-show the other moments, and the answer is kept for the visit under `iqaa-answers`). All read
-the Sufra demo world from `assets/js/sufra.js`, and every time comes from the one clock in `assets/js/jobs.js`.
-`research/qa-line.html`, `research/qa-today.html` and `research/qa-watar.html` (`?w=&h=&do=`) drive the screens
-through a scenario for headless captures.
+The owner's 22 designed screens, built on one demo world, `assets/js/world.js`: Al-Khatt Media (media and production,
+pieces MAD, its content production line at version 4 with a draft of version 5, and its quick news line), Masar
+(software, tickets DEV, its feature line) and Wamda (an agency, campaigns). The clock is fixed at Sunday 1 November
+2026, 09:41. `assets/js/flow.js` makes the context every screen reads (`FLOW.context()`: the organization, the person,
+the line, its blocks and items, who stands where), and `assets/js/frame.js` writes the app frame from it: the nav
+depends on who is looking (the owner, a block's lead, a member) and on the pack; on a phone it is a tab bar and More.
+
+Every app screen takes `?org=alkhatt|masar|wamda` and `?as=<person>` (the person menu at the sidebar foot, "See the
+screens as", switches it; the organization is kept for the visit under `iqaa-org-id`).
+
+- `start.html`: outside the app; the organization's name and idea in a sentence, templates by pack, Watar's three
+  questions, then the four steps it runs.
+- `built.html`: what Watar built, reviewed before anyone is invited: the line, departments, fields, invitations, permissions.
+- `lines.html`: the canvas. The line as a metro map with its draft drawn in the dashed pen; the selected block's people
+  and roles (`#people`), what each role sees (`#sees`) and its settings (`#settings`); `?block=`,
+  `?view=role:<role>|person:<key>`. People apply at once (`iqaa-people:<org>:<line>`); the rest is the draft
+  (`iqaa-draft:<org>:<line>`).
+- `publish.html`: what changed since the published version, where live items go, the check; publishing writes
+  `iqaa-published:<org>:<line>`.
+- `signin.html`: Al-Khatt's own sign-in; `#signed-in` plays the success as Heba and opens My work.
+- `work.html`: My work: in progress, new for you, open to claim; starting, claiming and handing over are kept for the
+  visit under `iqaa-moves`.
+- `item.html?code=MAD-26-0144`: one template for any item (a piece with its video versions; `?code=DEV-26-0088` a
+  ticket with its pull request and checks); tabs by hash (`#work`, `#files`, `#discussion`, `#log`, `#platforms`, `#code`).
+- `queue.html?block=montage`: a block's queue for its lead, `?view=list|board`; assigning and approving.
+- `home.html`: the owner's Home: the core's and the pack's numbers, where work stands block by block, what waits for a
+  decision, Watar's suggestion; `?org=wamda` shows an agency's.
+- `people.html`: departments, teams and people with their roles in the blocks, `?dept=`; inviting is kept under
+  `iqaa-people:<org>`.
+- `reports.html`: the core's numbers from the line's log, block by block, then the pack's results (`#line`, `#results`).
+- `packs.html`: settings: packs, integrations, the organization's light identity, the month's usage.
+- `review.html?code=MAD-26-0142`: the client's link, without an account: the piece, comments pinned to moments of
+  the video, and one decision (`iqaa-review:<code>`).
+- `automate.html`: the quick news line block by block in its five modes, limits, a fallback person, stop and publish
+  (`iqaa-draft:<org>:news`, `iqaa-published:…`, `iqaa-stop:…`).
+- `sources.html`: RSS, webhooks, channels, schedules and other lines, each with its field map and every attempt
+  today, `?source=`.
+- `templates.html`: templates for what the machine makes, versioned and approved in a person's name, `?t=`.
+- `integrations.html`: each connection's state and the log of events in and out, with a manual re-run.
+
+`research/qa.html?w=&h=&src=<page>` frames a screen at a size for headless captures; `tools/screens.py` lists the
+states the book shows (`python -I tools/screens.py work lines` captures just those).
 
 ## Real and illustrative
 
-Real: the client's four colours, the station names of the three templates (client deck), the product facts
-(build plan). Illustrative and labelled: the steps inside each station, the Sufra demo world, sample chart
-data. Bracketed placeholders stand for facts that do not exist yet (names, prices, addresses).
+Real: the client's four colours, the product facts and the 22 screens (the owner's full plan and designs).
+Illustrative and labelled: the demo organizations in world.js and their numbers (Masar's and the Software pack's
+counts are invented), the steps inside each station in the book's signatures (`tools/lines.json`: the same three
+organizations' lines, keyed media, software and agency, each with its initial and address), sample chart data. Bracketed placeholders stand for facts that do not exist yet (names, prices, addresses).
 
 ## Open
 

@@ -14,16 +14,23 @@ from p_core import decisions, index  # noqa: E402
 from p_ct import colour, icons, type_  # noqa: E402
 from p_mark import mark, signature  # noqa: E402
 from p_ms import motion, system  # noqa: E402
-from p_auth import signin, signup  # noqa: E402
-from p_line import line  # noqa: E402
-from p_today import today  # noqa: E402
-from p_orders import order, orders, overview  # noqa: E402
-from p_clients import client, clients  # noqa: E402
-from p_watar import watar  # noqa: E402
-from p_settings import settings  # noqa: E402
-from p_quote import quote  # noqa: E402
-from p_inbox import inbox  # noqa: E402
-from p_build import build  # noqa: E402
+from p_auth import signin  # noqa: E402
+from p_work import work  # noqa: E402
+from p_item import item  # noqa: E402
+from p_queue import queue  # noqa: E402
+from p_home import home  # noqa: E402
+from p_lines import lines  # noqa: E402
+from p_publish import publish  # noqa: E402
+from p_built import built  # noqa: E402
+from p_start import start  # noqa: E402
+from p_people import people  # noqa: E402
+from p_reports import reports  # noqa: E402
+from p_packs import packs  # noqa: E402
+from p_review import review  # noqa: E402
+from p_automate import automate  # noqa: E402
+from p_sources import sources  # noqa: E402
+from p_templates import templates  # noqa: E402
+from p_integrations import integrations  # noqa: E402
 from p_screens import screens  # noqa: E402
 from shell import ROOT, page, tokens_js  # noqa: E402
 
@@ -42,8 +49,12 @@ PAGES = [
     ('screens', 'Screens', screens, 'The product screens built so far, and where the identity lives in each.', ()),
 ]
 
-APP = (('signin', signin), ('signup', signup), ('line', line), ('today', today), ('orders', orders), ('order', order), ('overview', overview), ('build', build),
-       ('clients', clients), ('client', client), ('watar', watar), ('settings', settings), ('quote', quote), ('inbox', inbox))
+APP = (('signin', signin),
+       # the digital production screens (the owner's 22), on world.js
+       ('work', work), ('item', item), ('queue', queue), ('home', home),
+       ('lines', lines), ('publish', publish), ('built', built), ('start', start),
+       ('people', people), ('reports', reports), ('packs', packs), ('review', review),
+       ('automate', automate), ('sources', sources), ('templates', templates), ('integrations', integrations))
 
 if __name__ == '__main__':
     # --only today,watar   builds just those product screens, in every language, and skips the book and its exports

@@ -1,0 +1,71 @@
+/* My work: three lists of the person's items and a side with where they work. Built on tokens.css, brand.css,
+   auth.css and app.css (the frame, the stroke strip); sizes are quarter-beat multiples. */
+main.wk { background: #fff; }
+.wk-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.wk-day { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.wk-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.wk-sum { margin-block-start: var(--s-1); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.wk-filter { display: inline-flex; padding: 3px; gap: 2px; border-radius: 12px; background: var(--iqaa-n100); }
+.wk-filter button { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 36px; padding: 0 var(--s-4); border: 0; border-radius: 9px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
+.wk-filter button[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.wk-filter span { font-family: 'Fragment Mono', monospace; font-size: 12px; font-weight: 400; color: var(--iqaa-n600); }
+.wk-filter button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+@media (pointer: coarse) { .wk-filter button { min-height: 44px; } }
+
+.wk-note { display: flex; align-items: center; gap: var(--s-3); margin-block-end: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.wk-note .link { padding-block: 0; }
+
+.wk-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--s-8); align-items: start; padding-block-end: var(--s-12); }
+.wk-grid > * { min-width: 0; }
+@media (max-width: 1100px) { .wk-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- the lists ---------- */
+.wk-sec + .wk-sec { margin-block-start: var(--s-8); }
+.wk-sh { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-1) var(--s-3); padding-block-end: var(--s-2); border-block-end: 1px solid var(--iqaa-n200); }
+.wk-sh h2 { font-size: 16px; line-height: 24px; font-weight: 700; }
+.wk-sh h2 span { margin-inline-start: var(--s-1); font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
+.wk-sh p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.wk-list { list-style: none; margin: 0; padding: 0; }
+.wk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'top act' 'where act' 'ev act'; gap: var(--s-2) var(--s-6); align-items: center;
+  padding-block: var(--s-4); border-block-end: 1px solid var(--iqaa-n100); }
+.wk-top { grid-area: top; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-4); min-width: 0; }
+.wk-title { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--iqaa-ink); text-decoration: none; overflow-wrap: anywhere; }
+.wk-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.wk-title:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; border-radius: 4px; }
+.wk-flag { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); white-space: nowrap; }
+.wk-flag svg { flex: none; color: var(--iqaa-n600); }
+.wk-flag.late { color: var(--iqaa-red); font-weight: 700; }
+.wk-flag.late svg { color: var(--iqaa-red); }
+.wk-where { grid-area: where; display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-3); min-width: 0; }
+.wk-at { font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-ink); }
+.wk-where code { font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 20px; color: var(--iqaa-n600); }
+.wk-ev { grid-area: ev; font-size: 14px; line-height: 20px; color: var(--iqaa-n700); max-width: 72ch; overflow-wrap: anywhere; }
+.wk-row.is-back .wk-ev { color: var(--iqaa-ink); }
+.wk-act { grid-area: act; display: flex; gap: var(--s-2); }
+.wk-act .btn { white-space: nowrap; }
+.wk-act .btn svg { flex: none; }
+@media (max-width: 700px) {
+  .wk-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'where' 'ev' 'act'; padding-block: var(--s-4); }
+  .wk-act .btn { flex: 1; justify-content: center; min-height: 44px; }
+}
+.wk-empty { padding: var(--s-8) 0; max-width: 56ch; }
+.wk-empty p + p { margin-block-start: var(--s-2); color: var(--iqaa-n700); }
+
+/* ---------- the side ---------- */
+.wk-side { display: flex; flex-direction: column; gap: var(--s-4); }
+.wk-box { padding: var(--s-4); border: 1px solid var(--iqaa-n200); border-radius: 14px; }
+.wk-box h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; line-height: 20px; font-weight: 700; }
+.wk-box h2 svg { flex: none; color: var(--iqaa-n600); }
+.wk-line { margin-block: var(--s-1) var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.wk-blocks, .wk-feed { list-style: none; margin: 0; padding: 0; }
+.wk-blocks li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); padding-block: var(--s-2); }
+.wk-blocks li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.wk-g svg { display: block; height: 20px; width: auto; }
+[dir='rtl'] .wk-g svg { transform: scaleX(-1); }
+.wk-blocks b { display: block; font-size: 14px; line-height: 20px; }
+.wk-blocks small { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.wk-blocks i { font-style: normal; font-family: 'Fragment Mono', monospace; font-size: 13px; color: var(--iqaa-n700); }
+.wk-feed { margin-block-start: var(--s-3); }
+.wk-feed li { display: flex; flex-direction: column; gap: 2px; padding-block: var(--s-2); font-size: 13px; line-height: 20px; }
+.wk-feed li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.wk-feed time { font-size: 12px; line-height: 16px; color: var(--iqaa-n600); }

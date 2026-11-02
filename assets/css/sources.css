@@ -1,0 +1,143 @@
+/* Sources and what came in from them: the sources beside the selected one's setup and its day, every attempt logged.
+   Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn, .field); sizes are quarter-beat multiples.
+   Ink is what the machine let in (the grammar's straight run), the dashed grey pen is Watar's proposal, red is a
+   problem only: an attempt that failed. */
+main.so { background: #fff; }
+.so-page { container: so / inline-size; padding-block-end: var(--s-12); }
+.so-page .btn svg { flex: none; }
+/* what the prototype does not do yet: the system's disabled look, in reach of the keyboard, said to be coming */
+.so-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.so-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+body.app .so-page .btn[aria-disabled='true']:active { transform: none; }
+.so-page .btn:focus-visible, .so-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.so-page .btn.quiet { border-color: var(--iqaa-n200); color: var(--iqaa-n700); }
+.so-page .btn.quiet:hover { border-color: var(--iqaa-ink); color: var(--iqaa-ink); }
+.so-page .bad { color: var(--iqaa-red); }
+.so-g { display: grid; place-items: center; flex: none; width: 24px; height: 20px; color: var(--iqaa-n500); }
+.so-g svg { display: block; height: 16px; width: auto; overflow: visible; }
+[dir='rtl'] .so-g svg { transform: scaleX(-1); }
+.so-page code { font-family: 'Fragment Mono', monospace; font-size: 13px; color: var(--iqaa-ink); unicode-bidi: isolate; }
+
+/* ---------- the head ---------- */
+.so-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.so-ht { min-width: 0; }
+.so-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.so-sum { margin-block-start: var(--s-1); max-width: 72ch; font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.so-bar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-3); padding-block: 0 var(--s-4); font-size: 14px; line-height: 20px; }
+.so-bar[hidden] { display: none; }
+.so-bar .link { padding-block: 0; min-height: 32px; }
+
+/* ---------- the sources beside the selected one; one column when the sheet is narrow ---------- */
+.so-cols { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: var(--s-8) var(--s-12); align-items: start; }
+.so-cols[hidden], .so-none[hidden] { display: none; }
+.so-cols > * { min-width: 0; }
+@container so (max-width: 960px) { .so-cols { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); } }
+.so-list h2 { display: flex; align-items: baseline; gap: var(--s-2); padding-block-end: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; border-block-end: 1px solid var(--iqaa-n200); }
+.so-list h2 span { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n700); }
+.so-l { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.so-r { width: 100%; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: start; gap: var(--s-3); padding: var(--s-3); border: 0; border-radius: 12px; background: none;
+  font: inherit; color: inherit; text-align: start; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .so-r:not([aria-current]):hover { background: var(--iqaa-n50); } }
+.so-r[aria-current] { background: var(--iqaa-n100); }
+.so-r:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+/* a source's mark: the kind of source it is, on the quiet ground */
+.so-i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--iqaa-n50); color: var(--iqaa-ink); }
+.so-r[aria-current] .so-i { background: #fff; }
+.so-rt { display: flex; flex-direction: column; min-width: 0; }
+.so-ty { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--iqaa-n700); }
+.so-rt b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.so-rt small { margin-block-start: 2px; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.so-rt small b { font-size: 12px; line-height: 16px; white-space: nowrap; }
+.so-rx { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: end; }
+.so-rx small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+/* a source works, or its pen is lifted: paused */
+.so-st { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; line-height: 20px; font-weight: 600; color: var(--iqaa-ink); white-space: nowrap; }
+.so-st > svg { flex: none; color: var(--iqaa-ink); }
+.so-st.off { color: var(--iqaa-n700); }
+.so-st .so-g { width: 20px; color: inherit; }
+
+/* ---------- the selected source ---------- */
+.so-d { min-width: 0; }
+.sd-h { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+.so-i.big { width: 48px; height: 48px; border-radius: 14px; }
+.sd-ht { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+.sd-ht > p { font-size: 13px; line-height: 20px; font-weight: 600; color: var(--iqaa-n700); }
+.sd-ht h2 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 700; overflow-wrap: anywhere; }
+.sd-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.sd-p { display: flex; align-items: center; gap: var(--s-2); margin-block-start: var(--s-3); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-p .so-g { color: var(--iqaa-n700); }
+/* its setup, as label and value on hairlines */
+.sd-set { margin: var(--s-6) 0 0; border-block-start: 1px solid var(--iqaa-n200); }
+.sd-set > div { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: var(--s-1) var(--s-4); padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.sd-set dt { font-size: 13px; line-height: 20px; font-weight: 600; color: var(--iqaa-n700); }
+.sd-set dd { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); font-size: 14px; line-height: 20px; }
+.sd-set dd a { color: var(--iqaa-ink); font-weight: 600; text-underline-offset: 0.18em; }
+.sd-set dd > span { color: var(--iqaa-n700); }
+.sd-set dd > b { font-weight: 600; }
+.sd-sig { display: inline-flex; align-items: center; gap: 4px; }
+.so-sig { display: inline-flex; align-items: center; gap: 4px; color: var(--iqaa-ink) !important; font-weight: 600; }
+.so-sig svg { flex: none; }
+@media (max-width: 600px) { .sd-set > div { grid-template-columns: minmax(0, 1fr); } }
+
+.sd-s { margin-block-start: var(--s-8); }
+.sd-s h3 { font-size: 15px; line-height: 22px; font-weight: 700; }
+.sd-s > .hint { margin-block-start: 2px; }
+/* the field map: what comes in, an arrow the way the page reads, the field it fills */
+.sd-wrap { overflow-x: auto; margin-block-start: var(--s-2); }
+.sd-map { border-collapse: collapse; min-width: 100%; }
+.sd-map th, .sd-map td { padding-block: var(--s-2); padding-inline: 0 var(--s-4); border-block-end: 1px solid var(--iqaa-n100); text-align: start; vertical-align: middle; }
+.sd-map thead th { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); border-block-end-color: var(--iqaa-n200); white-space: nowrap; }
+.sd-map td { font-size: 14px; line-height: 20px; }
+.sd-map td b { font-weight: 600; }
+.sd-map td small { display: flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.sd-map td small svg { flex: none; color: var(--iqaa-n600); }
+.sd-ar { width: 32px; color: var(--iqaa-n500); }
+.sd-ar svg { display: block; }
+.sd-mx { text-align: end !important; white-space: nowrap; padding-inline-end: 0 !important; }
+.sd-mx .btn + .btn { margin-inline-start: var(--s-2); }
+/* Watar's proposal: the dashed grey pen under the pair until a person approves it */
+.sd-map tr.is-proposed td { border-block-end: 2px dashed var(--iqaa-n500); }
+.sd-map tr.is-proposed code, .sd-map tr.is-proposed b { color: var(--iqaa-n700); }
+
+/* what came in today: every attempt, in the order it came */
+.sd-sum { margin-block-start: 2px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-none { display: flex; align-items: center; gap: var(--s-2); margin-block-start: var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-none .so-g { color: var(--iqaa-n700); }
+.sd-log { list-style: none; margin: var(--s-3) 0 0; padding: 0; border-block-start: 1px solid var(--iqaa-n200); }
+.sd-log li { display: grid; grid-template-columns: 48px 24px minmax(0, 1fr) auto; align-items: start; gap: var(--s-3); padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.sd-log time { font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-log .so-g { height: 20px; }
+.sd-log li.is-item .so-g svg { height: 14px; }
+.sl-t { display: flex; flex-direction: column; min-width: 0; }
+.sl-t b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.sl-t small { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.sl-t small code { font-size: 12px; white-space: nowrap; }
+/* what did not enter reads quieter than what did; what failed is the one red row */
+.sd-log li.is-duplicate .sl-t b, .sd-log li.is-turned .sl-t b { font-weight: 600; color: var(--iqaa-n700); }
+.sd-log li.is-failed .sl-t small .bad { font-weight: 600; }
+.sl-x { display: flex; align-items: center; }
+.sl-x .link { min-height: 20px; padding-block: 0; }
+.sd-tried { font-size: 12px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-foot { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-2); max-width: 72ch; }
+.sd-foot li { display: flex; align-items: flex-start; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.sd-foot svg { flex: none; margin-block-start: 2px; color: var(--iqaa-n600); }
+
+/* ---------- an organization with no source ---------- */
+.so-none { max-width: 72ch; padding-block: var(--s-4) var(--s-8); }
+.so-none h2 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 700; }
+.so-none p { margin-block-start: var(--s-2); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+
+/* ---------- a phone ---------- */
+@media (max-width: 700px) {
+  .so-head { padding-block: var(--s-6) var(--s-4); }
+  .so-ht h1 { font-size: var(--t-lg); line-height: var(--lh-lg); }
+  .so-new, .so-new .btn { width: 100%; }
+  .so-r { grid-template-columns: 40px minmax(0, 1fr); }
+  .so-rx { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 2px var(--s-3); text-align: start; }
+  .sd-act, .sd-act .btn { width: 100%; }
+  .sd-log li { grid-template-columns: 40px 20px minmax(0, 1fr); }
+  .sl-x { grid-column: 3; }
+  .sd-mx { white-space: normal; }
+  .sd-mx .btn { margin-block: 2px; }
+}
+@media (pointer: coarse) { .so-page .btn.small { min-height: 44px; } }

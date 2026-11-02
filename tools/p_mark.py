@@ -141,8 +141,8 @@ def mark():
 <div class="cap"><img class="px" src="assets/brand/iqaa-favicon-32.svg" width="160" height="160" alt="The 32 pixel icon, enlarged"><span>32 px, ×5</span></div>
 </div>
 <div class="g2">
-<div class="spec tight" style="background:#DEE1E6"><div class="tab"><img src="assets/brand/iqaa-favicon-16.svg" width="16" height="16" alt=""><span>Sufra · Today</span></div><p class="note">Light browser tab</p></div>
-<div class="spec tight" style="background:#202124;color:#E8EAED"><div class="tab dark"><img src="assets/brand/iqaa-favicon-16.svg" width="16" height="16" alt=""><span>Sufra · Today</span></div><p class="note" style="color:#BDC1C6">Dark browser tab</p></div>
+<div class="spec tight" style="background:#DEE1E6"><div class="tab"><img src="assets/brand/iqaa-favicon-16.svg" width="16" height="16" alt=""><span>My work · Al-Khatt Media</span></div><p class="note">Light browser tab</p></div>
+<div class="spec tight" style="background:#202124;color:#E8EAED"><div class="tab dark"><img src="assets/brand/iqaa-favicon-16.svg" width="16" height="16" alt=""><span>My work · Al-Khatt Media</span></div><p class="note" style="color:#BDC1C6">Dark browser tab</p></div>
 </div>
 <p class="note">The tile is ink with a corner of 22.4%, the curve iOS and macOS apply, so the icon looks the same before and after the system masks it. The mark takes 62% of the tile’s width, inside Android’s adaptive safe circle.</p>'''
     misuse = ''.join(
@@ -165,7 +165,7 @@ def mark():
 
 def templates():
     out = ''
-    for key in ('catering', 'software', 'video'):
+    for key in ('media', 'software', 'agency'):
         L = LINES[key]
         kinds = kinds_of(key)
         steps = ''.join(
@@ -175,8 +175,8 @@ def templates():
 <div class="meta"><b>{esc(L["template"])} · {esc(L["org"])}</b><span>{len(L["blocks"])} stations · {len(kinds)} steps · {sum(1 for k in kinds if k in ("struck", "held"))} for people</span></div>
 {sigline(key)}
 <div class="row mid" style="gap:var(--s-6)">
-<div class="cap">{brand.avatar_svg([[s[0] for s in b["steps"]] for b in L["blocks"]], 64, L["org"] + " mark", name=L["org"])}<span>Its mark, 64 px</span></div>
-<div class="cap">{brand.avatar_svg([[s[0] for s in b["steps"]] for b in L["blocks"]], 32, L["org"] + " mark, small", name=L["org"])}<span>32 px</span></div>
+<div class="cap">{brand.avatar_svg([[s[0] for s in b["steps"]] for b in L["blocks"]], 64, L["org"] + " mark", name=L["mark"])}<span>Its mark, 64 px</span></div>
+<div class="cap">{brand.avatar_svg([[s[0] for s in b["steps"]] for b in L["blocks"]], 32, L["org"] + " mark, small", name=L["mark"])}<span>32 px</span></div>
 <div class="cap"><div class="spec white tight">{sigline(key, test=True, labels=False)}</div><span>The same line in a test run</span></div>
 </div>
 <details class="steps"><summary>Steps in this line</summary><ol>{steps}</ol></details>
@@ -211,7 +211,7 @@ def share_said(kinds):
 def org_marks():
     """How three lines write their initials: the opening beside the mark it makes."""
     rows = ''
-    for key in ('catering', 'software', 'video'):
+    for key in ('media', 'software', 'agency'):
         L = LINES[key]
         blocks = [[s[0] for s in b['steps']] for b in L['blocks']]
         opening = brand.lead(blocks)
@@ -219,8 +219,8 @@ def org_marks():
         kinds = [k for b in opening for k in b]
         said = ' → '.join(f'{esc(n)} <span class="k">({"a person" if k in ("struck", "held") else "runs by itself"})</span>' for n, k in zip(names, kinds))
         share = len(kinds)
-        rows += (f'<div class="om-row"><div class="row mid" style="gap:var(--s-4)">{brand.avatar_svg(blocks, 96, L["org"] + " mark", name=L["org"])}'
-                 f'{brand.avatar_svg(blocks, 40, "", name=L["org"])}{brand.avatar_svg(blocks, 20, "", name=L["org"])}</div>'
+        rows += (f'<div class="om-row"><div class="row mid" style="gap:var(--s-4)">{brand.avatar_svg(blocks, 96, L["org"] + " mark", name=L["mark"])}'
+                 f'{brand.avatar_svg(blocks, 40, "", name=L["mark"])}{brand.avatar_svg(blocks, 20, "", name=L["mark"])}</div>'
                  f'<div class="cap"><b>{esc(L["org"])} · {esc(L["template"])}</b><span>Opens with {said}. '
                  f'{share_said(kinds)}</span>'
                  f'<div class="spec white tight">{brand.line_svg(opening, k=1.2)}</div></div></div>')
@@ -252,7 +252,7 @@ ENCODE = [
     'The pen never shrinks to fit: a long line is drawn smaller, never cramped.',
     'An organization without a logo signs with its initial, written in Iqaa’s hand with the mark’s pen, in the order its line opens: each of its first steps (whole stations, up to three) takes an equal share of the letter, lilac where a person does it, white where it runs by itself.',
     'Publishing a new version of a line changes its signature. Jobs already running keep the version — and the signature — they started on.',
-    'A client’s history is written order by order with the steps that reached the client: an arch for each answer the line waited for, a lifted pen and a straight where the wait ran out and Iqaa reminded them, then the delivery — a loop, or the snapped red stroke when it arrived late. The pen lifts between orders, because each is its own job.',
+    'A client’s history is written piece by piece with the steps that reached the client: an arch for each answer the line waited for, a lifted pen and a straight where the wait ran out and Iqaa reminded them, then the delivery — a loop, or the snapped red stroke when it arrived late. The pen lifts between pieces, because each is its own item.',
     'A timed wait can be drawn at its real length, on a day line: the pen stays up for the whole wait, a quiet band marks the time it is up and the dot sits in its middle; the step before ends where the wait starts, the step after starts where it ends. A risk reads as a picture: the event falls under the lifted pen.',
     'Arabic: the same strokes, written right to left; the loops turn the other way.',
     'On ink, strokes that run by themselves turn white and a person’s strokes lilac. Nothing else changes.',
@@ -264,11 +264,11 @@ def signature():
     gen = '''<div class="gen" data-gen>
 <div class="gen-in">
 <div class="gen-bar" role="group" aria-label="Start from a template">
-<button class="btn small" type="button" data-tpl="catering" aria-pressed="true">Catering</button>
+<button class="btn small" type="button" data-tpl="media" aria-pressed="true">Media</button>
 <button class="btn small" type="button" data-tpl="software" aria-pressed="false">Software</button>
-<button class="btn small" type="button" data-tpl="video" aria-pressed="false">Video</button>
+<button class="btn small" type="button" data-tpl="agency" aria-pressed="false">Agency</button>
 </div>
-<label class="gen-org">Organization <input type="text" value="Sufra" data-org maxlength="28" autocomplete="off"></label>
+<label class="gen-org">Organization <input type="text" value="Al-Khatt Media" data-org maxlength="28" autocomplete="off"></label>
 <ol class="gen-blocks" data-blocks></ol>
 <button class="btn small" type="button" data-add-block>Add a station</button>
 <p class="note">Press a step to change its kind: runs, held, struck, rest.</p>
@@ -289,7 +289,7 @@ def signature():
 <li>The organization’s mark, when it has no logo of its own.</li>
 <li>The sign-in screen of its subdomain, and the header of the link its clients open.</li>
 <li>The cover of its reports and exports.</li>
-<li>The template picker, so a kitchen and a studio can be told apart at a glance.</li>
+<li>The template picker, so a newsroom and a software house can be told apart at a glance.</li>
 <li>Iqaa’s own marketing, only when it shows a real or demo line.</li></ul></div>
 <div class="prose"><h3>Where it never appears</h3><ul>
 <li>As a repeating pattern or wallpaper.</li>
@@ -297,10 +297,10 @@ def signature():
 <li>Writing itself on a loop. The pen moves only when a line is signed or a job moves.</li>
 <li>On anything that is not about a line.</li>
 <li>Invented: a signature always comes from an actual line, or a labelled demo.</li></ul></div></div>'''
-    return (head('Signature', 'Every line signs its own name', 'The pen that draws Iqaa’s mark writes any line. A kitchen, a software house and a video studio get three different signatures from the same strokes — and each one is the true shape of its work.')
+    return (head('Signature', 'Every line signs its own name', 'The pen that draws Iqaa’s mark writes any line. A media house, a software house and an agency get three different signatures from the same strokes — and each one is the true shape of its work.')
             + sec('Grammar', 'Six states, told apart by the stroke', legend() + grammar_sheet())
             + sec('Rules', 'How a line becomes a signature', f'<ol class="rules">{enc}</ol>')
-            + sec('Marks', 'An organization signs with its initial', org_marks(), 'Until an organization adds a logo, its mark is its initial on an ink tile, written with the pen in the order its own line opens. Two kitchens with different first steps get different marks from the same letter.')
+            + sec('Marks', 'An organization signs with its initial', org_marks(), 'Until an organization adds a logo, its mark is its initial on an ink tile, written with the pen in the order its own line opens. Two newsrooms with different first steps get different marks from the same letter.')
             + sec('Hand', 'Iqaa’s hand', hand_sheet())
             + sec('Try it', 'Write a line, see its signature', gen, 'Edit the stations and their steps. The mark, the client header and the sign-in screen follow.')
             + sec('Templates', 'Three lines from the client deck', templates())

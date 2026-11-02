@@ -1,0 +1,92 @@
+/* Start, outside the app: the organization and its idea on one side, what happens when Watar builds on the other. Built
+   on tokens.css, brand.css and auth.css (the fields, .btn, .lead, .proto, the beats .b, the language switch); sizes are
+   quarter-beat multiples. */
+main.st { background: #fff; }
+.st-top .lang-top { width: auto; }
+.st-page { padding-block: var(--s-12) var(--s-16); }
+.st-grid { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 380px); justify-content: center; gap: var(--s-16); align-items: start; }
+.st-grid > * { min-width: 0; }
+
+/* ---------- the organization and its idea ---------- */
+.st-form { display: flex; flex-direction: column; gap: var(--s-8); }
+.st-head h1 { max-width: 30ch; font-size: var(--t-xl); line-height: var(--lh-xl); font-weight: 600; letter-spacing: -0.015em; text-wrap: balance; }
+.st-head .lead { margin-block-start: var(--s-3); font-size: var(--t-base); line-height: var(--lh-base); max-width: 60ch; }
+.st-fs { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--s-6); }
+.st-fs .field textarea { min-height: 120px; }
+.st-fs:disabled .field input, .st-fs:disabled .field textarea { background: var(--iqaa-n50); border-color: var(--iqaa-n200); color: var(--iqaa-n700); }
+.st-k { font-size: 14px; line-height: 20px; font-weight: 700; }
+
+/* the templates the packs bring: a row of four; the chosen one in ink, those still to come said so */
+.st-tpls { display: flex; flex-direction: column; gap: var(--s-2); }
+.st-tpl-l { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); }
+.st-tpl { display: flex; align-items: center; gap: var(--s-2); min-height: 48px; padding: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n300); border-radius: 12px; background: #fff;
+  font: inherit; font-size: 14px; line-height: 18px; font-weight: 600; color: var(--iqaa-ink); text-align: start; cursor: pointer;
+  transition: border-color var(--m-quarter) var(--ease-arrive), box-shadow var(--m-quarter) var(--ease-arrive); }
+.st-tpl svg { flex: none; color: var(--iqaa-n600); }
+.st-tpl-t { display: flex; flex-direction: column; min-width: 0; }
+.st-tpl-t span { overflow-wrap: anywhere; }
+@media (hover: hover) and (pointer: fine) { .st-tpl:not([aria-disabled='true']):hover { border-color: var(--iqaa-ink); } }
+.st-tpl[aria-pressed='true'] { border-color: var(--iqaa-ink); box-shadow: inset 0 0 0 1px var(--iqaa-ink); }
+.st-tpl[aria-pressed='true'] svg { color: var(--iqaa-ink); }
+.st-tpl[aria-disabled='true'] { border-color: var(--iqaa-n100); background: var(--iqaa-n100); color: var(--iqaa-n700); font-weight: 400; cursor: default; }
+.st-tpl em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.st-tpl:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.st-tpl:disabled:not([aria-disabled='true']) { cursor: default; opacity: 0.6; }
+
+/* ---------- Watar's questions: its mark, the held arch, at their head; a quiet switch for each answer ---------- */
+.st-ask { display: flex; flex-direction: column; gap: var(--s-3); padding-block-start: var(--s-6); border-block-start: 1px solid var(--iqaa-n200); }
+.st-ask h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 16px; line-height: 24px; font-weight: 700; }
+.st-w { flex: none; display: inline-grid; place-items: center; }
+.st-w svg { display: block; height: 18px; width: auto; overflow: visible; }
+[data-questions] { display: flex; flex-direction: column; gap: var(--s-4); margin-block-start: var(--s-1); }
+.st-q { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin: 0; padding: 0; border: 0; min-width: 0; }
+.st-qt { width: 100%; padding: 0; font-size: 15px; line-height: 22px; font-weight: 600; }
+.st-seg { display: inline-flex; flex-wrap: wrap; padding: 3px; gap: 2px; border-radius: 12px; background: var(--iqaa-n100); }
+.st-seg label { position: relative; display: inline-flex; }
+.st-seg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.st-seg span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--s-4); border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); }
+.st-seg input:checked + span { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.st-seg input:focus-visible + span { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+@media (hover: hover) and (pointer: fine) { .st-seg input:not(:checked):hover + span { color: var(--iqaa-ink); } }
+.st-skip { padding-block: 0; min-height: 44px; color: var(--iqaa-n700); }
+.st-q.is-skipped .st-qt { color: var(--iqaa-n600); font-weight: 400; }
+.st-skipped { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-3); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.st-skipped .link { padding-block: 0; min-height: 44px; }
+@media (pointer: coarse) { .st-seg span { min-height: 44px; } }
+
+.st-go { display: flex; flex-direction: column; gap: var(--s-4); }
+.st-go .btn:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.st-go .btn[disabled] { opacity: 1; background: var(--iqaa-ink); border-color: var(--iqaa-ink); cursor: default; }
+
+/* ---------- what happens when Watar builds: the same four steps for everyone, each an automatic stroke, dashed until done ---------- */
+.st-steps { position: sticky; inset-block-start: var(--s-8); }
+.st-steps-in { display: flex; flex-direction: column; gap: var(--s-4); padding: var(--s-6); border-radius: 16px; background: var(--iqaa-n50); }
+.st-steps h2 { font-size: 15px; line-height: 22px; font-weight: 700; }
+.st-ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.st-s { position: relative; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: var(--s-3); padding-block: var(--s-3); }
+.st-s + .st-s { border-block-start: 1px solid var(--iqaa-n100); }
+.st-s .b { --bs: 24px; margin-block-start: 6px; }
+[dir='rtl'] .st-s .b svg { transform: scaleX(-1); }
+.st-st { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.st-sw { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.st-st b { font-size: 15px; line-height: 22px; font-weight: 600; color: var(--iqaa-n700); }
+.st-sd { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); overflow-wrap: anywhere; }
+.st-sd:empty { display: none; }
+.st-s[data-state='now'] .st-sw, .st-s[data-state='done'] .st-sw { color: var(--iqaa-ink); }
+.st-s[data-state='now'] b, .st-s[data-state='done'] b { color: var(--iqaa-ink); font-weight: 700; }
+.st-never { display: flex; align-items: flex-start; gap: var(--s-2); padding-block-start: var(--s-4); border-block-start: 1px solid var(--iqaa-n200); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.st-never svg { flex: none; color: var(--iqaa-n600); }
+.st-ready .btn { width: 100%; }
+.st-ready .btn:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* one column under 1100 px: the steps follow the button they explain */
+@media (max-width: 1100px) {
+  .st-grid { grid-template-columns: minmax(0, 640px); gap: var(--s-8); }
+  .st-steps { position: static; }
+}
+@media (max-width: 700px) {
+  .st-page { padding-block: var(--s-6) var(--s-12); }
+  .st-head h1 { font-size: var(--t-lg); line-height: var(--lh-lg); }
+  .st-tpl-l { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-steps-in { padding: var(--s-4); }
+}

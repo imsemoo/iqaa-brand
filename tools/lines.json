@@ -1,5 +1,5 @@
 {
- "_note": "Station names come from the client deck. The steps inside each station are illustrative, built only from step types the build plan names: send, wait, remind, condition, create, task for a person, approval, Watar draft.",
+ "_note": "Station names come from the owner’s designed screens (world.js): Al-Khatt Media’s content production line, Masar’s feature line and Wamda’s campaign line. The steps inside each station are illustrative, built only from step types the plan names: send, wait, remind, condition, create, task for a person, approval, Watar draft.",
  "kinds": {
   "run": "Runs: a step that runs by itself",
   "held": "Held: waits for a person (an approval, a review, a Watar draft)",
@@ -7,127 +7,127 @@
   "rest": "Rest: a timed wait"
  },
  "lines": {
-  "catering": {
-   "org": "Sufra",
-   "template": "Catering",
-   "job": "an order",
+  "media": {
+   "org": "Al-Khatt Media",
+   "mark": "K",
+   "address": "alkhatt.iqaa.co",
+   "template": "Media and production",
+   "job": "a piece",
    "blocks": [
     {
-     "name": "Request",
+     "name": "Idea",
      "steps": [
       [
        "struck",
-       "Reem logs the order"
+       "A writer pitches the idea"
       ],
       [
        "run",
-       "Send the client a receipt"
+       "Open the piece and give it its code"
       ]
      ]
     },
     {
-     "name": "Quote",
+     "name": "Script writing",
      "steps": [
       [
        "held",
-       "Watar drafts the quote"
+       "Watar drafts an outline"
       ],
       [
        "struck",
-       "Reem checks the prices"
+       "The writer writes the script"
       ],
       [
        "run",
-       "Send the quote link"
+       "Send it to editorial review"
       ]
      ]
     },
     {
-     "name": "Client approval",
+     "name": "Editorial review",
      "steps": [
       [
        "held",
-       "Maha approves"
+       "The reviewer approves the script"
       ],
       [
        "rest",
-       "Wait two days"
+       "Wait a day"
       ],
       [
        "run",
-       "Remind Maha"
+       "Remind the reviewer"
       ]
      ]
     },
     {
-     "name": "Buy materials",
+     "name": "Montage",
      "steps": [
-      [
-       "run",
-       "Create the shopping list"
-      ],
       [
        "struck",
-       "Buy the materials"
+       "The video editor cuts the video"
+      ],
+      [
+       "held",
+       "The head of montage approves"
       ]
      ]
     },
     {
-     "name": "Prepare",
+     "name": "Colour grading",
      "steps": [
-      [
-       "run",
-       "Remind the kitchen a day before"
-      ],
       [
        "struck",
-       "Salma prepares"
+       "The colourist grades the video"
       ]
      ]
     },
     {
-     "name": "Deliver",
+     "name": "Management review",
      "steps": [
       [
-       "run",
-       "Send the arrival time"
+       "held",
+       "Management approves the piece"
       ],
+      [
+       "run",
+       "Tell the team"
+      ]
+     ]
+    },
+    {
+     "name": "Publishing",
+     "steps": [
       [
        "struck",
-       "Yusuf delivers"
-      ]
-     ]
-    },
-    {
-     "name": "Invoice",
-     "steps": [
-      [
-       "run",
-       "Create the invoice"
+       "The publisher schedules the post"
       ],
       [
        "run",
-       "Send the invoice"
+       "Publish on the platforms"
       ]
      ]
     }
    ]
   },
   "software": {
-   "org": "Raqm",
-   "template": "Software company",
-   "job": "a feature request",
+   "org": "Masar",
+   "mark": "M",
+   "address": "masar.iqaa.co",
+   "template": "Software",
+   "job": "a ticket",
    "blocks": [
     {
-     "name": "Request",
+     "name": "New request",
      "steps": [
       [
        "struck",
-       "Log the request"
+       "A client asks for a feature"
       ],
       [
        "run",
-       "Acknowledge to the client"
+       "Open the ticket"
       ]
      ]
     },
@@ -136,24 +136,20 @@
      "steps": [
       [
        "struck",
-       "Analyse the request"
+       "The analyst writes the requirements"
       ],
       [
        "held",
-       "Lead approves the scope"
+       "The client approves them"
       ]
      ]
     },
     {
-     "name": "Design",
+     "name": "Interface design",
      "steps": [
       [
        "struck",
-       "Design the feature"
-      ],
-      [
-       "held",
-       "Client reviews the design"
+       "The designer draws the screens"
       ]
      ]
     },
@@ -162,7 +158,11 @@
      "steps": [
       [
        "struck",
-       "Build the feature"
+       "A developer builds it"
+      ],
+      [
+       "run",
+       "Open the pull request"
       ]
      ]
     },
@@ -170,12 +170,12 @@
      "name": "Code review",
      "steps": [
       [
-       "held",
-       "A reviewer approves"
+       "run",
+       "The automatic review reads the code"
       ],
       [
-       "struck",
-       "Fix the review notes"
+       "held",
+       "The tech lead approves"
       ]
      ]
     },
@@ -184,20 +184,20 @@
      "steps": [
       [
        "run",
-       "Send the build to test"
+       "Run the tests"
       ],
       [
-       "struck",
-       "Test the feature"
+       "held",
+       "The tester signs it off"
       ]
      ]
     },
     {
-     "name": "Delivery",
+     "name": "Automatic release",
      "steps": [
       [
-       "struck",
-       "Release"
+       "run",
+       "Release the version"
       ],
       [
        "run",
@@ -207,86 +207,57 @@
     }
    ]
   },
-  "video": {
-   "org": "Kadr",
-   "template": "Video production",
-   "job": "a project",
+  "agency": {
+   "org": "Wamda",
+   "mark": "W",
+   "address": "wamda.iqaa.co",
+   "template": "Agency",
+   "job": "a campaign",
    "blocks": [
     {
-     "name": "Idea",
+     "name": "Strategy",
      "steps": [
       [
        "struck",
-       "Write the idea"
+       "The planner writes the brief"
       ],
       [
        "held",
-       "Client approves the idea"
+       "The head of strategy approves"
       ]
      ]
     },
     {
-     "name": "Script",
+     "name": "Writing and design",
      "steps": [
       [
        "held",
-       "Watar drafts an outline"
+       "Watar drafts the copy"
       ],
       [
        "struck",
-       "Write the script"
+       "The copywriter writes"
       ],
       [
-       "held",
-       "Client approves the script"
+       "struck",
+       "The designer designs"
       ]
      ]
     },
     {
-     "name": "Shoot prep",
+     "name": "Client approval",
      "steps": [
-      [
-       "struck",
-       "Book the crew"
-      ],
       [
        "run",
-       "Send the call sheet"
-      ]
-     ]
-    },
-    {
-     "name": "Shoot",
-     "steps": [
-      [
-       "struck",
-       "Shoot"
-      ]
-     ]
-    },
-    {
-     "name": "Edit",
-     "steps": [
-      [
-       "struck",
-       "Edit"
+       "Send the client the link"
       ],
       [
-       "run",
-       "Send the preview link"
-      ]
-     ]
-    },
-    {
-     "name": "Client review",
-     "steps": [
-      [
        "held",
-       "Client reviews"
+       "The client approves"
       ],
       [
        "rest",
-       "Wait three days"
+       "Wait 48 hours"
       ],
       [
        "run",
@@ -295,15 +266,15 @@
      ]
     },
     {
-     "name": "Delivery",
+     "name": "Campaign launch",
      "steps": [
       [
-       "run",
-       "Send the files"
+       "struck",
+       "The media buyer sets up the ads"
       ],
       [
        "run",
-       "Create the invoice"
+       "Launch the campaign"
       ]
      ]
     }

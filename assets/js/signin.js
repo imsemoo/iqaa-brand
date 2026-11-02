@@ -8,8 +8,14 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  // Who works where in the Sufra demo (build plan cast).
-  const CAST = { reem: 1, salma: 4, yusuf: 5, hala: 0 };
+  // The demo organization is Al-Khatt Media (world.js): its line is its blocks in order, each one stroke; a person's
+  // place on it is the first block where they hold a role. Its people are signed in by their first name's email.
+  const W = window.WORLD, ALK = W.orgs.alkhatt, LINE = ALK.lines[0];
+  const PATH = LINE.blocks.filter((b) => !b.side);
+  const keyOf = (name) => Object.keys(ALK.people).find((k) => k === name.toLowerCase()) || null;
+  const placeOf = (k) => PATH.findIndex((b) => b.roles.some((r) => r.people.includes(k)));
+  // what waits for a person now: theirs and not handed over (My work's two first lists)
+  const waiting = (k) => LINE.items.filter((it) => it.who === k && ['work', 'returned', 'new'].includes(it.state)).length;
 
   function orgFromSignUp() {
     try {
@@ -19,10 +25,9 @@
     return null;
   }
 
-  const L = window.IQAA.lines.catering;
   const org = orgFromSignUp() || {
-    name: L.org, slug: 'sufra', demo: true,
-    blocks: L.blocks.map((b) => ({ name: b.name, steps: b.steps.map((s) => s[0]) })),
+    name: ALK.name, slug: 'alkhatt', demo: true, address: ALK.address,
+    blocks: PATH.map((b) => ({ name: b.name, steps: [b.stroke] })),
   };
   // The demo's names are the data's own, shown in the page's language; an organization made at sign-up is named in
   // the words its owner typed, and keeps them. In Arabic a Latin name, an email or an address sits in its own
@@ -31,10 +36,12 @@
   const orgName = org.demo ? T(org.name) : org.name;
 
   $$('[data-org-name]').forEach((e) => { e.textContent = orgName; });
-  $$('[data-org-addr]').forEach((e) => { e.textContent = `${org.slug}.iqaa.app`; });
+  $$('[data-org-addr]').forEach((e) => { e.textContent = org.address || `${org.slug}.iqaa.app`; });
   document.title = T('Sign in · {org}', { org: orgName });
   const mark = $('[data-sig]');
-  Beats.sig(mark, org.blocks, { mode: 'mark', size: 40, name: org.name, label: T('{org}’s mark', { org: orgName }) });
+  // the mark signs the organization's initial in the page's own letters (خ for Al-Khatt in Arabic)
+  const initial = org.demo ? (ALK.mark[I18N.lang] || ALK.mark.en) : org.name;
+  Beats.sig(mark, org.blocks, { mode: 'mark', size: 40, name: initial, label: T('{org}’s mark', { org: orgName }) });
   const reduce = Beats.reduce();
   // on arrival the pen signs the organization's mark, one beat in all
   Beats.write(mark, { delay: M.quarter, each: M.quarter, gap: M.beat / 24 });
@@ -152,15 +159,18 @@
     const name = person(ev);
     // A person lands on a station where a person works, never on one that only runs by itself.
     const firstHand = Math.max(0, org.blocks.findIndex((b) => b.steps.some((k) => k === 'held' || k === 'struck')));
-    const idx = org.demo ? (CAST[name.toLowerCase()] ?? firstHand) : firstHand;
+    const k = org.demo ? keyOf(name) : null;
+    const idx = k && placeOf(k) >= 0 ? placeOf(k) : firstHand;
     const station = iso(T(org.blocks[idx].name));
-    // the demo cast's names are translated; any other name is the one the email gave, as it was typed
-    const shown = name.toLowerCase() in CAST || name === 'There' ? T(name) : iso(name);
+    // a person of the demo is greeted by their first name in the page's language; any other name as the email gave it
+    const shown = k ? T(ALK.people[k].name).split(' ')[0] : name === 'There' ? T(name) : iso(name);
     $('[data-greet]').textContent = greeting(shown);
-    // Today greets the same person: it is told the name in English, the key it looks the cast up by
-    try { sessionStorage.setItem('iqaa-person', name); } catch (e) { /* Today falls back to the demo cast */ }
-    $('[data-w-p]').textContent = org.demo && name.toLowerCase() === 'reem'
-      ? T('3 jobs are waiting for you at {station}.', { station })
+    // My work opens for the same person, in the same organization
+    try { sessionStorage.setItem('iqaa-org-id', 'alkhatt'); } catch (e) { /* the address says it too */ }
+    $('[data-open-work]').href = `work.html?${new URLSearchParams(k ? { org: 'alkhatt', as: k } : { org: 'alkhatt' })}`;
+    const n = k ? waiting(k) : 0;
+    $('[data-w-p]').textContent = n
+      ? I18N.noun(ALK.noun).n(n, '{n} job is waiting for you at {station}.', '{n} jobs are waiting for you at {station}.', { station })
       : T('Your work on {org}’s line starts at {station}.', { org: iso(orgName), station });
     // the form leaves; the pen writes the organization's line across the card, your station marked; the
     // greeting arrives line by line while it writes
@@ -226,9 +236,9 @@
     if (!reduce) ok.animate([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'none' }], { duration: M.quarter, easing: M.ease_arrive });
   });
 
-  // #signed-in plays the success as Reem, for review and demos.
+  // #signed-in plays the success as Heba, the video editor, for review and demos.
   if (location.hash === '#signed-in') {
-    email.value = 'reem@sufra.example'; email.dispatchEvent(new Event('input'));
+    email.value = 'heba@alkhatt.example'; email.dispatchEvent(new Event('input'));
     pw.value = 'prototype'; pw.dispatchEvent(new Event('input'));
     form.requestSubmit();
   }

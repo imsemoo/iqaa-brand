@@ -1,0 +1,110 @@
+/* Integrations: the connections as a list ruled by hairlines (two to a row when the sheet is wide), then the event log
+   by day. Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn); sizes are quarter-beat multiples. Ink
+   is what runs by itself (a connection that works, an event that went through); red is only a problem: a permission
+   that ran out and an event that failed; no department or brand colours, and the house's icons, not outside logos. */
+main.ig { background: #fff; }
+.ig-page { container: ig / inline-size; padding-block-end: var(--s-12); }
+
+/* ---------- head ---------- */
+.ig-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.ig-eye { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.ig-sum { margin-block-start: var(--s-1); max-width: 64ch; font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+
+/* what the prototype does not do yet: the system's disabled look, still in reach of the keyboard, said to be coming */
+.ig-page .btn svg { flex: none; }
+.ig-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.ig-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+.ig-page .btn[aria-disabled='true']:hover { border-color: var(--iqaa-n100); }
+body.app .ig-page .btn[aria-disabled='true']:active { transform: none; }
+.ig-page .btn:focus-visible, .ig-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* what was just done, with its Undo */
+.ig-live { position: sticky; inset-block-start: var(--s-2); z-index: 5; }
+.ig-note { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-end: var(--s-4); padding: var(--s-1) var(--s-4); min-height: 44px; border: 1px solid var(--iqaa-n200);
+  border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.ig-note .link { margin-inline-start: auto; }
+
+/* ---------- a section: its head over a hairline ---------- */
+.ig-sec + .ig-sec { margin-block-start: var(--s-12); }
+.ig-sh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); padding-block-end: var(--s-2); border-block-end: 1px solid var(--iqaa-n200); }
+.ig-sh h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 16px; line-height: 24px; font-weight: 700; }
+.ig-sh h2 svg { flex: none; color: var(--iqaa-n600); }
+.ig-sh > p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-n { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
+.ig-n:empty { display: none; }
+.ig-foot { display: flex; align-items: flex-start; gap: var(--s-2); margin-block-start: var(--s-4); max-width: 80ch; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-foot svg { flex: none; margin-block-start: 2px; color: var(--iqaa-n600); }
+
+/* ---------- the connections ---------- */
+.ig-cons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-8); }
+@container ig (max-width: 860px) { .ig-cons { grid-template-columns: minmax(0, 1fr); } }
+.ig-con { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; grid-template-areas: 'ic t st' '. why why'; align-items: center; gap: var(--s-1) var(--s-4);
+  min-width: 0; padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.ig-ic { grid-area: ic; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
+.ig-ct { grid-area: t; display: flex; flex-direction: column; min-width: 0; }
+.ig-ct b { font-size: 15px; line-height: 20px; }
+.ig-ct span, .ig-ct small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); overflow-wrap: anywhere; }
+.ig-ct small { color: var(--iqaa-ink); }
+.ig-cs { grid-area: st; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--s-2) var(--s-4); }
+.ig-st { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--iqaa-ink); white-space: nowrap; }
+.ig-st svg { flex: none; }
+.ig-st.bad { font-weight: 700; color: var(--iqaa-red); }
+.ig-why { grid-area: why; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-why.bad { color: var(--iqaa-red); }
+.ig-empty { padding-block: var(--s-4); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+/* narrow: a problem's state and its fix move under the name, so neither is squeezed */
+@container ig (max-width: 560px) {
+  .ig-con.is-bad { grid-template-areas: 'ic t' '. st' '. why'; grid-template-columns: 40px minmax(0, 1fr); }
+  .ig-con.is-bad .ig-cs { justify-content: flex-start; }
+}
+
+/* ---------- the log ---------- */
+.ig-fl { display: flex; flex-wrap: wrap; gap: 2px; padding: 2px; border-radius: 12px; background: var(--iqaa-n50); }
+.ig-f { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 var(--s-3); border: 0; border-radius: 10px; background: none;
+  font: inherit; font-size: 13px; line-height: 20px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
+.ig-f span { font-family: 'Fragment Mono', monospace; font-weight: 400; }
+.ig-f.has-bad span { color: var(--iqaa-red); }
+.ig-f[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 0 0 1px var(--iqaa-n200); }
+@media (hover: hover) and (pointer: fine) { .ig-f:hover { color: var(--iqaa-ink); } }
+.ig-f:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+@media (pointer: coarse) { .ig-f { min-height: 44px; } }
+.ig-hint { margin-block-start: var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-day { margin-block-start: var(--s-6); padding-block-end: var(--s-1); font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-n700); }
+.ig-evs { list-style: none; margin: 0; padding: 0; border-block-start: 1px solid var(--iqaa-n200); }
+.ig-ev { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto auto; grid-template-areas: 'd t time a'; align-items: start; gap: 2px var(--s-4);
+  padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.ig-dir { grid-area: d; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
+.ig-et { grid-area: t; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ig-s { font-size: 15px; line-height: 22px; overflow-wrap: anywhere; }
+.ig-s code, .ig-es code { font-family: 'Fragment Mono', monospace; font-size: 13px; }
+.ig-s a { color: inherit; text-underline-offset: 3px; }
+.ig-s a:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; border-radius: 2px; }
+.ig-m { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--s-3); font-size: 12px; line-height: 18px; color: var(--iqaa-n700); }
+.ig-m code { font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--iqaa-n600); }
+.ig-es { display: flex; align-items: flex-start; gap: 6px; margin-block-start: 2px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ig-es svg { flex: none; margin-block-start: 2px; color: var(--iqaa-n600); }
+.ig-es.bad { font-weight: 700; color: var(--iqaa-red); }
+.ig-es.bad svg { color: var(--iqaa-red); }
+.ig-t { grid-area: time; padding-block-start: 1px; font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 22px; color: var(--iqaa-n700); }
+.ig-a { grid-area: a; display: flex; justify-content: flex-end; min-width: 64px; }
+.ig-rr { padding-block: 0; min-height: 24px; font-size: 13px; color: var(--iqaa-n700); }
+@media (pointer: coarse) { .ig-rr { min-height: 44px; } .ig-page .btn.small { min-height: 44px; } }
+.ig-none { padding-block: var(--s-6); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+/* narrow: the time sits with the meta, the action under the event */
+@container ig (max-width: 620px) {
+  .ig-ev { grid-template-columns: 32px minmax(0, 1fr) auto; grid-template-areas: 'd t time' '. a a'; }
+  .ig-a { justify-content: flex-start; min-width: 0; }
+}
+
+/* ---------- someone who is not the owner ---------- */
+.ig-off { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); max-width: 60ch; padding-block: var(--s-8) var(--s-12); }
+.ig-off p { font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.ig-off b { color: var(--iqaa-ink); }
+
+/* ---------- a phone ---------- */
+@media (max-width: 700px) {
+  .ig-head { padding-block: var(--s-6) var(--s-4); }
+  .ig-head > div:last-child, .ig-head > div:last-child .btn { width: 100%; }
+  .ig-sec + .ig-sec { margin-block-start: var(--s-8); }
+}

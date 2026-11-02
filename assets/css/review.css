@@ -1,0 +1,132 @@
+/* The client's review by link: the organization's page for one item, opened without an account. One white sheet on
+   the desk, as on the quote link: the ask and the title, then the preview with the client's comments beside the
+   details and the decision (under them on a phone). Violet is the client's own hand (their comments on the time line,
+   their words); the dashed grey pen is what comes next. Built on tokens.css, brand.css and auth.css. */
+main.rv { background: var(--iqaa-n50); }
+main.rv + .a-foot { background: var(--iqaa-n50); border: 0; }
+main.rv + .a-foot .sign-off { display: flex; justify-content: center; }
+main.rv + .a-foot p { text-align: center; }
+.rv-as .link { font: inherit; }
+.rv-as[hidden] { display: none; }
+
+.rv-page { width: 100%; max-width: calc(1040px + 2 * var(--s-8)); margin-inline: auto; padding: var(--s-6) var(--s-8) var(--s-16); }
+.rv-page:has(.rv-sheet.narrow) { max-width: calc(680px + 2 * var(--s-8)); }
+/* the organization's header: its mark and name only, and the client's own choice of language at the other end */
+.rv-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-2) var(--s-6); }
+.rv-top .lang-top { width: auto; flex: none; margin-inline-start: auto; }
+.rv-org { display: flex; align-items: center; gap: var(--s-3); min-width: 0; font-size: 16px; line-height: 22px; }
+.rv-org[hidden] { display: none; }
+
+/* ---------- the sheet ---------- */
+.rv-sheet { display: flex; flex-direction: column; gap: var(--s-8); padding: var(--s-8); border: 1px solid var(--iqaa-n200); border-radius: 16px; background: #fff; }
+.rv-hd { display: flex; flex-direction: column; gap: var(--s-2); }
+.rv-ask { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.rv-ask svg { flex: none; color: var(--iqaa-n600); }
+.rv-hd h1 { font-size: var(--t-lg); line-height: var(--lh-lg); font-weight: 600; letter-spacing: -0.01em; max-width: none; }
+.rv-hd h1:focus { outline: none; }
+.rv-until { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.rv-until svg { flex: none; color: var(--iqaa-n600); }
+.rv-sub { font-size: 16px; line-height: 24px; color: var(--iqaa-n700); max-width: 60ch; text-wrap: pretty; }
+.rv-sheet h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
+.rv-sheet h2 svg { flex: none; color: var(--iqaa-n600); }
+.rv-sheet h2:focus { outline: none; }
+.rv-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--s-8); align-items: start; }
+.rv-grid > * { min-width: 0; }
+.rv-main, .rv-side { display: flex; flex-direction: column; gap: var(--s-8); }
+.rv-sheet .btn svg { flex: none; }
+.rv-sheet .btn:focus-visible, .rv-sheet .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* ---------- the preview: the version's picture, then its time line with the client's comments on it ---------- */
+.rv-vid { margin: 0; }
+.rv-poster { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2); aspect-ratio: 16 / 9;
+  border-radius: 12px; background: var(--iqaa-ink); color: var(--iqaa-n200); font-size: 14px; line-height: 20px; }
+.rv-poster > svg { color: var(--iqaa-n400); }
+.rv-len { position: absolute; inset-block-end: var(--s-3); inset-inline-end: var(--s-3); padding: 2px var(--s-2); border-radius: 6px; background: var(--iqaa-n800);
+  font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: #fff; }
+/* a comment at this moment, over the picture as a subtitle would be; its edge is the client's violet */
+.rv-cue { position: absolute; inset-block-end: var(--s-12); inset-inline: var(--s-6); width: fit-content; max-width: calc(100% - 2 * var(--s-6)); margin-inline: auto;
+  padding: var(--s-2) var(--s-3); border-inline-start: 3px solid var(--iqaa-violet); border-radius: 8px; background: var(--iqaa-n800); color: #fff; font-size: 15px; line-height: 22px; text-align: start; }
+.rv-cue[hidden] { display: none; }
+.rv-cue time { font-family: 'Fragment Mono', monospace; font-size: 13px; }
+/* the controls run left to right in every language, as time does on a video player */
+.rv-ctl { display: flex; align-items: center; gap: var(--s-3); margin-block-start: var(--s-3); }
+.rv-play { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--iqaa-n200); border-radius: 10px; background: #fff; color: var(--iqaa-ink); cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .rv-play:hover { border-color: var(--iqaa-ink); } }
+.rv-play:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+/* the rail, what has played in ink, the comments as violet ticks, and the slider on top, its thumb kept in step */
+.rv-track { --t: 16px; position: relative; flex: 1; min-width: 0; height: 44px; }
+.rv-track::before { content: ''; position: absolute; inset-inline: calc(var(--t) / 2); inset-block-start: 20px; height: 4px; border-radius: 2px; background: var(--iqaa-n200); }
+.rv-fill { position: absolute; inset-inline-start: calc(var(--t) / 2); inset-block-start: 20px; width: calc((100% - var(--t)) * var(--f)); height: 4px; border-radius: 2px; background: var(--iqaa-ink); }
+.rv-mk { position: absolute; inset-block-start: 14px; inset-inline-start: calc(var(--t) / 2 + (100% - var(--t)) * var(--f) - 1.5px); width: 3px; height: 16px; border-radius: 2px; background: var(--iqaa-violet); }
+.rv-track input { position: absolute; inset: 0; width: 100%; height: 44px; margin: 0; background: none; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.rv-track input::-webkit-slider-runnable-track { height: 44px; background: none; }
+.rv-track input::-webkit-slider-thumb { -webkit-appearance: none; width: var(--t); height: var(--t); margin-block-start: 14px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: #fff; }
+.rv-track input::-moz-range-track { height: 44px; background: none; }
+.rv-track input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: #fff; }
+.rv-track input:focus-visible { outline: none; }
+.rv-track input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--iqaa-violet); }
+.rv-track input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--iqaa-violet); }
+.rv-t { flex: none; font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.rv-t span { color: var(--iqaa-ink); }
+.rv-vid figcaption { margin-block-start: var(--s-1); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+
+/* ---------- the client's comments, each at its moment ---------- */
+.rv-pins h2 i { font-style: normal; font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n700); }
+.rv-pins ol { list-style: none; margin: var(--s-2) 0 0; padding: 0; }
+.rv-pins li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); padding-block: var(--s-1); border-block-end: 1px solid var(--iqaa-n100); }
+.rv-pins li p { font-size: 15px; line-height: 22px; overflow-wrap: anywhere; }
+.rv-at { display: grid; place-items: center; min-width: 56px; min-height: 36px; padding: 0 var(--s-2); border: 0; border-radius: 8px; background: var(--iqaa-lilac); color: var(--iqaa-ink);
+  font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 20px; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .rv-at:hover { box-shadow: inset 0 0 0 1px var(--iqaa-violet); } }
+.rv-at:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.rv-del { min-height: 44px; padding-block: 0; font-size: 13px; color: var(--iqaa-n700); }
+.rv-none { margin-block-start: var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); max-width: 60ch; }
+.rv-add { display: flex; flex-direction: column; gap: var(--s-3); margin-block-start: var(--s-4); }
+.rv-add .field textarea { min-height: 72px; }
+.rv-add label time, .rv-add .btn time { font-family: 'Fragment Mono', monospace; font-size: 0.93em; }
+
+/* ---------- the details the owner chose, and the decision ---------- */
+.rv-det dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s-2) var(--s-4); margin: var(--s-3) 0 0; padding-block-start: var(--s-3);
+  border-block-start: 1px solid var(--iqaa-n100); font-size: 15px; line-height: 22px; }
+.rv-det dl > div { display: contents; }
+.rv-det dt { color: var(--iqaa-n700); }
+.rv-det dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.rv-dec { display: flex; flex-direction: column; gap: var(--s-3); }
+.rv-act { display: flex; flex-direction: column; gap: var(--s-3); }
+.rv-fine { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); text-wrap: pretty; }
+.rv-chg { display: flex; flex-direction: column; gap: var(--s-4); padding: var(--s-4); border-radius: 12px; background: var(--iqaa-n50); }
+.rv-chg[hidden] { display: none; }
+.rv-chg .field textarea { min-height: 96px; background: #fff; }
+.rv-chg .row-act { flex-direction: column-reverse; }
+.rv-chg .row-act .btn { width: 100%; margin: 0; }
+.rv-lock { display: flex; align-items: flex-start; gap: var(--s-2); padding-block-start: var(--s-4); border-block-start: 1px solid var(--iqaa-n100); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.rv-lock svg { flex: none; margin-block-start: 2px; color: var(--iqaa-n600); }
+
+/* ---------- after the decision: what happens next, and what the client sent ---------- */
+.rv-next ol { list-style: none; margin: var(--s-3) 0 0; padding: 0; }
+.rv-r { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; column-gap: var(--s-3); min-height: 48px; padding-block: var(--s-2);
+  border-block-start: 1px solid var(--iqaa-n200); font-size: 15px; line-height: 22px; font-weight: 700; }
+.rv-r.ahead { font-weight: 400; color: var(--iqaa-n700); }
+.rv-r .g { display: grid; place-items: center; height: 28px; }
+.rv-r .g svg { height: 22px; width: auto; overflow: visible; }
+[dir='rtl'] .rv-r .g svg { transform: scaleX(-1); }
+.rv-rs { font-size: 14px; font-weight: 400; color: var(--iqaa-n700); text-align: end; }
+.rv-sent ul { list-style: none; margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); border-inline-start: 3px solid var(--iqaa-violet);
+  border-start-start-radius: 0; border-end-start-radius: 0; border-start-end-radius: 10px; border-end-end-radius: 10px; background: var(--iqaa-n50); }
+.rv-sent li { display: flex; gap: var(--s-3); padding-block: 4px; font-size: 15px; line-height: 22px; }
+.rv-sent time { flex: none; font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 22px; color: var(--iqaa-n700); }
+
+/* ---------- narrower: the details and the decision go under the preview ---------- */
+@media (max-width: 960px) {
+  .rv-page { padding-inline: var(--s-6); }
+  .rv-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .rv-page { padding: var(--s-2) var(--s-4) var(--s-12); }
+  .rv-top { padding-block: var(--s-3) var(--s-4); }
+  .rv-sheet { padding: var(--s-6) var(--s-5, 20px); border-radius: 14px; gap: var(--s-6); }
+  .rv-hd h1 { font-size: 22px; line-height: 30px; }
+  .rv-cue { inset-block-end: var(--s-8); inset-inline: var(--s-3); max-width: calc(100% - 2 * var(--s-3)); font-size: 13px; line-height: 18px; }
+  .rv-poster > svg { width: 24px; height: 24px; }
+}
+@media (pointer: coarse) { .rv-at { min-height: 44px; } }

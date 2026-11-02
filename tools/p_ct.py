@@ -119,34 +119,34 @@ def colour():
 def type_():
     sc = ''
     for name, v in T.type_scale().items():
-        sample = 'Ready for Salma.' if v['size'] <= 31 else 'Work, in time.'
+        sample = 'Ready for Heba.' if v['size'] <= 31 else 'Work, in time.'
         sc += (f'<tr><td><code>--t-{name}</code></td><td class="num">{v["size"]}</td><td class="num">{v["line"]}</td><td class="num">{v["track_em"]}</td>'
                f'<td><span style="font-size:{min(v["size"], 61)}px;line-height:1.1;letter-spacing:{v["track_em"]}em;font-weight:{600 if v["size"] >= 31 else 400};white-space:nowrap">{sample}</span></td></tr>')
     rules = [
         ('Times', '<code>09:40</code> · 24-hour, always two digits for the hour in tables', 'Times are what the product says most often; a fixed width keeps columns straight.'),
         ('Dates', 'Thu 5 Nov · Thu 5 Nov 2026 when the year matters', 'Day first, short month, no ordinal.'),
         ('Ranges', '09:00–13:00 · 5–7 Nov', 'En dash, no spaces.'),
-        ('Job codes', '<code>SFR-26-0031</code>', 'Fragment Mono, slashed zero. Organization prefix, year, number.'),
+        ('Item codes', '<code>MAD-26-0144</code>', 'Fragment Mono, slashed zero. The organization’s prefix, year, number.'),
         ('Counts', '3 of 7', 'Words, not a slash: “3/7” reads as a date.'),
-        ('People', 'Salma · Prepare', 'The name before the role or the station.'),
+        ('People', 'Heba · Montage', 'The name before the role or the block.'),
         ('Money', '[PRICE]', 'No price is printed anywhere until pricing exists.'),
     ]
     rr = ''.join(f'<tr><th scope="row">{a}</th><td>{b}</td><td>{c}</td></tr>' for a, b, c in rules)
     voice = ''.join(f'<p class="voice">{t}</p>' for t in (
-        'Ready for Salma.', 'Waiting for the supplier. Reminder at 09:00.',
+        'Ready for Heba.', 'Waiting for the client. Reminder at 09:00.',
         'Draft from Watar. Nothing is sent until you approve.', 'Test run. Nothing was sent.',
-        'Maha approved the quote at 10:12.'))
+        'Nadia approved the piece at 10:12.'))
     spec = f'''<div class="g2">
 <div class="spec white"><p class="specimen" style="font-size:120px;line-height:1;font-weight:600;letter-spacing:-0.02em">Iqaa</p>
 <p style="font-size:25px;line-height:36px">ABCDEFGHIJKLM<wbr>NOPQRSTUVWXYZ<br>abcdefghijklm<wbr>nopqrstuvwxyz<br>0123456789 · Il1| · O0</p>
 <p class="note">Atkinson Hyperlegible Next · 300 to 800 · Braille Institute, OFL</p></div>
-<div class="spec white"><p style="font-family:'Fragment Mono';font-size:49px;line-height:56px;font-feature-settings:'zero' 1">SFR-26-0031</p>
-<p style="font-family:'Fragment Mono';font-size:16px;line-height:24px;font-feature-settings:'zero' 1">09:40 · 3 of 7 · 0123456789<br>POST /hooks/sufra 200 · 412 ms</p>
-<p style="font-size:16px;line-height:24px">Code inside a sentence: job <code>SFR-26-0031</code> is ready for Salma.</p>
+<div class="spec white"><p style="font-family:'Fragment Mono';font-size:49px;line-height:56px;font-feature-settings:'zero' 1">MAD-26-0144</p>
+<p style="font-family:'Fragment Mono';font-size:16px;line-height:24px;font-feature-settings:'zero' 1">09:40 · 3 of 7 · 0123456789<br>POST /hooks/alkhatt 200 · 412 ms</p>
+<p style="font-size:16px;line-height:24px">Code inside a sentence: piece <code>MAD-26-0144</code> is ready for Heba.</p>
 <p class="note">Fragment Mono · times, codes, run logs only</p></div>
 </div>'''
-    tr = '''<div class="spec white"><p style="font-size:25px;line-height:36px">Sipariş hazır · İş akışı · Değişiklik · Gönder · Çalıştır · Güncelle</p>
-<p style="font-size:16px;line-height:24px">Salma için hazır. Taslak Watar’dan: siz onaylayana kadar hiçbir şey gönderilmez.</p>
+    tr = '''<div class="spec white"><p style="font-size:25px;line-height:36px">İçerik hazır · İş akışı · Değişiklik · Gönder · Çalıştır · Güncelle</p>
+<p style="font-size:16px;line-height:24px">Heba için hazır. Taslak Watar’dan: siz onaylayana kadar hiçbir şey gönderilmez.</p>
 <p class="note">Turkish is set from the same files: dotted and dotless I, Ş, Ğ, Ç, Ö, Ü.</p></div>'''
     ar = '''<div class="prose"><p>Arabic is not set in this round. When it is, the partner is chosen the way Atkinson was: on real product text, side by side, measured.</p>
 <ul><li>Shortlist: Alexandria, Readex Pro, Vazirmatn, Rubik, Noto Sans Arabic.</li>
@@ -214,14 +214,33 @@ ICONS = {
     'Invite': '<circle cx="9.5" cy="8.5" r="3.5"/><path d="M3 20c.8-3.7 3.3-5.5 6.5-5.5 1.6 0 3 .4 4.1 1.2M18 12.5v6M15 15.5h6"/>',
     'Image': '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.75"/><path d="M3.5 17.5l5-5 4 4M14 15l2.5-2.5 4 4"/>',
     'Mark': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M7 15h1.8c2 0 3.6-1.6 3.6-3.6 0-1.6-1.2-2.4-2-2.4-1.2 0-1.8 1-1.6 2.4.4 2.4 2 3.6 4.8 3.6H17"/>',
+    # the digital production screens (the owner's 22): Home, My work, the block's queue and the item page
+    'Home': '<path d="M4 10.5L12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/><path d="M9.5 20.5v-5.5h5v5.5"/>',
+    'My work': '<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9l1.5 1.5L12.5 7.5M8 15.5h8M14.5 9.5H16"/>',
+    'Reports': '<path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="5" width="3" height="12" rx="1"/><rect x="15.5" y="13.5" width="3" height="3.5" rx="1"/>',
+    'Archive': '<rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V9M10 13h4"/>',
+    'Notifications': '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    'My space': '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="10" r="3"/><path d="M7.2 17.8c.8-2.2 2.6-3.3 4.8-3.3s4 1.1 4.8 3.3"/>',
+    'Files': '<path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2.5h8.5A1.5 1.5 0 0 1 21 10v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/>',
+    'Templates': '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9h17M9.5 9v11.5"/>',
+    'Repository': '<circle cx="6.5" cy="5.5" r="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="6.5" r="2"/><path d="M6.5 7.5v9M17.5 8.5c0 4.5-4 5.5-9.5 8.5"/>',
+    'Release': '<path d="M3.5 12.5V5A1.5 1.5 0 0 1 5 3.5h7.5l8 8a1.5 1.5 0 0 1 0 2.1l-6.9 6.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.5"/>',
+    'Environment': '<rect x="3.5" y="4" width="17" height="7" rx="2"/><rect x="3.5" y="13" width="17" height="7" rx="2"/><circle cx="7.5" cy="7.5" r="1"/><circle cx="7.5" cy="16.5" r="1"/>',
+    'Upload': '<path d="M12 15V4.5M7.5 9L12 4.5 16.5 9M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/>',
+    'Video': '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.3v5.4l4.6-2.7z"/>',
+    'Take': '<path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M5 19.5h14"/>',
+    'More': '<circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/>',
+    'Sources': '<path d="M5 18.5a1.5 1.5 0 1 0 0-.01M4 11a9 9 0 0 1 9 9M4 4.5A15.5 15.5 0 0 1 19.5 20"/>',
 }
 GROUPS = [
-    ('Navigation', ['Overview', 'Today', 'Inbox', 'Line', 'Orders', 'Clients', 'Settings', 'Ask Watar']),
+    ('Navigation', ['Home', 'My work', 'Line', 'Templates', 'Reports', 'Sources', 'Settings', 'Ask Watar']),
     ('Steps', ['Send', 'Wait', 'Remind', 'Condition', 'Create', 'Move job', 'Task', 'Webhook', 'HTTP']),
-    ('Actions and states', ['Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late', 'Search', 'Switch', 'Sign out', 'History', 'Date', 'Done', 'Discard']),
-    ('People and contact', ['People', 'Contact', 'Company', 'Phone', 'Email', 'Place', 'Link', 'Message']),
+    ('Actions and states', ['Overview', 'Inbox', 'Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late', 'Search', 'Switch', 'Sign out', 'History', 'Date', 'Done', 'Discard']),
+    ('People and contact', ['People', 'Clients', 'Contact', 'Company', 'Phone', 'Email', 'Place', 'Link', 'Message']),
     ('Asking Watar', ['Ask', 'New conversation']),
     ('Settings', ['Billing', 'Invite', 'Image', 'Mark', 'Language', 'Preview']),
+    ('Digital production', ['Archive', 'Notifications', 'My space', 'Files', 'Video',
+                            'Repository', 'Release', 'Environment', 'Upload', 'Take', 'More']),
 ]
 
 
@@ -244,7 +263,7 @@ def icons():
 <dt>Stroke</dt><dd>1.5 px: the stem of Atkinson Regular at 16 px ({T.stem_em() * 16:.2f} px), rounded to a quarter pixel. An icon is as heavy as the label beside it.</dd>
 <dt>Ends and joins</dt><dd>Round. Corners 2–3 px; curves as round as the pen’s.</dd>
 <dt>Sizes</dt><dd>24 in navigation, 20 beside 14–16 px text. Never filled; the one dot is the pause, as in a line.</dd>
-<dt>Never</dt><dd>Gears, plugs, lightning, nodes and wires, sparkles. Settings is sliders; Watar is its waiting arch; a station is a ring only on the map, as in the Line screen.</dd></dl></div>'''
+<dt>Never</dt><dd>Gears, plugs, lightning, nodes and wires, sparkles. Settings is sliders; Watar is its waiting arch; a station is a ring only on the map, as on the canvas.</dd></dl></div>'''
     return (head('Icons', 'Steps, stations and actions', 'One stroke family on a 24 px grid, as heavy as the text it sits beside. The step icons draw the line’s own strokes: a loop is a task for a person, an arch waits, a lifted pen is a pause.')
             + sec('Construction', 'Grid and stroke', grid)
             + out + '</div>')

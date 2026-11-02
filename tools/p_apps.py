@@ -27,7 +27,7 @@ def labelled(key, pal='light'):
 
 
 def fold(key, pal='light'):
-    return brand.avatar_svg([[s[0] for s in b['steps']] for b in LINES[key]['blocks']], 100, LINES[key]['org'] + ' mark', name=LINES[key]['org'])
+    return brand.avatar_svg([[s[0] for s in b['steps']] for b in LINES[key]['blocks']], 100, LINES[key]['org'] + ' mark', name=LINES[key]['mark'])
 
 
 def lock(pal='light'):
@@ -70,6 +70,8 @@ def wrapped(key, rows=2, pal='light', names=True, cls='wrapped'):
                 x += widths[i] + brand.HANDOFF
             out += ''.join(f'<text x="{x0 + sx:.1f}" y="{y + brand.BOT + 9 + (j % 2) * 10}" font-size="8" fill="{label}" '
                            f'font-family="Atkinson Hyperlegible Next, sans-serif">{esc(L["blocks"][i]["name"])}</text>' for j, (i, sx) in enumerate(zip(g, starts)))
+            # a last name longer than its steps ("Campaign launch") widens the drawing, at about 0.56 em a character
+            wmax = max(wmax, *(x0 + sx + len(L['blocks'][i]['name']) * 8 * 0.56 for i, sx in zip(g, starts)))
         wmax = max(wmax, x0 + w + (lead if ri < len(groups) - 1 else 0))
     h = len(groups) * row_h - gap
     return (f'<svg class="{cls}" viewBox="{-brand.W} 0 {wmax + 2 * brand.W:.1f} {h:.1f}" role="img" '
@@ -82,44 +84,44 @@ def counts(key):
 
 
 def applications():
-    from p_core import hero_line
-    st, bt, pp = counts('catering')
+    from p_core import hero_count, hero_line
+    st, bt, pp = counts('media')
     web = art(1440, 900, f"""<div class="w-nav"><div class="w-lock">{lock()}</div><span>How it works</span><span>Templates</span><span>Watar</span><span class="w-sign">Sign in</span><span class="b-p">Start an organization</span></div>
 <div class="w-hero"><h2>Work, in time.</h2><p>One line for every job in your organization: people and automatic steps, in order, so nothing falls between two hands.</p>
 <div class="w-cta"><span class="b-p">See a line</span><span class="b-s">Templates</span></div></div>
 <div class="w-line">{hero_line()}</div>
-<div class="w-shot"><span class="w-bar"><code>sufra.iqaa.app/today</code></span><img src="assets/screens/today-d.webp" alt="" loading="lazy" decoding="async"></div>""", 'web', 'Website · desktop')
+<div class="w-shot"><span class="w-bar"><code>alkhatt.iqaa.co/my-work</code></span><img src="assets/screens/work-d.webp" alt="" loading="lazy" decoding="async"></div>""", 'web', 'Website · desktop')
     mob = art(390, 844, f"""<div class="m-nav"><div class="m-lock">{lock()}</div><span class="m-menu">Menu</span></div>
 <h2>Work, in time.</h2><p>One line for every job: people and automatic steps, in order, so nothing falls between two hands.</p>
 <span class="b-p">See a line</span>
-<div class="m-sig">{wrapped('catering', 2)}<p>Sufra’s line: {bt} steps, {pp} for people.</p></div>
-<div class="m-shot"><img src="assets/screens/today-m.webp" alt="" loading="lazy" decoding="async"></div>""", 'mob', 'Website · phone')
+<div class="m-sig">{wrapped('media', 2)}<p>Al-Khatt Media’s line: {bt} steps, {pp} for people.</p></div>
+<div class="m-shot"><img src="assets/screens/work-m.webp" alt="" loading="lazy" decoding="async"></div>""", 'mob', 'Website · phone')
     og1 = art(1200, 630, f"""<div class="og-lock">{lock()}</div><h2>Work, in time.</h2><div class="og-sig">{hero_line()}</div>""", 'og', 'Open Graph · home')
-    og2 = art(1200, 630, f"""<div class="og2-t"><div><p class="og-k">Template</p><h2>Catering</h2><p>{st} stations · {bt} steps · {pp} for people</p></div><div class="og2-tile">{fold('catering')}</div></div>
-<div class="og2-sig">{wrapped('catering', 1)}</div><div class="og-lock sm">{lock()}</div>""", 'og2', 'Open Graph · template page')
+    og2 = art(1200, 630, f"""<div class="og2-t"><div><p class="og-k">Template</p><h2>Media and production</h2><p>{st} stations · {bt} steps · {pp} for people</p></div><div class="og2-tile">{fold('media')}</div></div>
+<div class="og2-sig">{wrapped('media', 1)}</div><div class="og-lock sm">{lock()}</div>""", 'og2', 'Open Graph · template page')
     posts = ''
-    heads = {'catering': 'A kitchen’s order waits twice for a person.', 'software': 'A feature request is mostly people.', 'video': 'A video project waits on its client.'}
-    for key in ('catering', 'software', 'video'):
+    heads = {'media': 'A piece waits four times for a person.', 'software': 'A feature is mostly people, and ships by itself.', 'agency': 'A campaign waits on its client.'}
+    for key in ('media', 'software', 'agency'):
         s_, b_, p_ = counts(key)
         L = LINES[key]
         posts += art(1080, 1350, f"""<div class="p-top"><span class="p-tile">{fold(key)}</span><span><b>{esc(L["org"])}</b> · {esc(L["template"])}</span></div>
 <h2>{heads[key]}</h2><div class="p-sig">{wrapped(key, 2)}</div>
 <div class="p-foot"><p>{s_} stations · {b_} steps · {p_} for people</p><div class="p-lock">{lock()}</div></div>""", 'post', f'Post · {L["template"]}')
     rows = ''
-    for key in ('catering', 'software', 'video'):
+    for key in ('media', 'software', 'agency'):
         L = LINES[key]
-        rows += (f'<div class="s-row"><div class="s-who"><span class="s-tile">{brand.avatar_svg(blocks_of(key), 100, ground="#39374D", name=L["org"])}</span>'
+        rows += (f'<div class="s-row"><div class="s-who"><span class="s-tile">{brand.avatar_svg(blocks_of(key), 100, ground="#39374D", name=L["mark"])}</span>'
                  f'<span><b>{esc(L["org"])}</b> {esc(L["template"])}</span></div>{wrapped(key, 1, "dark")}</div>')
     story = art(1080, 1920, f"""<div class="s-lock">{lock('dark')}</div><h2>Every line signs its own name.</h2><div class="s-rows">{rows}</div><p class="s-url">iqaa.app</p>""", 'story', 'Story')
     li = art(1584, 396, f"""<div class="li-t"><h2>Work, in time.</h2><p>iqaa.app</p></div><div class="li-sig">{hero_line()}</div>""", 'li', 'LinkedIn banner', ' · bottom left kept clear for the profile photo')
-    d1 = art(1920, 1080, f"""<div class="d-lock">{lock('dark')}</div><div><h2>Work, in time.</h2><p>Pilot plan for Sufra · November 2026</p></div><div class="d-line">{hero_line('dark')}</div>""", 'deck d-cover', 'Deck · cover', ' · sample meeting')
-    d2 = art(1920, 1080, f"""<p class="d-n">02</p><h2>The line</h2><div class="d-rule">{wrapped('catering', 1, names=False)}</div>""", 'deck d-div', 'Deck · section')
-    d3 = art(1920, 1080, f"""<p class="d-k">The line</p><h2>Work fails between hands, not inside them.</h2><p>The order nobody picked up. The message sent before anyone checked it. The approval that waited a week. Iqaa holds every job on one line and hands it on at the right moment.</p><div class="d-sig">{labelled('catering')}</div>""", 'deck d-body', 'Deck · content')
+    d1 = art(1920, 1080, f"""<div class="d-lock">{lock('dark')}</div><div><h2>Work, in time.</h2><p>Pilot plan for Al-Khatt Media · November 2026</p></div><div class="d-line">{hero_line('dark')}</div>""", 'deck d-cover', 'Deck · cover', ' · sample meeting')
+    d2 = art(1920, 1080, f"""<p class="d-n">02</p><h2>The line</h2><div class="d-rule">{wrapped('media', 1, names=False)}</div>""", 'deck d-div', 'Deck · section')
+    d3 = art(1920, 1080, f"""<p class="d-k">The line</p><h2>Work fails between hands, not inside them.</h2><p>The piece nobody picked up. The post published before anyone checked it. The approval that waited a week. Iqaa holds every job on one line and hands it on at the right moment.</p><div class="d-sig">{labelled('media')}</div>""", 'deck d-body', 'Deck · content')
     cols = ''
-    for b in LINES['catering']['blocks']:
+    for b in LINES['media']['blocks']:
         steps = ''.join(f'<li>{brand.glyph_svg(s[0], "light", 14)}<span>{esc(s[1])}</span></li>' for s in b['steps'])
         cols += f'<div class="dg-c"><b>{esc(b["name"])}</b><ul>{steps}</ul></div>'
-    d4 = art(1920, 1080, f"""<p class="d-k">Catering · an order</p><h2>Seven stations, sixteen steps</h2><div class="dg">{cols}</div>""", 'deck d-dia', 'Deck · diagram')
+    d4 = art(1920, 1080, f"""<p class="d-k">{LINES['media']['template']} · {LINES['media']['job']}</p><h2>{hero_count().capitalize().replace(' and ', ', ')}</h2><div class="dg">{cols}</div>""", 'deck d-dia', 'Deck · diagram')
     card = art(85, 55, f"""<div class="c-lock">{lock()}</div><div class="c-t"><b>Name Surname</b><span>Product lead</span></div><div class="c-c"><span>name@iqaa.app</span><span>iqaa.app</span></div>""", 'card', 'Business card · front', ' mm · sample name')
     cardb = art(85, 55, f"""<div class="cb">{inline(brand.symbol_svg('dark'))}</div>""", 'card cardb', 'Business card · back', ' mm')
     # the letterhead's foot: Iqaa's own stroke, and the pen runs on along the page
@@ -127,12 +129,12 @@ def applications():
     foot = (f'<svg class="lh-pen" viewBox="-6 -36 640 44" preserveAspectRatio="xMinYMid meet" aria-hidden="true">{mk}'
             f'<path d="M{mw} -16c4 -6 10 -3 10 4c0 7 6 12 16 12H634" fill="none" stroke="{INK}" stroke-width="{brand.W}" stroke-linecap="round"/></svg>')
     letter = art(210, 297, f"""<div class="lh-top"><div class="lh-lock">{lock()}</div><p>iqaa.app</p></div>
-<div class="lh-b"><p>1 November 2026</p><p>Hala<br>Sufra</p><p>Dear Hala,</p><p>Thank you for running Sufra’s first order through Iqaa. Your line is published as version 3: seven stations, a way back for a client’s change, and a branch that sends orders over 30 people to the wholesaler.</p><p>Every job your team takes from today walks that line. Running jobs keep the version they started on, so you can keep improving it without stopping the kitchen.</p><p>The Iqaa team</p></div>
+<div class="lh-b"><p>1 November 2026</p><p>Khaled Mansour<br>Al-Khatt Media</p><p>Dear Khaled,</p><p>Thank you for running Al-Khatt Media’s first piece through Iqaa. Your content production line is published as version 4: seven blocks, a way back from each review, and Design working beside Montage.</p><p>Every piece your team takes from today walks that line. Live pieces keep the version they started on, so you can keep improving it without stopping the work.</p><p>The Iqaa team</p></div>
 <div class="lh-f">{foot}</div>""", 'letter', 'Letterhead · A4', ' mm · sample letter')
-    report = art(210, 297, f"""<div class="rp-top"><p><span class="rp-tile">{fold('catering')}</span>Sufra · Catering</p><div class="rp-lock">{lock()}</div></div>
-<div class="rp-sig">{wrapped('catering', 2)}</div>
+    report = art(210, 297, f"""<div class="rp-top"><p><span class="rp-tile">{fold('media')}</span>Al-Khatt Media · Media and production</p><div class="rp-lock">{lock()}</div></div>
+<div class="rp-sig">{wrapped('media', 2)}</div>
 <h2>Weekly run report</h2><p class="rp-d">26 Oct – 1 Nov 2026</p><p class="rp-n">Sample cover. The figures inside come from the run log.</p>""", 'report', 'Report cover · A4', ' mm')
-    roll = art(850, 2000, f"""<div class="r-lock">{lock('dark')}</div><h2>Work, in time.</h2><div class="r-sig">{wrapped('catering', 3, 'dark')}</div><p>One line for every job: people and automatic steps, in order. This one is Sufra’s.</p><p class="r-url">iqaa.app</p>""", 'roll', 'Roll-up banner', ' mm')
+    roll = art(850, 2000, f"""<div class="r-lock">{lock('dark')}</div><h2>Work, in time.</h2><div class="r-sig">{wrapped('media', 3, 'dark')}</div><p>One line for every job: people and automatic steps, in order. This one is Al-Khatt Media’s.</p><p class="r-url">iqaa.app</p>""", 'roll', 'Roll-up banner', ' mm')
     sigmail = f"""<div class="esig"><p><b>Name Surname</b><br><span>Product lead · Iqaa</span></p><p class="esig-l">{inline(brand.lockup_svg('light')).replace('<svg ', '<svg height="20" ', 1)}</p><p><a href="#" tabindex="-1">iqaa.app</a></p></div>"""
     body = (head('Applications', 'The identity at work', 'Every surface is built from the demo world and the real template lines, and every one carries a whole line, not just a mark. Names on stationery are samples; a price stays in brackets until it exists.')
             + sec('Website', 'Hero, desktop and phone', f'<div class="g-web">{web}{mob}</div>', 'Headline in three lines at most. The pen writes Iqaa’s mark on into a real line, and the product rises under it.')
@@ -163,11 +165,11 @@ TEN = [
 def guidelines():
     ten = ''.join(f'<li><b>{a}</b><span>{b}</span></li>' for a, b in TEN)
     dd = f'''<div class="g2">
-<div class="pair"><div class="spec white"><div class="mock-row"><span>Approve the quote</span><span class="b-p">Approve</span></div><div class="mock-row"><span>Auto-remind clients</span><span class="tog on-ink" aria-hidden="true"><i></i></span></div></div><p class="fcap"><b>Do</b><span>Violet for the person’s action; ink for the automation switch.</span></p></div>
-<div class="pair"><div class="spec white"><div class="mock-row"><span>Approve the quote</span><span class="b-p">Approve</span></div><div class="mock-row"><span>Auto-remind clients</span><span class="tog on-violet" aria-hidden="true"><i></i></span></div></div><p class="fcap"><b class="fail">Don’t</b><span>A violet switch says a person did it. A machine does.</span></p></div>
-<div class="pair"><div class="spec white"><div class="mock-row lead">{brand.glyph_svg('failed', 'light', 22)}<span>Send the quote link · failed at 10:02</span></div><div class="mock-row lead">{brand.glyph_svg('held', 'light', 22)}<span>Waiting for Maha</span></div></div><p class="fcap"><b>Do</b><span>Shape and words together.</span></p></div>
-<div class="pair"><div class="spec white"><div class="mock-row"><span class="dotc" style="background:{T.RED}"></span><span>Send the quote link</span></div><div class="mock-row"><span class="dotc" style="background:{V}"></span><span>Client approval</span></div></div><p class="fcap"><b class="fail">Don’t</b><span>Coloured dots alone fail in greyscale and for colour-blind eyes.</span></p></div>
-<div class="pair"><div class="spec white"><div class="beside">{brand.avatar_svg([[x[0] for x in b['steps']] for b in LINES['catering']['blocks']], 48, name='Sufra')}<div><p><b>Sufra</b> · Catering</p>{brand.line_svg([[x[0] for x in b['steps']] for b in LINES['catering']['blocks']], k=0.62)}</div></div></div><p class="fcap"><b>Do</b><span>A signature beside the line it belongs to.</span></p></div>
+<div class="pair"><div class="spec white"><div class="mock-row"><span>Approve the script</span><span class="b-p">Approve</span></div><div class="mock-row"><span>Auto-remind clients</span><span class="tog on-ink" aria-hidden="true"><i></i></span></div></div><p class="fcap"><b>Do</b><span>Violet for the person’s action; ink for the automation switch.</span></p></div>
+<div class="pair"><div class="spec white"><div class="mock-row"><span>Approve the script</span><span class="b-p">Approve</span></div><div class="mock-row"><span>Auto-remind clients</span><span class="tog on-violet" aria-hidden="true"><i></i></span></div></div><p class="fcap"><b class="fail">Don’t</b><span>A violet switch says a person did it. A machine does.</span></p></div>
+<div class="pair"><div class="spec white"><div class="mock-row lead">{brand.glyph_svg('failed', 'light', 22)}<span>Publish on Instagram · failed at 10:02</span></div><div class="mock-row lead">{brand.glyph_svg('held', 'light', 22)}<span>Waiting for Omar</span></div></div><p class="fcap"><b>Do</b><span>Shape and words together.</span></p></div>
+<div class="pair"><div class="spec white"><div class="mock-row"><span class="dotc" style="background:{T.RED}"></span><span>Publish on Instagram</span></div><div class="mock-row"><span class="dotc" style="background:{V}"></span><span>Client approval</span></div></div><p class="fcap"><b class="fail">Don’t</b><span>Coloured dots alone fail in greyscale and for colour-blind eyes.</span></p></div>
+<div class="pair"><div class="spec white"><div class="beside">{brand.avatar_svg([[x[0] for x in b['steps']] for b in LINES['media']['blocks']], 48, name='K')}<div><p><b>Al-Khatt Media</b> · Media and production</p>{brand.line_svg([[x[0] for x in b['steps']] for b in LINES['media']['blocks']], k=0.62)}</div></div></div><p class="fcap"><b>Do</b><span>A signature beside the line it belongs to.</span></p></div>
 <div class="pair"><div class="spec white wall"><svg class="wall-bg" aria-hidden="true"><defs><pattern id="sigwall" width="150" height="44" patternUnits="userSpaceOnUse"><g transform="translate(4 32) scale(0.62)">{brand.line_body([['struck', 'run'], ['held', 'struck', 'run']], 1)[0]}</g></pattern></defs><rect width="100%" height="100%" fill="url(#sigwall)"/></svg><p>Work, in time.</p></div><p class="fcap"><b class="fail">Don’t</b><span>A signature as a pattern behind text.</span></p></div>
 </div>'''
     files = sorted(os.listdir(os.path.join(ROOT, 'assets', 'brand')))

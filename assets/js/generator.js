@@ -14,7 +14,8 @@
 
   function load(key) {
     const L = window.IQAA.lines[key];
-    state = { org: L.org.startsWith('A ') ? L.template : L.org, blocks: L.blocks.map((b) => ({ name: b.name, steps: b.steps.map((s) => s[0]) })) };
+    // a demo organization keeps its own initial and address (Al-Khatt Media signs K at alkhatt.iqaa.co) until its name is edited
+    state = { org: L.org, mark: L.mark, address: L.address, blocks: L.blocks.map((b) => ({ name: b.name, steps: b.steps.map((s) => s[0]) })) };
     $('[data-org]').value = state.org;
     root.querySelectorAll('[data-tpl]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tpl === key)));
     renderEditor();
@@ -37,19 +38,21 @@
 
   const kinds = () => state.blocks.map((b) => b.steps);
   const slug = (s) => (s.toLowerCase().replace(/[^a-z0-9]+/g, '') || 'your-team');
+  const address = () => state.address || `${slug(state.org)}.iqaa.co`;
+  const initial = () => state.mark || state.org || 'Your team';
 
   function renderOut() {
     $('[data-sig]').innerHTML = IQ.line(kinds(), { names: state.blocks.map((b) => b.name) });
     const org = esc(state.org || 'Your team');
     $('[data-client]').innerHTML = `
-<div class="client-top">${IQ.avatar(kinds(), { size: 32, name: state.org || 'Your team' })}<b>${org}</b></div>
-<p class="client-h">Quote for Lunch for Nakhla</p>
-<p class="note">${slug(state.org)}.iqaa.app/r/…</p>
+<div class="client-top">${IQ.avatar(kinds(), { size: 32, name: initial() })}<b>${org}</b></div>
+<p class="client-h">Ready for your approval</p>
+<p class="note">${address()}/r/…</p>
 <p class="runs">${IQ.line([['run', 'struck', 'flourish']], { k: 0.4 })}<span>Runs on Iqaa</span></p>`;
     $('[data-login]').innerHTML = `
-<div class="login-mark">${IQ.avatar(kinds(), { size: 96, ground: '#232138', name: state.org || 'Your team' })}</div>
+<div class="login-mark">${IQ.avatar(kinds(), { size: 96, ground: '#232138', name: initial() })}</div>
 <p class="login-h">Sign in to ${org}</p>
-<p class="note" style="color:var(--iqaa-n300)">${slug(state.org)}.iqaa.app</p>`;
+<p class="note" style="color:var(--iqaa-n300)">${address()}</p>`;
   }
 
   // the pen writes the line again: every stroke a quarter beat, an eighth of a beat apart
@@ -90,7 +93,7 @@
   root.addEventListener('input', (e) => {
     const t = e.target;
     if (t.dataset.name != null) { state.blocks[+t.dataset.name].name = t.value; renderOut(); }
-    if (t.hasAttribute('data-org')) { state.org = t.value; renderOut(); }
+    if (t.hasAttribute('data-org')) { Object.assign(state, { org: t.value, mark: null, address: null }); renderOut(); }
   });
-  load('catering');
+  load('media');
 })();

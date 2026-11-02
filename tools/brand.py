@@ -121,6 +121,9 @@ def line_svg(blocks, k=1.0, pal='light', test=False, cls='sig', labels=None, lab
         body += ''.join(f'<text x="{f(starts[i] * k)}" y="{f((BOT + 13 + (i % 2) * 13) * k)}" font-size="{f(11 * k)}" fill="{col}" '
                         f'font-family="Atkinson Hyperlegible Next, sans-serif">{n}</text>' for i, n in enumerate(labels))
         bot = (BOT + 31) * k
+        # the last names may run past the pen's end ("Automatic release"): the drawing widens to hold them, at about
+        # 0.56 em a character
+        w = max(w, *(starts[i] + len(n) * 11 * 0.56 for i, n in enumerate(labels)))
     pad = W * k
     return (f'<svg class="{cls}" viewBox="{f(-pad)} {f(top)} {f(w * k + 2 * pad)} {f(bot - top)}" width="{f(w * k + 2 * pad)}" '
             f'height="{f(bot - top)}" role="img" aria-label="{describe(blocks)}">{body}</svg>')

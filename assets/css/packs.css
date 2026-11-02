@@ -1,0 +1,124 @@
+/* Settings: packs and integrations. The settings tabs, the packs and the integrations as lists ruled by hairlines, and
+   beside them the identity and the month's usage in two quiet boxes (as My work's side). Built on tokens.css,
+   brand.css, auth.css and app.css (the frame, .btn, the organization's mark); sizes are quarter-beat multiples. Ink is
+   what runs by itself (an integration that works, a pack that is on); red is only a permission that ran out; the
+   dashed grey pen runs down the usage, whose numbers are an example. */
+main.pk { background: #fff; }
+.pk-page { container: pk / inline-size; padding-block-end: var(--s-12); }
+
+/* ---------- head and tabs ---------- */
+.pk-head { padding-block: var(--s-8) var(--s-4); }
+.pk-eye { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pk-head h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.pk-tabs ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; column-gap: var(--s-1); border-block-end: 1px solid var(--iqaa-n200); }
+.pk-tab { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 var(--s-3); font-size: 14px; line-height: 20px; font-weight: 600; color: var(--iqaa-ink); }
+.pk-tab[aria-current]::after { content: ''; position: absolute; inset-inline: var(--s-3); inset-block-end: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--iqaa-ink); }
+/* the tabs still to come: named, so the settings are whole, and not offered */
+.pk-tab[aria-disabled] { font-weight: 400; color: var(--iqaa-n600); cursor: default; }
+.pk-tab em, .pk-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+
+/* what was just done, with its Undo */
+.pk-live { position: sticky; inset-block-start: var(--s-2); z-index: 5; }
+.pk-note { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-start: var(--s-4); padding: var(--s-1) var(--s-4); border: 1px solid var(--iqaa-n200);
+  border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.pk-note .link { margin-inline-start: auto; }
+
+/* what the prototype does not do yet: the system's disabled look, still in reach of the keyboard, said to be coming */
+.pk-page .btn svg { flex: none; }
+.pk-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+.pk-page .btn[aria-disabled='true']:hover { border-color: var(--iqaa-n100); }
+body.app .pk-page .btn[aria-disabled='true']:active { transform: none; }
+.pk-page .btn:focus-visible, .pk-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* ---------- the rule of packs, then the lists beside the identity and the usage ---------- */
+.pk-intro { padding-block: var(--s-6) var(--s-2); }
+.pk-intro h2 { font-size: var(--t-md); line-height: 28px; font-weight: 700; }
+.pk-intro p { margin-block-start: var(--s-1); max-width: 72ch; font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.pk-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: var(--s-8); align-items: start; margin-block-start: var(--s-6); }
+.pk-grid > * { min-width: 0; }
+@container pk (max-width: 980px) { .pk-grid { grid-template-columns: minmax(0, 1fr); } }
+.pk-main .pk-sec + .pk-sec { margin-block-start: var(--s-8); }
+.pk-side { display: flex; flex-direction: column; gap: var(--s-4); }
+.pk-side .pk-sec { padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); border: 1px solid var(--iqaa-n200); border-radius: 16px; }
+.pk-sh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); }
+.pk-main .pk-sh { padding-block-end: var(--s-2); border-block-end: 1px solid var(--iqaa-n200); }
+.pk-sh h3 { display: flex; align-items: center; gap: var(--s-2); font-size: 16px; line-height: 24px; font-weight: 700; }
+.pk-sh h3 svg { flex: none; color: var(--iqaa-n600); }
+.pk-n { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
+.pk-n:empty { display: none; }
+.pk-foot { margin-block-start: var(--s-3); max-width: 80ch; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+
+/* ---------- the packs ---------- */
+.pk-packs, .pk-ints { list-style: none; margin: 0; padding: 0; }
+.pk-pack { display: flex; flex-direction: column; gap: var(--s-3); padding-block: var(--s-5, 20px); border-block-end: 1px solid var(--iqaa-n100); }
+.pk-ph { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); }
+.pk-ph h4 { font-size: 16px; line-height: 24px; font-weight: 700; }
+.pk-on { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 700; color: var(--iqaa-ink); }
+.pk-on svg { flex: none; }
+.pk-adds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--s-2) var(--s-6); }
+.pk-adds li { display: flex; align-items: flex-start; gap: var(--s-2); min-width: 0; font-size: 14px; line-height: 20px; }
+.pk-adds svg { flex: none; margin-block-start: 1px; color: var(--iqaa-n600); }
+.pk-pack:not(.is-on) .pk-ph h4, .pk-pack:not(.is-on) .pk-adds li { color: var(--iqaa-n700); }
+.pk-facts, .pk-off { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pk-off { max-width: 72ch; }
+
+/* ---------- the integrations ---------- */
+.pk-int { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; grid-template-areas: 'ic t st' '. why why'; align-items: center; gap: var(--s-1) var(--s-4);
+  padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.pk-ic { grid-area: ic; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
+.pk-it { grid-area: t; display: flex; flex-direction: column; min-width: 0; }
+.pk-it b { font-size: 15px; line-height: 20px; }
+.pk-it span { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); overflow-wrap: anywhere; }
+.pk-sa { grid-area: st; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--s-2) var(--s-4); }
+.pk-st { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--iqaa-ink); white-space: nowrap; }
+.pk-st svg { flex: none; }
+.pk-st.bad { font-weight: 700; color: var(--iqaa-red); }
+.pk-why { grid-area: why; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pk-empty { padding-block: var(--s-4); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+/* narrow: a problem's state and its fix move under the name, so neither is squeezed */
+@container pk (max-width: 560px) {
+  .pk-int.is-bad { grid-template-areas: 'ic t' '. st' '. why'; grid-template-columns: 40px minmax(0, 1fr); }
+  .pk-int.is-bad .pk-sa { justify-content: flex-start; }
+}
+
+/* ---------- the identity ---------- */
+.pk-who { display: flex; align-items: center; gap: var(--s-3); margin-block-start: var(--s-4); }
+.pk-mark { width: 48px; height: 48px; }
+.pk-wt { display: flex; flex-direction: column; min-width: 0; }
+.pk-wt b { font-size: 16px; line-height: 22px; }
+.pk-wt span { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.pk-dl { margin: var(--s-4) 0 0; padding-block-start: var(--s-3); border-block-start: 1px solid var(--iqaa-n100); }
+.pk-dl div { display: flex; justify-content: space-between; gap: var(--s-4); font-size: 14px; line-height: 20px; }
+.pk-dl dt { color: var(--iqaa-n700); }
+.pk-dl dd { margin: 0; font-weight: 700; }
+.pk-say { margin-block-start: var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+
+/* ---------- the usage: the dashed grey pen of what is not real yet runs down it ---------- */
+.pk-eg { position: relative; margin-block-start: var(--s-4); padding-inline-start: var(--s-4); }
+.pk-eg::before { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; border-radius: 2px;
+  background: repeating-linear-gradient(var(--iqaa-n500) 0 4.5px, transparent 4.5px 9px); }
+.pk-eg > p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pk-use { display: flex; flex-direction: column; gap: var(--s-4); margin: var(--s-4) 0 0; }
+.pk-use dt { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.pk-use dd { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 0; }
+.pk-un { font-size: 13px; line-height: 24px; color: var(--iqaa-n700); }
+.pk-un b { font-family: 'Fragment Mono', monospace; font-size: 18px; font-weight: 400; color: var(--iqaa-ink); }
+.pk-un.bad b { color: var(--iqaa-red); }
+.pk-bar { position: relative; display: block; height: 6px; border-radius: 3px; background: var(--iqaa-n100); overflow: hidden; }
+.pk-bar i { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 3px; background: var(--iqaa-ink); }
+.pk-bar.bad i { background: var(--iqaa-red); }
+.pk-use small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+/* ---------- someone who is not the owner ---------- */
+.pk-none { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); max-width: 60ch; padding-block: var(--s-8) var(--s-12); }
+.pk-none p { font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.pk-none b { color: var(--iqaa-ink); }
+
+/* ---------- a phone ---------- */
+@media (max-width: 700px) {
+  .pk-head { padding-block: var(--s-6) var(--s-3); }
+  .pk-tab { padding: 0 var(--s-2); }
+  .pk-tab[aria-current]::after { inset-inline: var(--s-2); }
+  .pk-side .pk-sec { padding: var(--s-4); }
+}
+@media (pointer: coarse) { .pk-page .btn.small { min-height: 44px; } }

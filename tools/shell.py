@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brand  # noqa: E402
 import tokens as T  # noqa: E402
 
-V = 121
+V = 136
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 esc = lambda s: html.escape(str(s), quote=True)
 
@@ -90,7 +90,7 @@ def sigline(key, k=1.0, pal='light', test=False, labels=True):
 
 def legend(pal='light'):
     items = [
-        ('run', 'Runs', 'A step that runs by itself: a message, a reminder, an invoice. A straight stroke, ink.'),
+        ('run', 'Runs', 'A step that runs by itself: a message, a reminder, a release. A straight stroke, ink.'),
         ('held', 'Waits', 'The line waits for a person: an approval, a review, a Watar draft. An open arch, violet.'),
         ('struck', 'By hand', 'A person does the work. A loop of the hand, violet.'),
         ('rest', 'Pause', 'A timed wait. The pen lifts and leaves a dot, ink.'),

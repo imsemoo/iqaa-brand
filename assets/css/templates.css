@@ -1,0 +1,176 @@
+/* Templates: the list beside the template selected, as lists ruled by hairlines. The selected template's preview sits
+   on a quiet ground so its white slide reads as the output it would be; the slide's type is sized to the slide itself
+   (container units), so it reads the same at every width. Built on tokens.css, brand.css, auth.css and app.css (the
+   frame, .btn, .cf-in); sizes are quarter-beat multiples. Ink is what is approved and runs; the dashed grey pen is a
+   draft; violet is a person's decision (Approve in your name); no red: nothing here is a problem. */
+main.tm { background: #fff; }
+.tm-page { container: tm / inline-size; padding-block-end: var(--s-12); }
+
+/* ---------- head ---------- */
+.tm-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.tm-eye { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.tm-sum { margin-block-start: var(--s-1); max-width: 64ch; font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.tm-acts { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); }
+
+/* what the prototype does not do yet: the system's disabled look, still in reach of the keyboard, said to be coming */
+.tm-page .btn svg { flex: none; }
+.tm-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.tm-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+.tm-page .btn[aria-disabled='true']:hover { border-color: var(--iqaa-n100); }
+body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
+.tm-page .btn:focus-visible, .tm-page .link:focus-visible, .tm-page summary:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* what was just done, with its Undo */
+.tm-live { position: sticky; inset-block-start: var(--s-2); z-index: 5; }
+.tm-note { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-end: var(--s-4); padding: var(--s-1) var(--s-4); border: 1px solid var(--iqaa-n200);
+  border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.tm-note .link { margin-inline-start: auto; }
+
+/* ---------- the list beside the template; one column when the sheet is narrow ---------- */
+.tm-grid { display: grid; grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); gap: var(--s-8); align-items: start; }
+.tm-grid > * { min-width: 0; }
+@container tm (max-width: 980px) { .tm-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); } }
+.tm-list h2 { display: flex; align-items: center; gap: var(--s-2); padding-block-end: var(--s-2); border-block-end: 1px solid var(--iqaa-n200); font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-n700); }
+.tm-list h2 span { font-family: 'Fragment Mono', monospace; font-weight: 400; }
+.tm-list ul { list-style: none; margin: 0; padding: var(--s-2) 0 0; display: flex; flex-direction: column; gap: 2px; }
+.tm-row { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; grid-template-areas: 'ic t s' 'ic n n'; align-items: center; gap: 2px var(--s-3);
+  padding: var(--s-3); border-radius: 12px; color: inherit; text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .tm-row:not([aria-current]):hover { background: var(--iqaa-n50); } .tm-row:hover .tm-rt b { text-decoration: underline; text-underline-offset: 3px; } }
+.tm-row:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+/* the template shown: held in the grey ground, the same way Sources holds the source shown */
+.tm-row[aria-current] { background: var(--iqaa-n100); }
+.tm-ic { grid-area: ic; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
+.tm-row[aria-current] .tm-ic { background: #fff; }
+.tm-rt { grid-area: t; display: flex; flex-direction: column; min-width: 0; }
+.tm-rt b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
+.tm-rt small, .tm-rs small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.tm-rs { grid-area: s; display: flex; flex-direction: column; align-items: flex-end; text-align: end; }
+.tm-next { grid-area: n; display: inline-flex; align-items: center; gap: 6px; margin-block-start: 2px; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+/* a state: approved in ink with its tick; a draft in the dashed grey pen */
+.tm-st { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 700; color: var(--iqaa-ink); white-space: nowrap; }
+.tm-st svg { flex: none; }
+.tm-st.is-draft { color: var(--iqaa-n700); }
+.tm-g { display: inline-block; flex: none; }
+.tm-g svg { display: block; height: 14px; width: auto; overflow: visible; }
+[dir='rtl'] .tm-g svg { transform: scaleX(-1); }
+
+/* ---------- the template selected ---------- */
+.tm-det { container: td / inline-size; }
+.tm-dh { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-3) var(--s-6); padding-block-end: var(--s-4); border-block-end: 1px solid var(--iqaa-n200); }
+.tm-dt { min-width: 0; }
+.tm-dk { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-dk svg { flex: none; color: var(--iqaa-n600); }
+.tm-dh h2 { font-size: var(--t-lg); line-height: var(--lh-lg); letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.tm-dh h2:focus { outline: none; }
+.tm-dh h2 span { font-weight: 400; color: var(--iqaa-n600); }
+.tm-ds { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s-3); margin-block-start: 2px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-act { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); }
+.tm-cf { margin-block-start: var(--s-4); }
+/* a draft's rule, where it applies: the dashed grey pen of a draft down its edge (as Watar's suggestion on Home) */
+.tm-draft { position: relative; margin-block-start: var(--s-4); padding-inline-start: var(--s-5, 20px); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-draft::before { content: ''; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; border-radius: 2px;
+  background: repeating-linear-gradient(var(--iqaa-n500) 0 4.5px, transparent 4.5px 9px); }
+.tm-draft b { color: var(--iqaa-ink); }
+.tm-draft p + p { margin-block-start: 2px; }
+
+/* the preview beside the slots, the identity and the versions; one column when the panel is narrow */
+.tm-body { display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: var(--s-8); align-items: start; margin-block-start: var(--s-6); }
+.tm-body > * { min-width: 0; }
+@container td (max-width: 720px) { .tm-body { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); } }
+
+/* ---------- the preview ---------- */
+.tm-prev { margin: 0; }
+.tm-prev h3, .tm-sec h3 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
+.tm-prev h3 svg, .tm-sec h3 svg { flex: none; color: var(--iqaa-n600); }
+.tm-pt { margin-block-start: var(--s-1); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-pt b { color: var(--iqaa-ink); }
+.tm-pm { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.tm-pm code { font-family: 'Fragment Mono', monospace; font-size: 12px; }
+/* the slide stands on the quiet ground, so the white of the output is seen as its own */
+.tm-stage { display: grid; place-items: center; margin-block-start: var(--s-3); padding: var(--s-6) var(--s-4); border-radius: 16px; background: var(--iqaa-n50); }
+.tm-pn { margin-block-start: var(--s-2); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); text-align: center; }
+
+/* a slide: its type is a share of its own width (cqi), as the output's would be of 1080 px; its own padding and gap
+   are set in px, since a container's own cqi would measure the panel around it */
+.tm-slide { container-type: inline-size; position: relative; display: flex; flex-direction: column; gap: var(--s-3); width: 100%; max-width: 288px; padding: var(--s-5, 20px);
+  border: 1px solid var(--iqaa-n200); border-radius: 12px; background: #fff; color: var(--iqaa-ink); overflow: hidden; }
+.tm-slide.is-4x5 { aspect-ratio: 4 / 5; }
+.tm-slide.is-1x1 { aspect-ratio: 1; justify-content: center; }
+.tm-slide.is-9x16 { aspect-ratio: 9 / 16; max-width: 240px; }
+.tm-sn { align-self: flex-end; font-family: 'Fragment Mono', monospace; font-size: 4cqi; line-height: 1; color: var(--iqaa-n600); }
+/* the image slot, drawn as the slot it is: what goes there, and that the item has none yet */
+.tm-photo { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5cqi; padding: 4cqi;
+  border: 1px solid var(--iqaa-n200); border-radius: 3cqi; background: var(--iqaa-n50); color: var(--iqaa-n500); text-align: center; }
+.tm-photo b { font-size: 5cqi; line-height: 1.3; color: var(--iqaa-n700); }
+.tm-photo small { font-size: 4.4cqi; line-height: 1.3; color: var(--iqaa-n600); }
+.tm-ttl { font-size: 8cqi; line-height: 1.25; font-weight: 700; text-wrap: balance; }
+.tm-tx { margin-block: auto; font-size: 7cqi; line-height: 1.4; font-weight: 600; text-wrap: pretty; }
+.tm-so { font-size: 3.8cqi; line-height: 1.4; color: var(--iqaa-n700); }
+/* the brand's logo: its word, set in the identity's type */
+.tm-logo { align-self: flex-start; font-size: 4.6cqi; line-height: 1.2; font-weight: 800; color: var(--iqaa-ink); }
+.tm-slide .tm-logo { margin-block-start: auto; }
+.tm-tx ~ .tm-logo, .tm-so ~ .tm-logo { margin-block-start: 0; }
+.tm-logo.is-chip { display: grid; place-items: center; flex: none; min-width: 72px; height: 48px; padding-inline: var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px; font-size: 16px; }
+/* the quote card */
+.tm-qm { font-size: 22cqi; line-height: 0.7; font-weight: 800; color: var(--iqaa-ink); }
+.tm-qt { font-size: 7cqi; line-height: 1.4; font-weight: 600; text-wrap: pretty; }
+.tm-qs { font-size: 4.6cqi; line-height: 1.4; color: var(--iqaa-n700); }
+.tm-slide.is-1x1 .tm-logo { margin-block-start: 3cqi; }
+/* the reel: the video slot in ink, as the review page draws a video, its words over it */
+.tm-slide.is-video { justify-content: space-between; border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: #fff; }
+.tm-op { font-size: 8cqi; line-height: 1.25; font-weight: 700; }
+.tm-clip { display: flex; flex-direction: column; align-items: center; gap: 2cqi; color: var(--iqaa-n400); text-align: center; }
+.tm-clip small { font-size: 6cqi; line-height: 1.35; color: var(--iqaa-n200); }
+.tm-sub { padding: 2.5cqi 3.5cqi; border-radius: 2.5cqi; background: var(--iqaa-n800); font-size: 6cqi; line-height: 1.4; text-wrap: pretty; }
+.tm-len { position: absolute; inset-block-start: 6cqi; inset-inline-end: 6cqi; padding: 0.8cqi 2.4cqi; border-radius: 2cqi; background: var(--iqaa-n800);
+  font-family: 'Fragment Mono', monospace; font-size: 4.4cqi; line-height: 1.3; }
+.tm-op { padding-inline-end: 16cqi; }
+.tm-logo.is-light { margin-block-start: 0; color: #fff; }
+/* the slides, one button each: the number, in a tile of the slide's shape */
+.tm-thumbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; margin-block-start: var(--s-2); }
+.tm-th { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--iqaa-n700); cursor: pointer; }
+.tm-th span { display: grid; place-items: center; width: 26px; height: 32px; border: 1px solid var(--iqaa-n300); border-radius: 5px; background: #fff;
+  font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 1; }
+.tm-th[aria-pressed='true'] span { border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: #fff; }
+@media (hover: hover) and (pointer: fine) { .tm-th:hover span { border-color: var(--iqaa-ink); } }
+.tm-th:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 0; }
+
+/* ---------- the slots, the identity, the versions ---------- */
+.tm-sec + .tm-sec { margin-block-start: var(--s-6); }
+.tm-sec h3 { padding-block-end: var(--s-2); border-block-end: 1px solid var(--iqaa-n200); }
+.tm-c { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n700); }
+.tm-slots, .tm-vers { list-style: none; margin: 0; padding: 0; }
+.tm-slots li, .tm-vers li { display: flex; align-items: flex-start; gap: var(--s-3); padding-block: var(--s-2); border-block-end: 1px solid var(--iqaa-n100); }
+.tm-slots li > svg, .tm-vers li > svg { flex: none; margin-block-start: 1px; color: var(--iqaa-n600); }
+.tm-vers li > svg { color: var(--iqaa-ink); }
+.tm-vers li > .tm-g { margin-block-start: 4px; }
+.tm-slots li > span, .tm-vers li > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.tm-slots b, .tm-vers b { font-size: 14px; line-height: 20px; }
+.tm-slots small, .tm-vers small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.tm-vers q { margin-block-start: 2px; font-size: 13px; line-height: 18px; color: var(--iqaa-ink); }
+.tm-foot { margin-block-start: var(--s-3); max-width: 72ch; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.tm-id { display: flex; align-items: center; gap: var(--s-3); margin-block-start: var(--s-3); }
+.tm-id > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.tm-id b { font-size: 14px; line-height: 20px; }
+.tm-id small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.tm-more summary { display: flex; align-items: center; min-height: 44px; font-size: 13px; line-height: 20px; color: var(--iqaa-ink); text-decoration: underline; text-underline-offset: 0.18em; cursor: pointer; }
+.tm-more summary::-webkit-details-marker { display: none; }
+.tm-more summary::marker { content: ''; }
+
+/* ---------- an organization with no templates yet ---------- */
+.tm-none { display: flex; flex-direction: column; gap: var(--s-1); max-width: 60ch; padding-block: var(--s-6) var(--s-12); font-size: 15px; line-height: 22px; }
+.tm-none p:first-child { display: flex; align-items: center; gap: var(--s-2); }
+.tm-none p:first-child svg { flex: none; color: var(--iqaa-n600); }
+.tm-none p + p { color: var(--iqaa-n700); }
+
+/* ---------- a phone ---------- */
+@media (max-width: 700px) {
+  .tm-head { padding-block: var(--s-6) var(--s-4); }
+  .tm-acts, .tm-acts .btn { width: 100%; }
+  .tm-act { width: 100%; }
+  .tm-act .btn { flex: 1 1 auto; }
+  .tm-stage { padding: var(--s-4) var(--s-3); }
+}
+@media (pointer: coarse) { .tm-page .btn.small { min-height: 44px; } }

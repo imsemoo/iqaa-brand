@@ -1,0 +1,261 @@
+/* Turning a step into automation: the line in the canvas's metro language (lines.css), every block with how it runs
+   in its own strokes, and the selected block's inspector. Built on tokens.css, brand.css, auth.css and app.css (the
+   frame, .btn, .pj, .field, the house dropdown); sizes are quarter-beat multiples. Violet is a person, ink is what the
+   machine does, the dashed grey pen is the draft or a trial, red is a problem only: a block stopped, a rule broken. */
+main.au { background: #fff; }
+.au-page { padding-block-end: var(--s-12); }
+.au-page .btn svg { flex: none; }
+/* what the prototype does not do yet: the system's disabled look, in reach of the keyboard, said to be coming */
+.au-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
+.au-page .btn[aria-disabled='true'] { background: var(--iqaa-n100); border-color: var(--iqaa-n100); color: var(--iqaa-n700); cursor: default; }
+body.app .au-page .btn[aria-disabled='true']:active { transform: none; }
+.au-page .btn:focus-visible, .au-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+/* a block's strokes: as many steps as its mode writes, at the height of the text beside them */
+.au-g { display: block; flex: none; }
+.au-g svg { display: block; height: 18px; width: auto; overflow: visible; }
+
+/* ---------- the head: the organization's lines, this line and its draft, the stop and publishing ---------- */
+.au-head { padding-block: var(--s-6) var(--s-4); }
+.au-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block-start: var(--s-6); }
+.au-ht { min-width: 0; }
+.au-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.au-state { margin-block-start: var(--s-1); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.au-state b { color: var(--iqaa-ink); }
+.au-state .link { padding-block: 0; }
+.au-act { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+.au-act[hidden] { display: none; }
+.au-lede { margin-block-start: var(--s-3); max-width: 76ch; font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.au-stop, .ai-add { position: relative; }
+.au-halt[aria-expanded='true'] { border-color: var(--iqaa-ink); }
+.au-halt > svg:first-child, .au-go > svg:first-child { color: var(--iqaa-ink); }
+
+/* a menu that opens from a button (ui.js): the stop, and adding a tool */
+.au-menu { position: absolute; z-index: 30; inset-block-start: calc(100% + 6px); inset-inline-end: 0; width: 320px; max-height: min(480px, 70vh); overflow-y: auto;
+  display: flex; flex-direction: column; padding: 6px; background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 16px 40px -12px rgba(25, 23, 46, 0.3); }
+.au-menu[hidden] { display: none; }
+.ai-add .au-menu { inset-inline: 0 auto; }
+.au-menu-h { padding: 8px 10px 4px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
+.au-menu button { display: flex; align-items: flex-start; gap: 10px; width: 100%; min-height: 44px; padding: 8px 10px; border: 0; border-radius: 8px; background: none;
+  font: inherit; font-size: 14px; line-height: 20px; color: var(--iqaa-ink); text-align: start; cursor: pointer; }
+.au-menu button:hover, .au-menu button:focus-visible { background: var(--iqaa-n50); outline: none; }
+.au-menu button > span { display: flex; flex-direction: column; min-width: 0; }
+.au-menu b { font-weight: 600; }
+.au-menu small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.au-menu svg { flex: none; margin-block-start: 1px; color: var(--iqaa-n600); }
+
+/* ---------- one line under the head each: why the version cannot be published, what is stopped, what just changed ---------- */
+.au-bars { display: flex; flex-direction: column; }
+.au-bar { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--s-2) var(--s-3); padding-block: var(--s-2) var(--s-3); font-size: 14px; line-height: 20px; }
+.au-bar[hidden] { display: none; }
+.au-bar > svg { flex: none; margin-block-start: 1px; color: var(--iqaa-n600); }
+.au-bar > span { flex: 1 1 32ch; min-width: 0; }
+.au-bar .link { padding-block: 0; min-height: 20px; }
+.au-stopped > svg, .au-alert svg { color: var(--iqaa-red); }
+.au-stopped b { color: var(--iqaa-red); }
+.au-alert { flex-direction: column; gap: var(--s-1); }
+.au-alert > p { display: flex; align-items: center; gap: var(--s-2); }
+.au-alert b { color: var(--iqaa-red); }
+.au-alert ul { list-style: none; margin: 0; padding: 0 0 0 calc(18px + var(--s-2)); display: flex; flex-direction: column; gap: 2px; }
+.au-alert .link { text-align: start; min-height: 32px; }
+
+/* ---------- the map: one ink track, every block an interchange ring with its name over it ---------- */
+.au-canvas { border-block: 1px solid var(--iqaa-n200); }
+.au-canvas[hidden], .au-insp[hidden], .au-none[hidden] { display: none; }
+.au-map { overflow-x: auto; overscroll-behavior-x: contain; }
+.au-in { --col: 160px; position: relative; width: max-content; min-width: 100%; padding-block: var(--s-8); }
+/* the tracks are drawn at the rings' measured positions, counted from the left in every language (the list itself
+   runs right to left in Arabic), so the drawing is placed from the left too */
+.au-tracks { position: absolute; inset-block-start: 0; left: 0; overflow: visible; pointer-events: none; }
+.au-tracks path { fill: none; stroke: var(--iqaa-ink); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.au-tracks .back { stroke-width: 3; }
+.au-st { position: relative; list-style: none; margin: 0; padding: 0; display: flex; align-items: stretch; }
+.au-s { position: relative; flex: none; width: var(--col); display: flex; }
+.au-sb { appearance: none; background: none; border: 0; margin: 0; padding: 0; font: inherit; color: inherit; text-decoration: none; cursor: pointer; width: 100%;
+  display: flex; flex-direction: column-reverse; align-items: center; gap: var(--s-3); text-align: center; }
+div.au-sb { cursor: default; }
+.au-t { display: flex; flex-direction: column; align-items: center; gap: 2px; max-width: calc(100% - var(--s-2)); padding: var(--s-2); border-radius: 12px;
+  transition: background-color var(--m-quarter) var(--ease-arrive); }
+/* how the block runs, over its name: the machine's modes and a person's read alike, the strokes say who */
+.au-md { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--iqaa-n700); }
+.au-n { display: block; font-size: 15px; line-height: 20px; text-wrap: balance; }
+.au-n .au-g { display: inline-block; vertical-align: -2px; margin-inline-end: 6px; }
+.au-n .au-g svg { height: 16px; }
+.au-n > svg { display: inline-block; vertical-align: -3px; margin-inline-end: 6px; color: var(--iqaa-n600); }
+.au-n b { overflow-wrap: anywhere; }
+.au-c { font-style: normal; font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: var(--iqaa-n600); }
+:lang(ar) .au-c { font-family: inherit; }
+.au-m { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.au-x { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); }
+.au-x.bad { color: var(--iqaa-red); }
+/* a change of the draft carries the draft's pen before it */
+.au-x.draft::before { content: ''; display: inline-block; width: 14px; height: 2px; margin-inline-end: 6px; vertical-align: middle;
+  background: repeating-linear-gradient(to right, var(--iqaa-n500) 0 3px, transparent 3px 6px); }
+/* the ring: work changes hands here; filled when the block is open in the inspector, red while it is stopped */
+.au-dot { position: relative; z-index: 1; flex: none; width: 20px; height: 20px; }
+.au-dot svg { display: block; width: 20px; height: 20px; overflow: visible; }
+.au-dot circle { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; transition: fill var(--m-quarter) var(--ease-arrive); }
+.au-s.on .au-dot circle { fill: var(--iqaa-ink); }
+.au-s.on .au-t { background: var(--iqaa-n100); }
+.au-s.is-stopped .au-dot circle { stroke: var(--iqaa-red); }
+.au-s.is-stopped.on .au-dot circle { fill: var(--iqaa-red); }
+/* the line's two ends: a solid stop, as a metro line ends */
+.au-end .au-dot::before { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--iqaa-ink); }
+@media (hover: hover) and (pointer: fine) {
+  .au-s:not(.on) button.au-sb:hover .au-t, a.au-sb:hover .au-t { background: var(--iqaa-n50); }
+  a.au-sb:hover .au-n b { text-decoration: underline; text-underline-offset: 3px; }
+}
+.au-sb:focus-visible { outline: none; }
+.au-sb:focus-visible .au-t { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* the legend keys what this line has */
+.au-lg { list-style: none; margin: 0; padding: var(--s-3) 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6); font-size: 13px; line-height: 20px; color: var(--iqaa-n700);
+  border-block-start: 1px solid var(--iqaa-n100); }
+.au-lg li { display: flex; align-items: center; gap: var(--s-2); }
+.au-lg li > svg { width: 40px; height: 20px; flex: none; overflow: visible; }
+.au-lg li > .au-x.draft::before { width: 22px; margin-inline-end: 0; }
+.au-lg-g { display: inline-flex; align-items: center; gap: 4px; }
+.au-lg-g svg { display: block; height: 16px; width: auto; overflow: visible; }
+.lg-tk { fill: none; stroke: var(--iqaa-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.lg-r { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; }
+.lg-r.bad { stroke: var(--iqaa-red); }
+
+/* ---------- the inspector: the block, then how it runs beside what it has done ---------- */
+.au-insp { container: ai / inline-size; padding-block: var(--s-6) var(--s-8); }
+.ai-h { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+.ai-hg { padding-block-start: 6px; }
+.ai-hg .au-g svg { height: 26px; }
+.ai-ht { flex: 1 1 280px; min-width: 0; }
+.ai-ht h2 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 700; overflow-wrap: anywhere; }
+.ai-ht > p { font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-tags { display: flex; flex-wrap: wrap; gap: 4px var(--s-4); margin-block-start: var(--s-1); }
+.ai-tags .au-x { font-size: 13px; line-height: 20px; }
+.ai-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.ai-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: var(--s-8) var(--s-12); align-items: start; margin-block-start: var(--s-6); }
+.ai-grid > * { min-width: 0; }
+@container ai (max-width: 900px) { .ai-grid { grid-template-columns: minmax(0, 1fr); } }
+.ai-fs { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ai-fs[disabled] .ai-md, .ai-fs[disabled] .ai-lm { opacity: 0.6; }
+.ai-s + .ai-s { margin-block-start: var(--s-8); }
+.ai-s h3 { display: flex; align-items: baseline; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
+.ai-n { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n700); }
+.ai-hint { display: flex; align-items: flex-start; gap: var(--s-2); margin-block: var(--s-1) var(--s-3); max-width: 72ch; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-hint svg { flex: none; color: var(--iqaa-n600); }
+.au-insp > .ai-hint { margin-block: var(--s-4) 0; font-size: 14px; }
+.ai-none { margin-block-start: var(--s-1); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); max-width: 60ch; }
+.ai-bad { display: flex; align-items: flex-start; gap: 6px; margin-block-start: var(--s-2); font-size: 14px; line-height: 20px; font-weight: 600; color: var(--iqaa-red); }
+.ai-bad svg { flex: none; margin-block-start: 2px; }
+
+/* who does it: the people in it, then the five modes, each with its strokes and its sentence */
+.ai-who { display: flex; align-items: flex-start; gap: var(--s-2); margin-block-end: var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-who svg { flex: none; color: var(--iqaa-n600); }
+.ai-who b { color: var(--iqaa-ink); font-weight: 700; }
+.ai-md { display: flex; flex-direction: column; border-block-start: 1px solid var(--iqaa-n200); max-width: 820px; }
+.ai-mo { display: grid; grid-template-columns: 18px 56px minmax(0, 1fr); align-items: flex-start; gap: var(--s-3); padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); cursor: pointer; }
+.ai-mo input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--iqaa-ink); cursor: pointer; }
+.ai-mo input:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.ai-fs[disabled] .ai-mo, .ai-fs[disabled] .ai-mo input { cursor: default; }
+.ai-mg { display: flex; align-items: center; justify-content: flex-start; min-height: 20px; }
+.ai-mg .au-g svg { height: 18px; }
+.ai-mt b { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); font-size: 14px; line-height: 20px; font-weight: 600; }
+.ai-mt small { display: block; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-mt em { font-style: normal; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n700); }
+.ai-mt em.draft::before { content: ''; display: inline-block; width: 14px; height: 2px; margin-inline-end: 6px; vertical-align: middle;
+  background: repeating-linear-gradient(to right, var(--iqaa-n500) 0 3px, transparent 3px 6px); }
+.ai-mo:has(input:checked) .ai-mt b { font-weight: 700; }
+/* fully automatic asks for a named person's acceptance, on the quiet ground under the modes */
+.ai-req { max-width: 820px; margin-block-start: var(--s-4); padding: var(--s-4); border-radius: 12px; background: var(--iqaa-n50); }
+.ai-req > p:first-child { margin-block-end: var(--s-3); font-size: 14px; line-height: 20px; font-weight: 700; }
+.ai-req .field { max-width: 320px; }
+.ai-req .field label, .ai-fbs label, .ai-lm .field label { font-size: 13px; }
+.ai-req .dd-b, .ai-fbs .dd-b { background: #fff; }
+.ai-rec { display: flex; align-items: flex-start; gap: 6px; margin-block-start: var(--s-3); font-size: 14px; line-height: 20px; }
+.ai-rec svg { flex: none; margin-block-start: 2px; color: var(--iqaa-ink); }
+
+/* its tools */
+.ai-tl { list-style: none; margin: var(--s-2) 0 0; padding: 0; border-block-start: 1px solid var(--iqaa-n200); max-width: 820px; }
+.ai-tl li { display: flex; align-items: flex-start; gap: var(--s-3); padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.ai-tl li.is-added { border-block-end: 2px dashed var(--iqaa-n500); }
+.ai-ti { flex: none; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-ink); }
+.ai-tt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ai-tt b { font-size: 14px; line-height: 20px; font-weight: 600; }
+.ai-tt small { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-tt small span { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--iqaa-ink); }
+.ai-tl .au-x { align-self: center; }
+.ai-add .link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding-block: 0; font-weight: 600; text-decoration: none; }
+.ai-add .link svg { color: var(--iqaa-n600); }
+.ai-add .link:hover span { text-decoration: underline; text-underline-offset: 3px; }
+
+/* its limits: three numbers, each with what it used */
+.ai-lm { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-4) var(--s-6); margin-block-start: var(--s-2); max-width: 820px; }
+.ai-lm .field { min-width: 0; gap: 6px; }
+.ai-lm small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.ai-in { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; color: var(--iqaa-n700); }
+.ai-in input { width: 104px !important; min-height: 44px; font-size: 15px; border-radius: 10px; font-variant-numeric: tabular-nums; }
+.ai-in input:disabled { background: var(--iqaa-n50); }
+
+/* the side: its numbers in one divided strip, who it falls back on, its record */
+.ai-since { margin-block: 2px var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.ai-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--iqaa-n100);
+  border: 1px solid var(--iqaa-n200); border-radius: 14px; overflow: hidden; }
+.ai-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-3) var(--s-4); background: #fff; }
+.ai-kpi li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.ai-k { font-family: 'Fragment Mono', monospace; font-size: 26px; line-height: 32px; color: var(--iqaa-ink); }
+.ai-kpi li > span:last-child { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.ai-fb { margin-block: var(--s-1) var(--s-2); font-size: 14px; line-height: 20px; }
+.ai-pp { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+.ai-pp li { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; line-height: 20px; font-weight: 600; }
+.ai-pp .me-av { width: 28px; height: 28px; font-size: 13px; }
+.ai-fbs { margin-block-start: var(--s-3); max-width: 320px; }
+.ai-log { list-style: none; margin: 0; padding: 0; border-block-start: 1px solid var(--iqaa-n200); }
+.ai-log li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: flex-start; gap: var(--s-3); padding-block: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); }
+.ai-log .au-g { padding-block-start: 2px; justify-self: center; }
+.ai-log .au-g svg { height: 16px; }
+.ai-log p { font-size: 14px; line-height: 20px; overflow-wrap: break-word; }
+.ai-cd { white-space: nowrap; }
+.ai-log small { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.ai-log time { font-size: 12px; line-height: 20px; color: var(--iqaa-n700); white-space: nowrap; }
+
+/* ---------- a line with nothing automated ---------- */
+.au-none { padding-block: var(--s-6) var(--s-8); }
+.an-h { max-width: 72ch; }
+.an-h h2 { font-size: var(--t-md); line-height: var(--lh-md); font-weight: 700; }
+.an-h p { margin-block-start: var(--s-2); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.an-d { display: flex; align-items: flex-start; gap: var(--s-2); }
+.an-d .au-x.draft::before { width: 22px; margin-inline-end: 0; }
+.an-d .au-x { padding-block-start: 1px; }
+.an-l { list-style: none; margin: var(--s-6) 0 0; padding: 0; max-width: 820px; border-block-start: 1px solid var(--iqaa-n200); }
+.an-l li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); min-height: 56px; padding-block: var(--s-2); border-block-end: 1px solid var(--iqaa-n100); }
+.an-t { display: flex; flex-direction: column; min-width: 0; }
+.an-t b { font-size: 15px; line-height: 20px; }
+.an-t small { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+.an-go { margin-block-start: var(--s-6); }
+
+/* ---------- under 1024 px: the map turns vertical, a route down the screen ---------- */
+@media (max-width: 1023px) {
+  .au-map { overflow: visible; }
+  .au-in { --rail: 24px; width: auto; padding: var(--s-4) var(--s-8) var(--s-6); }
+  .au-st { flex-direction: column; }
+  .au-s { width: auto; display: block; }
+  .au-sb { flex-direction: row; align-items: flex-start; gap: 0; padding-block: 4px; padding-inline: calc(var(--rail) + 20px) 0; text-align: start; }
+  .au-dot { position: absolute; inset-block-start: 30px; inset-inline-start: calc(var(--rail) - 10px); }
+  .au-t { align-items: flex-start; text-align: start; max-width: none; width: 100%; }
+  .au-top { align-items: flex-start; }
+}
+
+/* ---------- a phone: one column; the stop and publishing take the width ---------- */
+@media (max-width: 700px) {
+  .au-head { padding-block: var(--s-4) var(--s-2); }
+  .au-ht h1 { font-size: var(--t-lg); line-height: var(--lh-lg); }
+  .au-act, .au-stop, .au-act > .btn, .au-stop > .btn { width: 100%; }
+  .au-stop > .btn { justify-content: flex-start; }
+  .au-stop > .btn > svg:last-child { margin-inline-start: auto; }
+  .au-menu { inset-inline: 0; width: auto; }
+  .au-in { padding-inline: var(--s-4); }
+  .ai-act, .ai-act .btn { width: 100%; }
+  .ai-mo { grid-template-columns: 18px 44px minmax(0, 1fr); gap: var(--s-2); }
+  .an-l li { grid-template-columns: 44px minmax(0, 1fr); }
+  .an-l li > .au-x { grid-column: 2; }
+  .au-lg { gap: var(--s-2) var(--s-4); }
+}
+@media (pointer: coarse) { .au-page .btn.small { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .au-t, .au-dot circle { transition: none; } }

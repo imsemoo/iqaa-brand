@@ -1,0 +1,143 @@
+/* A block's queue: the lead's board of what is in the block, by person, and the same columns as a list. Built on
+   tokens.css, brand.css, auth.css and app.css (the frame, the stroke strip, the person's initial); sizes are
+   quarter-beat multiples. A card lays itself out by the room its column gives it (container queries), so the same card
+   serves a narrow lane, a phone and a list row. */
+main.qu { background: #fff; }
+
+/* ---------- head: the line and department, the block, what is in it; the view switch ---------- */
+.qu-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.qu-line { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.qu-g { flex: none; display: inline-grid; place-items: center; }
+.qu-g svg { display: block; height: 16px; width: auto; overflow: visible; }
+[dir='rtl'] .qu-g svg { transform: scaleX(-1); }
+.qu-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.qu-sum { margin-block-start: var(--s-1); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.qu-views { display: inline-flex; flex-wrap: wrap; padding: 3px; gap: 2px; border-radius: 12px; background: var(--iqaa-n100); }
+.qu-views button, .qu-v { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 36px; padding: 0 var(--s-4); border: 0; border-radius: 9px; background: none;
+  font: inherit; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
+.qu-views button[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.qu-views button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+/* the views still to come: named, so the switch is whole, and not offered */
+.qu-v { font-weight: 400; color: var(--iqaa-n600); cursor: default; }
+.qu-v em { font-style: normal; font-size: 11px; line-height: 16px; color: var(--iqaa-n600); }
+@media (pointer: coarse) { .qu-views button { min-height: 44px; } }
+
+/* what was just done, with its Undo; it stays in sight while the board scrolls */
+.qu-live { position: sticky; inset-block-start: var(--s-2); z-index: 5; }
+.qu-note { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-end: var(--s-4); padding: var(--s-1) var(--s-4); border: 1px solid var(--iqaa-n200);
+  border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.qu-note .link { margin-inline-start: auto; }
+
+/* ---------- the board: a lane per column, side by side; it scrolls sideways when the lanes need more room (and holds
+   its own screen-reader words, which would otherwise widen the page) ---------- */
+.qu-board { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(208px, 1fr); gap: var(--s-3); align-items: stretch; overflow-x: auto; padding-block-end: var(--s-2);
+  margin-block-end: var(--s-12); scroll-snap-type: x proximity; }
+.qu-col { display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; padding: 6px; border-radius: 16px; background: var(--iqaa-n50); scroll-snap-align: start; }
+.qu-ch { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-2) 6px var(--s-1); }
+.qu-ch h2 { display: flex; align-items: center; gap: var(--s-2); min-width: 0; font-size: 15px; line-height: 22px; font-weight: 700; }
+.qu-ch h2 > svg { flex: none; color: var(--iqaa-n600); }
+.qu-ch h2 > span:first-of-type { min-width: 0; overflow-wrap: anywhere; }
+.qu-ch p { font-size: 12px; line-height: 18px; color: var(--iqaa-n700); }
+.qu-n { margin-inline-start: auto; font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
+/* a person's lane: their initial, then who they are, how they work and what they are good at */
+.qu-ph { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 2px var(--s-2); }
+.qu-ph .me-av { grid-row: span 2; }
+.qu-ph > :not(.me-av) { grid-column: 2; }
+.qu-sks { display: flex; flex-wrap: wrap; gap: var(--s-1); padding-block: 2px; }
+.qu-sk { padding: 0 6px; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px var(--iqaa-n200); font-size: 12px; line-height: 20px; color: var(--iqaa-n800); }
+.qu-empty { padding: var(--s-2) 6px var(--s-4); font-size: 13px; line-height: 20px; color: var(--iqaa-n600); }
+
+/* ---------- a card ---------- */
+.qu-cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; container-type: inline-size; }
+.qu-card { display: flex; flex-direction: column; gap: var(--s-2); min-width: 0; padding: var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px; background: #fff; }
+.qu-top { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.qu-title { font-size: 15px; line-height: 22px; font-weight: 700; color: var(--iqaa-ink); text-decoration: none; overflow-wrap: anywhere; }
+.qu-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+.qu-title:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; border-radius: 4px; }
+.qu-flag { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.qu-flag svg { flex: none; color: var(--iqaa-n600); }
+.qu-flag.late { color: var(--iqaa-red); font-weight: 700; }
+.qu-flag.late svg { color: var(--iqaa-red); }
+.qu-where { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-3); min-width: 0; }
+.qu-where code { font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 20px; color: var(--iqaa-n600); }
+.qu-f { display: flex; flex-wrap: wrap; gap: 2px var(--s-4); margin: 0; font-size: 13px; line-height: 20px; }
+.qu-f div { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.qu-f dt { display: inline-flex; align-items: center; gap: 3px; color: var(--iqaa-n700); }
+.qu-f dt svg { flex: none; color: var(--iqaa-n600); }
+.qu-f dd { margin: 0; font-weight: 700; color: var(--iqaa-ink); }
+.qu-st { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.qu-st.need, .qu-st.back { font-weight: 700; color: var(--iqaa-ink); }
+.qu-from .me-av { width: 24px; height: 24px; font-size: 12px; }
+.qu-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.qu-act .btn { flex: 1 1 auto; white-space: nowrap; }
+.qu-act .btn svg { flex: none; }
+/* Send back turns back the way the page reads */
+[dir='rtl'] .qu-bk svg { transform: scaleX(-1); }
+
+/* who takes it: opened from Assign, inside the card, so a narrow lane or a phone never clips it */
+.qu-to { display: flex; flex-direction: column; gap: 2px; padding: 4px; border-radius: 10px; background: var(--iqaa-n50); }
+.qu-to-h { padding: 6px 8px 2px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
+.qu-p { display: flex; align-items: center; gap: var(--s-2); width: 100%; min-height: 40px; padding: 4px 8px; border: 0; border-radius: 8px; background: none;
+  font: inherit; color: var(--iqaa-ink); text-align: start; cursor: pointer; }
+@media (hover: hover) { .qu-p:hover { background: #fff; } }
+.qu-p:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: -2px; }
+.qu-p .me-av { width: 28px; height: 28px; font-size: 13px; }
+.qu-p-t { display: flex; flex-direction: column; min-width: 0; }
+.qu-p-t b { font-size: 14px; line-height: 20px; }
+.qu-p-t small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+/* sending back: a short note for the person, said in the card */
+.qu-back { display: flex; flex-direction: column; gap: var(--s-2); padding-block-start: var(--s-2); border-block-start: 1px solid var(--iqaa-n100); }
+.qu-back label { font-size: 13px; line-height: 20px; font-weight: 700; }
+.qu-back textarea { width: 100%; min-height: 64px; padding: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n300); border-radius: 10px; background: #fff;
+  font: inherit; font-size: 14px; line-height: 20px; color: var(--iqaa-ink); resize: vertical; }
+.qu-back textarea:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 0; border-color: var(--iqaa-violet); }
+.qu-back textarea[aria-invalid='true'] { border-color: var(--iqaa-ink); }
+.qu-err { font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-ink); }
+.qu-back-act { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.qu-back-act .btn { flex: 1 1 auto; }
+@media (pointer: coarse) { .qu-card .btn, .qu-p { min-height: 44px; } }
+
+/* a wide card (a list row): what it is on the start side, its fields and state in the middle, its move at the end */
+@container (min-width: 600px) {
+  .qu-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 15rem) auto; grid-template-areas: 'top f act' 'where st act' 'more more more';
+    align-items: center; gap: var(--s-2) var(--s-6); }
+  .qu-top { grid-area: top; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-4); }
+  .qu-where { grid-area: where; }
+  .qu-f { grid-area: f; }
+  .qu-st { grid-area: st; }
+  .qu-act { grid-area: act; }
+  .qu-act .btn { flex: none; }
+  .qu-to, .qu-back { grid-area: more; }
+}
+
+/* ---------- the list: the same columns one under another, each item a row ---------- */
+.qu-list { display: flex; flex-direction: column; gap: var(--s-8); padding-block-end: var(--s-12); }
+.qu-list .qu-col { padding: 0; border-radius: 0; background: none; }
+.qu-list .qu-ch { padding: 0 0 var(--s-2); border-block-end: 1px solid var(--iqaa-n200); }
+.qu-list .qu-cards { gap: 0; }
+.qu-list .qu-card { padding-inline: 0; border: 0; border-block-end: 1px solid var(--iqaa-n100); border-radius: 0; }
+.qu-list .qu-empty { padding-inline: 0; }
+.qu-list .qu-sk { background: var(--iqaa-n50); }
+
+/* ---------- a phone: one column at a time, with a switcher between them ---------- */
+.qu-switch { display: none; }
+@media (max-width: 700px) {
+  .qu-head { padding-block: var(--s-6) var(--s-4); }
+  .qu-v { display: none; }
+  /* every column stays in sight, wrapping to a second row, so what waits for approval is never scrolled away */
+  .qu-switch { display: flex; flex-wrap: wrap; gap: var(--s-2); padding-block-end: var(--s-3); }
+  .qu-switch button { position: relative; flex: none; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px;
+    background: #fff; font: inherit; font-size: 14px; font-weight: 600; color: var(--iqaa-n800); cursor: pointer; }
+  .qu-switch span { font-family: 'Fragment Mono', monospace; font-size: 12px; font-weight: 400; color: var(--iqaa-n600); }
+  .qu-switch button[aria-pressed='true'] { background: var(--iqaa-ink); border-color: var(--iqaa-ink); color: #fff; }
+  .qu-switch button[aria-pressed='true'] span { color: var(--iqaa-n200); }
+  .qu-switch button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+  .qu-board { display: block; overflow: visible; }
+  .qu-board .qu-col:not(.is-on) { display: none; }
+}
+
+/* ---------- someone who leads no block ---------- */
+.qu-none { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); max-width: 60ch; padding-block: var(--s-2) var(--s-12); }
+.qu-none p { font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.qu-none b { color: var(--iqaa-ink); }

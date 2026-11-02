@@ -16,6 +16,7 @@
     "Their last order is finished.": "انتهى آخر طلب لهم.",
     "Every client has an order on the line.": "لكل عميل طلب على الخط.",
     "{n} orders": {
+      "zero": "لا طلبات",
       "one": "طلب واحد",
       "two": "طلبان",
       "few": "{n} طلبات",
@@ -386,7 +387,7 @@
     "{title} is on {org}’s line.": "{title}, {org_gen} hattında.",
     "Hi {name}. {where}": "Merhaba {name}. {where}",
     "When": "Zaman",
-    "People": "Kişi",
+    "People": "Kişiler",
     "Where": "Yer",
     "Total": "Toplam",
     "[TOTAL]": "[TOPLAM]",

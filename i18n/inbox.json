@@ -5,7 +5,13 @@
     "Messages": "الرسائل",
     "The message and Watar’s draft": "الرسالة ومسودة وتر",
     "What came in and isn’t on the line yet": "ما وصل ولم يدخل الخط بعد",
-    "messages wait": { "one": "رسالة تنتظر", "two": "رسالتان تنتظران", "few": "رسائل تنتظر", "many": "رسالة تنتظر", "other": "رسالة تنتظر" },
+    "messages wait": {
+      "one": "رسالة تنتظر",
+      "two": "رسالتان تنتظران",
+      "few": "رسائل تنتظر",
+      "many": "رسالة تنتظر",
+      "other": "رسالة تنتظر"
+    },
     "Not in the message: it says «{words}».": "ليس في الرسالة: مكتوب فيها «{words}».",
     "From the message: «{words}»": "من الرسالة: «{words}»",
     "Order {code} created": "أنشئ الطلب {code}",
@@ -13,11 +19,24 @@
     "Not an order": "ليست طلبا",
     "Watar needs the time": "وتر يحتاج الوقت",
     "Watar drafted an order": "وتر كتب مسودة طلب",
-    "{n} messages wait for you": { "one": "رسالة واحدة تنتظرك", "two": "رسالتان تنتظرانك", "few": "{n} رسائل تنتظرك", "many": "{n} رسالة تنتظرك", "other": "{n} رسالة تنتظرك" },
+    "{n} messages wait for you": {
+      "one": "رسالة واحدة تنتظرك",
+      "two": "رسالتان تنتظرانك",
+      "few": "{n} رسائل تنتظرك",
+      "many": "{n} رسالة تنتظرك",
+      "other": "{n} رسالة تنتظرك"
+    },
     "Everything that came in is on the line or set aside.": "كل ما وصل دخل الخط أو وضع جانبا.",
     "By email": "بالبريد",
     "From the order form": "من نموذج الطلب",
-    "{n} orders before this one": { "zero": "لا طلبات قبل هذا", "one": "طلب واحد قبل هذا", "two": "طلبان قبل هذا", "few": "{n} طلبات قبل هذا", "many": "{n} طلبا قبل هذا", "other": "{n} طلب قبل هذا" },
+    "{n} orders before this one": {
+      "zero": "لا طلبات قبل هذا",
+      "one": "طلب واحد قبل هذا",
+      "two": "طلبان قبل هذا",
+      "few": "{n} طلبات قبل هذا",
+      "many": "{n} طلبا قبل هذا",
+      "other": "{n} طلب قبل هذا"
+    },
     "Open the client": "افتح العميل",
     "A new client: Sufra hasn’t had an order from {email} before.": "عميل جديد: لم تستلم سفرة طلبا من {email} من قبل.",
     "Client": "العميل",
@@ -56,7 +75,6 @@
     "Order {code} created. It is on the line at Quote.": "أنشئ الطلب {code}. هو الآن على الخط عند عرض السعر.",
     "Set aside. Nothing went on the line.": "وضعت جانبا. لم يدخل شيء الخط.",
     "Iqaa sent the client a receipt": "إيقاع أرسل إيصالا للعميل",
-
     "Lunch on Thursday the 12th": "غداء يوم الخميس 12",
     "Hi Sufra, can we have the clinic lunch again on Thursday the 12th at 13:00? We will be 24 this time, two of us vegetarian. Same address as always. Thanks, Nadia": "مرحبا سفرة، هل يمكن أن نطلب غداء العيادة مرة أخرى يوم الخميس 12 الساعة 13:00؟ سنكون 24 هذه المرة، اثنان منا نباتيان. العنوان نفسه كالمعتاد. شكرا، نادية",
     "the clinic lunch again": "غداء العيادة مرة أخرى",
@@ -111,7 +129,7 @@
     "Order": "Sipariş",
     "Date": "Tarih",
     "Time": "Saat",
-    "People": "Kişi",
+    "People": "Kişiler",
     "Where": "Yer",
     "Note for the kitchen": "Mutfak için not",
     "Creating it puts the order on Sufra’s line at Quote: Reem’s step is logged, Iqaa sends the client a receipt, and Watar drafts the quote for Reem to check.": "Oluşturduğunda sipariş Sufra’nın hattında Teklif’e girer: Reem’in adımı kaydedilir, Iqaa müşteriye alındı gönderir ve Watar, Reem kontrol etsin diye teklifi taslak olarak yazar.",
@@ -139,7 +157,6 @@
     "Order {code} created. It is on the line at Quote.": "{code} siparişi oluşturuldu. Hatta, Teklif’te.",
     "Set aside. Nothing went on the line.": "Kenara alındı. Hatta hiçbir şey girmedi.",
     "Iqaa sent the client a receipt": "Iqaa müşteriye alındı gönderdi",
-
     "Lunch on Thursday the 12th": "12’si Perşembe öğle yemeği",
     "Hi Sufra, can we have the clinic lunch again on Thursday the 12th at 13:00? We will be 24 this time, two of us vegetarian. Same address as always. Thanks, Nadia": "Merhaba Sufra, klinik öğle yemeğini yine 12’si Perşembe saat 13:00’te yapabilir miyiz? Bu sefer 24 kişiyiz, ikimiz vejetaryen. Adres her zamanki gibi. Teşekkürler, Nadia",
     "the clinic lunch again": "klinik öğle yemeğini yine",

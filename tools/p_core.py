@@ -10,8 +10,8 @@ from shell import LINES, ROOT, blocks_of, esc, head, inline, kinds_of, legend, s
 
 
 def hero_line(pal='light'):
-    """Iqaa's mark, then the pen turns over and writes Sufra's whole line without lifting, and Sufra's tile signs it."""
-    L = LINES['catering']
+    """Iqaa's mark, then the pen turns over and writes Al-Khatt Media's whole line without lifting, and its tile signs it."""
+    L = LINES['media']
     blocks = [[s[0] for s in b['steps']] for b in L['blocks']]
     ink = brand.PAL[pal]['run']
     mark, mw = brand.symbol_body(pal)
@@ -29,20 +29,27 @@ def hero_line(pal='light'):
                     f'font-family="Atkinson Hyperlegible Next, sans-serif">{esc(b["name"])}</text>' for i, b in enumerate(L['blocks']))
     xt, size = x0 + w + 18, 40
     ground = brand.BRAND['ink'] if pal == 'light' else '#39374D'
-    tile = brand.avatar_svg(blocks, size, ground=ground, name=L['org']).replace('<svg ', f'<svg class="hl-tile" x="{xt:.1f}" y="{-size + brand.W / 2:.1f}" ', 1)
+    tile = brand.avatar_svg(blocks, size, ground=ground, name=L['mark']).replace('<svg ', f'<svg class="hl-tile" x="{xt:.1f}" y="{-size + brand.W / 2:.1f}" ', 1)
     top, bot = -(brand.LOOP_H + brand.MW), brand.BOT + 22
     vw = xt + size + brand.MW
     return (f'<svg class="hero-line" viewBox="{-brand.MW} {top} {vw + brand.MW:.1f} {bot - top:.1f}" role="img" '
-            f'aria-label="Iqaa’s mark, written on into Sufra’s line of {len(blocks)} stations, signed by Sufra’s mark">'
+            f'aria-label="Iqaa’s mark, written on into {esc(L["org"])}’s line of {len(blocks)} stations, signed by its mark">'
             f'<g class="hl-pen">{mark}{turn}<g transform="translate({x0:.1f} 0)">{body}</g></g><g class="hl-names">{names}</g>{tile}</svg>')
+
+
+def hero_count():
+    """The hero's line in words: its stations and steps."""
+    words = {7: 'seven', 11: 'eleven', 13: 'thirteen', 15: 'fifteen', 16: 'sixteen'}
+    n, s = len(LINES['media']['blocks']), len(kinds_of('media'))
+    return f'{words.get(n, n)} stations and {words.get(s, s)} steps'
 
 
 def index():
     sym = inline(brand.symbol_svg('light'), 'hero-mark')
     sigs = ''
-    for key in ('catering', 'software', 'video'):
+    for key in ('media', 'software', 'agency'):
         L = LINES[key]
-        av = brand.avatar_svg([[x[0] for x in b['steps']] for b in L['blocks']], 72, f'{L["org"]}: its mark', name=L['org'])
+        av = brand.avatar_svg([[x[0] for x in b['steps']] for b in L['blocks']], 72, f'{L["org"]}: its mark', name=L['mark'])
         sigs += (f'<div class="sigrow"><div class="meta"><b>{esc(L["template"])}</b><span>Each job here is {esc(L["job"])}. '
                  f'{len(L["blocks"])} stations, {len(kinds_of(key))} steps.</span></div>'
                  f'<div class="row mid" style="gap:var(--s-8);align-items:flex-start">{sigline(key)}<div class="avatar">{av}</div></div></div>')
@@ -52,7 +59,7 @@ def index():
         ('Colour', 'Violet means a person. Everything automatic is ink. No gradient.', 'decisions.html#violet'),
         ('Type', 'Atkinson Hyperlegible Next, with Fragment Mono for times and codes.', 'decisions.html#type'),
         ('Numbers', 'One beat is 16 px and 600 ms (100 BPM). Every size and duration divides it.', 'decisions.html#beat'),
-        ('Architecture', 'One Iqaa. Watar is its assistant; Media and Invoicing are packs.', 'decisions.html#architecture'),
+        ('Architecture', 'One Iqaa. Watar is its assistant; Media and production and Software are packs.', 'decisions.html#architecture'),
     ]
     rows = ''.join(f'<tr><th scope="row">{a}</th><td>{b}</td><td><a href="{c}">Why</a></td></tr>' for a, b, c in settled)
     pages = [
@@ -76,24 +83,24 @@ def index():
 <p class="lede">Iqaa runs an organization’s work as a line: people and automatic steps, in order, so that no work falls between two hands. Its identity writes that line with one pen — straight where a step runs by itself, a loop where a person’s hand does the work — so every organization’s line becomes its own signature.</p>
 </div>
 <figure class="hero-fig" data-reveal>{sym}<figcaption class="note">Iqaa’s own stroke: it arrives straight, a hand loops it once, and it leaves rising, in time.</figcaption></figure>
-<figure class="hero-wide" data-reveal data-hero-line>{hero_line()}<figcaption class="note">Iqaa’s own stroke hands the pen on: it writes Sufra’s line, seven stations and sixteen steps, and Sufra’s mark signs it.</figcaption></figure>
+<figure class="hero-wide" data-reveal data-hero-line>{hero_line()}<figcaption class="note">Iqaa’s own stroke hands the pen on: it writes Al-Khatt Media’s content production line, {hero_count()}, and Al-Khatt’s mark signs it.</figcaption></figure>
 </section>
 </div>
 <section class="scr prod" aria-labelledby="prod-h"><div class="wrap scr-in">
 <div class="scr-t">
 <p class="eyebrow">In the product</p>
 <h2 id="prod-h">Not painted on: it is how the product speaks</h2>
-<p class="scr-what">Every screen uses the same strokes to say where work stands: a loop for what a person did, a dashed grey pen for what is not real yet, a metro map for the whole line. Here, Reem’s day at Sufra on a laptop and Sufra’s line on a phone.</p>
+<p class="scr-what">Every screen uses the same strokes to say where work stands: a loop for what a person did, a dashed grey pen for what is not real yet, a metro map for the whole line. Here, Heba’s work at Al-Khatt Media on a laptop and Al-Khatt’s line on a phone.</p>
 <a class="btn primary" href="screens.html">See the screens</a>
 </div>
-<a class="scr-stage" href="screens.html#today" aria-label="See the screens">
-<figure class="scr-d"><span class="scr-bar" aria-hidden="true"><code>sufra.iqaa.app/today</code></span><img src="assets/screens/today-d.webp" width="1440" height="900" alt="Today on a desktop: Reem’s day as a line in time, the jobs waiting at Quote, and what is coming and done beside them." decoding="async"></figure>
-<figure class="scr-m"><img src="assets/screens/line-m.webp" width="750" height="1624" alt="Sufra’s line on a phone: a vertical metro map with a way back and a branch." loading="lazy" decoding="async"></figure>
+<a class="scr-stage" href="screens.html#work" aria-label="See the screens">
+<figure class="scr-d"><span class="scr-bar" aria-hidden="true"><code>alkhatt.iqaa.co/my-work</code></span><img src="assets/screens/work-d.webp" width="1440" height="900" alt="My work on a desktop: Heba’s pieces in progress and new, each carrying its line as one pen stroke, and the pieces open for her role to claim." decoding="async"></figure>
+<figure class="scr-m"><img src="assets/screens/lines-m.webp" width="750" height="1624" alt="Al-Khatt Media’s line on a phone: its blocks down the screen, each with its stroke, its roles and its people." loading="lazy" decoding="async"></figure>
 </a>
 </div></section>
 <div class="wrap">
 {sec('The idea', 'One pen, four strokes', legend() + '<p>The stroke carries the meaning, so a line reads in one colour, in greyscale and for colour-blind eyes. Colour adds one more fact: violet is always a person. Between stations the pen runs a short straight: the handoff.</p>')}
-{sec('Signatures', 'Every line signs its own name', sigs, 'Stations from the client deck. The steps inside each station are illustrative, built only from step types the plan names. Beside each line, the same line signed on the organization’s tile: its mark. Sufra, Raqm and Kadr are demo organizations.')}
+{sec('Signatures', 'Every line signs its own name', sigs, 'Stations from the owner’s designed screens. The steps inside each station are illustrative, built only from step types the plan names. Beside each line, the same line signed on the organization’s tile: its mark. Al-Khatt Media, Masar and Wamda are the demo organizations of the product screens.')}
 {sec('Settled', 'What this round decides', f'<div class="tbl-wrap"><table><thead><tr><th>Area</th><th>Decision</th><th></th></tr></thead><tbody>{rows}</tbody></table></div>')}
 {sec('Contents', 'In this book', f'<ul class="toc">{idx}</ul>')}
 </div>'''
@@ -195,7 +202,7 @@ def decisions():
     typ = decision('type', 'Type', 'Atkinson Hyperlegible Next for everything; Fragment Mono for times, codes and run logs.', [
         'Measured on three gates: tabular figures, full Turkish, and a capital I that differs from l in outline. Of ten sans candidates only Atkinson Hyperlegible Next and Hanken Grotesk pass all three.',
         'Between those two, Atkinson has the higher x-height (0.743 against 0.707) and the narrower average letter (0.487 em against 0.504), so it is clearer and denser at 12–13 px.',
-        'Fragment Mono’s x-height (0.750) is the closest to Atkinson’s, so a code like SFR-26-0031 sits level inside a sentence. It has a slashed zero.',
+        'Fragment Mono’s x-height (0.750) is the closest to Atkinson’s, so a code like MAD-26-0144 sits level inside a sentence. It has a slashed zero.',
         'One family for display and text keeps the identity composed; the mark carries the character.',
     ])
     wordmark = decision('wordmark', 'Wordmark weight', f'Atkinson Hyperlegible Next at weight {wght}, outlined.', [
@@ -216,23 +223,23 @@ def decisions():
         'The first version set a typed letter (weight 600, a stem of about 5.3 units) over its opening drawn at 0.78 with a 3.4-unit pen: two pens and two objects. It was turned down in review on 1 November.',
         'Six directions were then drawn at 128, 64, 40, 32 and 20 px for five initials (research/org-mark). Every one that kept a letter and a line side by side read as a letter with a doodle, and at 32 px the opening’s loop fell to 7.5 px.',
         f'Written with the mark’s own pen ({brand.MW / brand.LOOP_H:.3f} of the height, the ratio the wordmark’s stem is solved to), the letter is the whole mark: at 32 px it stands 16 px tall instead of 9.4, with a 2.5 px pen instead of 1.1.',
-        'The colour still comes from the real line: each of its first steps takes an equal share of the letter, lilac for a person and white for a step that runs, so two kitchens with different first steps get different marks.',
+        'The colour still comes from the real line: each of its first steps takes an equal share of the letter, lilac for a person and white for a step that runs, so two newsrooms with different first steps get different marks.',
         'The hand has 26 capitals and 10 figures. A name in another script is set in type until its letters are drawn. Below 32 px the pen is held at 1.5 px.',
     ])
     rtl = decision('rtl', 'Right to left', 'The mark never mirrors. Signatures do.', [
         'One trademark, one app icon file, in every language.',
         'A signature is data, so it is written in reading order: left to right in English and Turkish, right to left in Arabic.',
     ])
-    arch = decision('architecture', 'Architecture', 'One Iqaa for the platform. Watar is its assistant. Media and Invoicing are packs.', [
+    arch = decision('architecture', 'Architecture', 'One Iqaa for the platform. Watar is its assistant. Media and production and Software are packs.', [
         'The client deck proposes one brand for every field; the build plan already treats the older media studio as a pack.',
         'Watar’s mark is the waiting arch, because everything Watar makes waits for a person to approve it.',
         'Packs are descriptors beside the wordmark, never new marks.',
     ])
     test = decision('test', 'Test runs', 'In a test no hand has acted: the line is written with a dashed grey pen and nothing turns violet.', [
         'A test sends nothing and no person acts; the drawing says so without a caption.',
-        'On the Line screen the test job is a grey stop that walks the map, and the track it walked turns dashed grey.',
+        'On the map a test job is a grey stop that walks the line, and the track it walked turns dashed grey.',
     ])
-    metro = decision('map', 'The Line screen', 'Where a line is built, it is drawn as a metro map; the signature stays its compact name.', [
+    metro = decision('map', 'The canvas', 'Where a line is built, it is drawn as a metro map; the signature stays its compact name.', [
         'Chosen by the client on 1 November over a metro identity: a map is a working view, a signature is a name, the way a metro line has both a diagram and a roundel.',
         'Beck’s rules from the 1933 London diagram, which people read without being taught: even spacing whatever the distance (here, whatever the duration), tracks only horizontal, vertical or at 45°, bends rounded.',
         'Every station is drawn as an interchange ring, because a station is where work changes hands.',

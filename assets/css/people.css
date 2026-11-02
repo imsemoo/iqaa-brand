@@ -1,0 +1,154 @@
+/* People and departments: the departments in one divided strip, the chosen one's teams and people in tables that turn
+   into one card per person when the sheet is narrow. Built on tokens.css, brand.css, auth.css (.field, .err) and
+   app.css (the frame, the person's initial); sizes are quarter-beat multiples. Violet is a person (an active one's
+   dot); the dashed grey pen is what is not yet so (an invitation, the roles it will bring). */
+main.pp { background: #fff; }
+.pp-page { padding-block-end: var(--s-12); }
+
+/* ---------- head: the organization, how many people and departments, and the two ways to grow it ---------- */
+.pp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
+.pp-eye { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.pp-sum { margin-block-start: var(--s-1); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.pp-acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.pp-acts[hidden] { display: none; }
+.pp-page .btn svg { flex: none; }
+.pp-page .btn:focus-visible, .pp-page .link:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+
+/* what was just done, with its Undo; it stays in sight while the page scrolls */
+.pp-live { position: sticky; inset-block-start: var(--s-2); z-index: 5; }
+.pp-note { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-end: var(--s-4); padding: var(--s-1) var(--s-4); border: 1px solid var(--iqaa-n200);
+  border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
+.pp-note .link { margin-inline-start: auto; }
+
+/* ---------- the form, opened under the buttons: a new department or an invitation ---------- */
+.pp-panel { margin-block-end: var(--s-6); padding: var(--s-5, 20px) var(--s-6); border-radius: 16px; background: var(--iqaa-n50); }
+.pp-panel[hidden] { display: none; }
+.pp-form h2 { margin-block-end: var(--s-4); font-size: 16px; line-height: 24px; font-weight: 700; }
+.pp-form > .field { max-width: 440px; }
+.pp-fg { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--s-4) var(--s-5, 20px); }
+.pp-fg > * { min-width: 0; }
+.pp-until[hidden] { display: none; }
+/* the house's dropdown at the height of the fields beside it */
+.pp-form .dd-b { min-height: 48px; border-color: var(--iqaa-n400); border-radius: 12px; background: #fff; }
+.pp-form input[type='date'] { padding-inline-end: var(--s-3); }
+.pp-hint { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-err[hidden] { display: none; }
+.pp-err { font-size: 13px; line-height: 20px; font-weight: 700; }
+/* what the person will hold once they join */
+.pp-pre { display: flex; flex-direction: column; gap: var(--s-1); margin-block: var(--s-5, 20px) var(--s-2); padding-block-start: var(--s-4); border-block-start: 1px solid var(--iqaa-n200); }
+.pp-l2 { font-size: 13px; line-height: 20px; font-weight: 700; }
+.pp-fa { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--s-2); margin-block-start: var(--s-4); }
+
+/* ---------- the departments: one strip, divided by the hairlines between them, as Home's numbers ---------- */
+.pp-ds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px;
+  background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
+.pp-ds li { display: flex; min-width: 0; background: #fff; }
+.pp-d { position: relative; flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); color: inherit; text-decoration: none; }
+.pp-d b { font-size: 16px; line-height: 24px; overflow-wrap: anywhere; }
+.pp-d span { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+@media (hover: hover) and (pointer: fine) { .pp-d:hover { background: var(--iqaa-n50); } .pp-d:hover b { text-decoration: underline; text-underline-offset: 3px; } }
+/* the one open: an ink rule along its foot, the way the strip points down to the tables */
+.pp-d[aria-current] { background: var(--iqaa-n50); }
+.pp-d[aria-current]::after { content: ''; position: absolute; inset-inline: var(--s-5, 20px); inset-block-end: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--iqaa-ink); }
+.pp-d:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: -2px; border-radius: 4px; }
+
+/* ---------- a department: its name and blocks, the rule of permissions, then each team ---------- */
+.pp-dept { container: ppd / inline-size; margin-block-start: var(--s-8); }
+.pp-dh { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-3) var(--s-8); padding-block-end: var(--s-4); border-block-end: 1px solid var(--iqaa-n200); }
+.pp-dh h2 { font-size: var(--t-md); line-height: 28px; font-weight: 700; }
+.pp-dh h2:focus { outline: none; }
+.pp-dh p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-bl { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5, 20px); }
+.pp-bl li { display: inline-flex; align-items: center; gap: var(--s-2); font-size: 14px; line-height: 20px; }
+.pp-g { display: inline-grid; place-items: center; flex: none; width: 22px; }
+.pp-g svg { display: block; height: 18px; width: auto; overflow: visible; }
+[dir='rtl'] .pp-g svg { transform: scaleX(-1); }
+[dir='rtl'] .pp-g.pp-own svg { transform: none; }
+.pp-own { color: var(--iqaa-n600); }
+.pp-rule { display: flex; align-items: flex-start; gap: var(--s-2); max-width: 96ch; margin-block-start: var(--s-4); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-rule svg { flex: none; margin-block-start: 1px; color: var(--iqaa-n600); }
+
+.pp-team { margin-block-start: var(--s-8); }
+.pp-th { display: flex; flex-direction: column; gap: 2px; padding-block-end: var(--s-2); }
+.pp-th h3 { display: flex; align-items: center; gap: var(--s-2); font-size: 16px; line-height: 24px; font-weight: 700; }
+.pp-th h3 svg { flex: none; color: var(--iqaa-n600); }
+.pp-n { font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
+.pp-th > p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-inh { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+.pp-inh .pp-where { color: var(--iqaa-ink); }
+
+/* where a person works: each block led by its stroke, so the line's own notation says what kind of work it is */
+.pp-where { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px var(--s-4); }
+.pp-where li { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.pp-where b { font-weight: 700; }
+.pp-wn { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.pp-where + .pp-wn { margin-block-start: 2px; }
+
+/* ---------- the table: the same columns in every team, so the tables line up down the page ---------- */
+.pp-tb { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.pp-tb .w-p { width: 19%; } .pp-tb .w-t { width: 13%; } .pp-tb .w-y { width: 13%; } .pp-tb .w-s { width: 13%; }
+.pp-tb .w-h { width: 8%; } .pp-tb .w-w { width: 24%; } .pp-tb .w-st { width: 10%; }
+.pp-tb thead th { padding: var(--s-2) var(--s-3); border-block-end: 1px solid var(--iqaa-n200); font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); text-align: start; }
+.pp-tb tbody th, .pp-tb td { padding: var(--s-3); border-block-end: 1px solid var(--iqaa-n100); font-weight: 400; text-align: start; vertical-align: top; overflow-wrap: anywhere; }
+.pp-tb tr > :first-child { padding-inline-start: 0; }
+.pp-tb tr > :last-child { padding-inline-end: 0; }
+.pp-who { display: flex; align-items: flex-start; gap: var(--s-2); min-width: 0; }
+.pp-who .me-av { width: 28px; height: 28px; font-size: 13px; margin-block-start: -4px; }
+/* invited: not here yet, so the initial is drawn in the dashed pen */
+.me-av.inv { background: #fff; border: 1.5px dashed var(--iqaa-n500); color: var(--iqaa-n700); }
+.pp-pn { display: flex; flex-direction: column; min-width: 0; }
+.pp-pn b { font-weight: 700; }
+.pp-pn small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); overflow-wrap: anywhere; }
+.pp-sks { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.pp-sk { padding: 0 6px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--iqaa-n200); font-size: 12px; line-height: 20px; color: var(--iqaa-n800); }
+.pp-c-h span:not(.pp-l):not(.sr) { white-space: nowrap; }
+.pp-none { color: var(--iqaa-n500); }
+.pp-l { display: none; }
+.pp-st { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
+.pp-st i { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.pp-st.on i { background: var(--iqaa-violet); }
+.pp-st.inv { color: var(--iqaa-n700); }
+.pp-st.inv i { width: 10px; height: 10px; border: 1.5px dashed var(--iqaa-n500); }
+.pp-c-st small { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+
+.pp-org-sk { margin-block-start: var(--s-6); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); max-width: 96ch; }
+
+/* ---------- a narrow sheet or a phone: one card per person, where they work under who they are ---------- */
+@container ppd (max-width: 860px) {
+  .pp-tb, .pp-tb tbody { display: block; }
+  .pp-tb thead, .pp-tb colgroup { display: none; }
+  .pp-tb tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'p st' 't t' 'y y' 'w w' 's h'; gap: 0 var(--s-3); padding-block: var(--s-4); border-block-end: 1px solid var(--iqaa-n100); }
+  .pp-tb tbody th, .pp-tb td { display: block; padding: 0; border: 0; }
+  .pp-c-p { grid-area: p; } .pp-c-st { grid-area: st; text-align: end; }
+  .pp-c-t { grid-area: t; } .pp-c-y { grid-area: y; } .pp-c-w { grid-area: w; } .pp-c-s { grid-area: s; } .pp-c-h { grid-area: h; text-align: end; }
+  /* what follows the name starts under it */
+  .pp-tb .pp-c-t, .pp-tb .pp-c-y, .pp-tb .pp-c-w, .pp-tb .pp-c-s { padding-inline-start: 36px; }
+  .pp-c-t { margin-block-start: 2px; color: var(--iqaa-n800); }
+  .pp-c-y { font-size: 13px; color: var(--iqaa-n700); }
+  .pp-c-t:has(.pp-none), .pp-c-s:has(.pp-none) { display: none; }
+  .pp-c-w, .pp-c-s, .pp-c-h { margin-block-start: var(--s-3); }
+  .pp-l { display: block; margin-block-end: 2px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
+}
+
+/* ---------- a department nobody is in yet, and someone who is not the owner ---------- */
+.pp-empty { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); max-width: 60ch; padding-block: var(--s-6) var(--s-8); }
+.pp-empty p { font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.pp-empty b { color: var(--iqaa-ink); }
+
+/* ---------- a phone ---------- */
+@media (max-width: 700px) {
+  .pp-head { padding-block: var(--s-6) var(--s-4); }
+  .pp-acts { width: 100%; }
+  .pp-acts .btn { flex: 1 1 auto; }
+  .pp-acts .btn.primary { order: -1; }
+  .pp-panel { padding: var(--s-4); }
+  .pp-fa .btn { flex: 1 1 auto; }
+  .pp-ds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-ds li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .pp-d { padding: var(--s-3) var(--s-4) var(--s-4); }
+  .pp-d b { font-size: 15px; line-height: 22px; }
+  .pp-d[aria-current]::after { inset-inline: var(--s-4); }
+  .pp-dept { margin-block-start: var(--s-6); }
+}
+@media (pointer: coarse) { .pp-d { min-height: 64px; } }
