@@ -79,6 +79,8 @@ screens as", switches it; the organization is kept for the visit under `iqaa-org
   and roles (`#people`), what each role sees (`#sees`) and its settings (`#settings`); `?block=`,
   `?view=role:<role>|person:<key>`. People apply at once (`iqaa-people:<org>:<line>`); the rest is the draft
   (`iqaa-draft:<org>:<line>`).
+- `network.html`: the network of lines (call, launch, aggregate) from `network` in world.js; the canvas's other line tabs open here.
+- `new.html`: a new item (named by the organization's noun), joining the line at its first block, kept for the visit (`iqaa-new:<org>`).
 - `publish.html`: what changed since the published version, where live items go, the check; publishing writes
   `iqaa-published:<org>:<line>`.
 - `signin.html`: Al-Khatt's own sign-in; `#signed-in` plays the success as Heba and opens My work.
@@ -86,6 +88,7 @@ screens as", switches it; the organization is kept for the visit under `iqaa-org
   visit under `iqaa-moves`.
 - `notify.html`: what reached the person (sent back, given, waiting for their approval, late; for the owner also
   invitations and expired integrations), unread until opened (`iqaa-read:<org>:<person>`), and the organization's channel.
+- `me.html`: My space: the person, their week from the log as bars, where they work, their skills, where notices go.
 - `item.html?code=MAD-26-0144`: one template for any item (a piece with its video versions; `?code=DEV-26-0088` a
   ticket with its pull request and checks); tabs by hash (`#work`, `#files`, `#discussion`, `#log`, `#platforms`, `#code`).
 - `queue.html?block=montage`: a block's queue for its lead, `?view=list|board`; assigning and approving.
@@ -95,12 +98,19 @@ screens as", switches it; the organization is kept for the visit under `iqaa-org
   `iqaa-people:<org>`.
 - `reports.html`: the core's numbers from the line's log, block by block, then the pack's results (`#line`, `#results`).
 - `packs.html`: settings: packs, integrations, the organization's light identity, the month's usage.
+- `log.html` and `security.html`: Settings tabs. The log: every move (people violet, the machine ink, integrations grey), today by the hour; security: sign-in, sensitive fields and who sees them, client links (revocable, `iqaa-revoked:<org>`), named acceptances, keys. Reports also has a People tab: steps per person from the log.
 - `review.html?code=MAD-26-0142`: the client's link, without an account: the piece, comments pinned to moments of
   the video, and one decision (`iqaa-review:<code>`).
 - `automate.html`: the quick news line block by block in its five modes, limits, a fallback person, stop and publish
   (`iqaa-draft:<org>:news`, `iqaa-published:…`, `iqaa-stop:…`).
 - `sources.html`: RSS, webhooks, channels, schedules and other lines, each with its field map and every attempt
   today, `?source=`.
+- `publishing.html` and `archive.html` (the media pack): the week's posts per platform as a calendar (published, scheduled, waiting for a person, failed) and what waits before it can go out; the saved archive with reach bars and pages that can be restored (`iqaa-restored:<org>`). Data `posts` and `archive` in world.js.
+- `repos.html`, `releases.html`, `envs.html` (the software pack): repositories with their open pull requests and checks, each coming version's tickets by where they stand and the bugs after past releases, and what runs in each environment. Data `repos` and `envs` in world.js (Masar).
+- `clients.html`, `campaigns.html`, `spend.html` (the agency pack): each client's spend against budget, return on the ads, what waits for its approval and its live campaigns; every campaign with its place on the line, channels (filter), budget and due; the last 30 days of ad spend per day by platform and per client. Data `clients` and `spendDaily` in world.js (Wamda), totals equal Home's `packStats`.
+- `files.html`, `vtemplates.html`, `approvals.html` (a member's Tools): the files on the person's items by item, newest first; the media pack's video templates drawn to their frame with their uses; the agency pack's campaigns waiting for a client, waited hours against the block's expected hours, with a reminder (sessionStorage `iqaa-reminded:<org>`). The software pack's members get Repositories and Environments.
+
+Dark mode (product screens only; the book stays light): `assets/css/dark.css` turns the palette's variables over on `:root[data-theme=dark]` (neutrals reversed, ink and white trade places, violet, lilac, red and amber take dark-ground values; video frames keep light values inside). An inline script in the head (tools/p_auth.py `shell`) picks `?theme=dark|light`, then the person's choice (localStorage `iqaa-theme`), then the system. The frame's moon/sun switch saves the choice; grammar.js draws strokes in the dark palette. Product CSS uses `var(--iqaa-white)` and `rgba(var(--iqaa-ink-rgb), a)`, never `#fff` or ink rgba literals.
 - `templates.html`: templates for what the machine makes, versioned and approved in a person's name, `?t=`.
 - `integrations.html`: each connection's state and the log of events in and out, with a manual re-run.
 

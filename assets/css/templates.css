@@ -3,7 +3,7 @@
    (container units), so it reads the same at every width. Built on tokens.css, brand.css, auth.css and app.css (the
    frame, .btn, .cf-in); sizes are quarter-beat multiples. Ink is what is approved and runs; the dashed grey pen is a
    draft; violet is a person's decision (Approve in your name); no red: nothing here is a problem. */
-main.tm { background: #fff; }
+main.tm { background: var(--iqaa-white); }
 .tm-page { container: tm / inline-size; padding-block-end: var(--s-12); }
 
 /* ---------- head ---------- */
@@ -41,7 +41,7 @@ body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
 /* the template shown: held in the grey ground, the same way Sources holds the source shown */
 .tm-row[aria-current] { background: var(--iqaa-n100); }
 .tm-ic { grid-area: ic; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
-.tm-row[aria-current] .tm-ic { background: #fff; }
+.tm-row[aria-current] .tm-ic { background: var(--iqaa-white); }
 .tm-rt { grid-area: t; display: flex; flex-direction: column; min-width: 0; }
 .tm-rt b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }
 .tm-rt small, .tm-rs small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
@@ -95,7 +95,7 @@ body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
 /* a slide: its type is a share of its own width (cqi), as the output's would be of 1080 px; its own padding and gap
    are set in px, since a container's own cqi would measure the panel around it */
 .tm-slide { container-type: inline-size; position: relative; display: flex; flex-direction: column; gap: var(--s-3); width: 100%; max-width: 288px; padding: var(--s-5, 20px);
-  border: 1px solid var(--iqaa-n200); border-radius: 12px; background: #fff; color: var(--iqaa-ink); overflow: hidden; }
+  border: 1px solid var(--iqaa-n200); border-radius: 12px; background: var(--iqaa-white); color: var(--iqaa-ink); overflow: hidden; }
 .tm-slide.is-4x5 { aspect-ratio: 4 / 5; }
 .tm-slide.is-1x1 { aspect-ratio: 1; justify-content: center; }
 .tm-slide.is-9x16 { aspect-ratio: 9 / 16; max-width: 240px; }
@@ -119,7 +119,7 @@ body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
 .tm-qs { font-size: 4.6cqi; line-height: 1.4; color: var(--iqaa-n700); }
 .tm-slide.is-1x1 .tm-logo { margin-block-start: 3cqi; }
 /* the reel: the video slot in ink, as the review page draws a video, its words over it */
-.tm-slide.is-video { justify-content: space-between; border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: #fff; }
+.tm-slide.is-video { justify-content: space-between; border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: var(--iqaa-white); }
 .tm-op { font-size: 8cqi; line-height: 1.25; font-weight: 700; }
 .tm-clip { display: flex; flex-direction: column; align-items: center; gap: 2cqi; color: var(--iqaa-n400); text-align: center; }
 .tm-clip small { font-size: 6cqi; line-height: 1.35; color: var(--iqaa-n200); }
@@ -127,13 +127,13 @@ body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
 .tm-len { position: absolute; inset-block-start: 6cqi; inset-inline-end: 6cqi; padding: 0.8cqi 2.4cqi; border-radius: 2cqi; background: var(--iqaa-n800);
   font-family: 'Fragment Mono', monospace; font-size: 4.4cqi; line-height: 1.3; }
 .tm-op { padding-inline-end: 16cqi; }
-.tm-logo.is-light { margin-block-start: 0; color: #fff; }
+.tm-logo.is-light { margin-block-start: 0; color: var(--iqaa-white); }
 /* the slides, one button each: the number, in a tile of the slide's shape */
 .tm-thumbs { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; margin-block-start: var(--s-2); }
 .tm-th { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--iqaa-n700); cursor: pointer; }
-.tm-th span { display: grid; place-items: center; width: 26px; height: 32px; border: 1px solid var(--iqaa-n300); border-radius: 5px; background: #fff;
+.tm-th span { display: grid; place-items: center; width: 26px; height: 32px; border: 1px solid var(--iqaa-n300); border-radius: 5px; background: var(--iqaa-white);
   font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 1; }
-.tm-th[aria-pressed='true'] span { border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: #fff; }
+.tm-th[aria-pressed='true'] span { border-color: var(--iqaa-ink); background: var(--iqaa-ink); color: var(--iqaa-white); }
 @media (hover: hover) and (pointer: fine) { .tm-th:hover span { border-color: var(--iqaa-ink); } }
 .tm-th:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 0; }
 
@@ -181,8 +181,8 @@ body.app .tm-page .btn[aria-disabled='true']:active { transform: none; }
 .tm-vline li + li::before { content: ''; position: absolute; inset-block-start: 6px; inset-inline-end: calc(50% + 8px); width: calc(100% - 16px); height: 2px; background: var(--iqaa-ink); }
 .tm-vline li.draft::before { background: repeating-linear-gradient(to right, var(--iqaa-n400) 0 4px, transparent 4px 8px); }
 .tm-vline i { display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--iqaa-ink); }
-.tm-vline li.use i { background: #fff; box-shadow: inset 0 0 0 3px var(--iqaa-ink); }
-.tm-vline li.draft i { background: #fff; box-shadow: inset 0 0 0 2px var(--iqaa-n400); }
+.tm-vline li.use i { background: var(--iqaa-white); box-shadow: inset 0 0 0 3px var(--iqaa-ink); }
+.tm-vline li.draft i { background: var(--iqaa-white); box-shadow: inset 0 0 0 2px var(--iqaa-n400); }
 .tm-vline span { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--iqaa-n700); }
 .tm-foot { display: flex; align-items: center; gap: 6px; }
 .tm-foot svg { flex: none; color: var(--iqaa-n600); }

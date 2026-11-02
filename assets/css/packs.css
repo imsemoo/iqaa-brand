@@ -3,7 +3,7 @@
    brand.css, auth.css and app.css (the frame, .btn, the organization's mark); sizes are quarter-beat multiples. Ink is
    what runs by itself (an integration that works, a pack that is on); red is only a permission that ran out; the
    dashed grey pen runs down the usage, whose numbers are an example. */
-main.pk { background: #fff; }
+main.pk { background: var(--iqaa-white); }
 .pk-page { container: pk / inline-size; padding-block-end: var(--s-12); }
 
 /* ---------- head and tabs ---------- */
@@ -130,3 +130,7 @@ body.app .pk-page .btn[aria-disabled='true']:active { transform: none; }
 /* the example numbers, said in one word */
 .pk-ex { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
 .pk-ex svg { flex: none; color: var(--iqaa-n600); }
+
+a.pk-tab { color: var(--iqaa-n700); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { a.pk-tab:hover { color: var(--iqaa-ink); } }
+a.pk-tab:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: -2px; border-radius: 6px; }

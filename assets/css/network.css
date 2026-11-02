@@ -1,0 +1,55 @@
+/* The network of lines: the lines as rows of stations (app.css .stg), the links drawn between them in the line's
+   grammar. Built on tokens.css, brand.css, auth.css, app.css and lines.css (the line tabs). */
+main.nw { background: var(--iqaa-white); }
+.nw-head { padding-block: var(--s-6) var(--s-2); }
+.nw-head h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.nw-sum { margin-block-start: var(--s-2); font-size: 14px; }
+.nw-legend { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6); padding-block: var(--s-3) var(--s-4); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.nw-lg { display: inline-flex; align-items: center; gap: var(--s-2); }
+.nw-lg b { color: var(--iqaa-ink); }
+.nw-lg svg { flex: none; fill: none; stroke: var(--iqaa-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nw-lg svg .back { stroke-width: 1.2; }
+.nw-lg svg .thin { stroke-width: 1.2; }
+[dir='rtl'] .nw-lg svg { transform: scaleX(-1); }
+/* the map: rows of lines, wires under them */
+.nw-map { position: relative; padding-block: var(--s-2) var(--s-6); }
+.nw-wires { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.nw-wires .w { fill: none; stroke: var(--iqaa-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nw-wires .w.back, .nw-wires .w.thin { stroke-width: 1.2; }
+.nw-wires .w-n rect { fill: var(--iqaa-white); stroke: var(--iqaa-n300); }
+.nw-wires .w-n text { font: 11px 'Fragment Mono', monospace; fill: var(--iqaa-ink); text-anchor: middle; }
+.nw-rows { position: relative; display: flex; flex-direction: column; gap: 88px; }
+.nw-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: var(--s-6); }
+.nw-row > * { min-width: 0; }
+.nw-line { position: relative; padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); border: 1px solid var(--iqaa-n200); border-radius: 16px; background: var(--iqaa-white);
+  transition: box-shadow var(--m-half) var(--ease-move); }
+.nw-line.is-main { border-color: var(--iqaa-ink); }
+.nw-line.is-asked { box-shadow: 0 0 0 3px var(--iqaa-n200); }
+.nw-lh { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin-block-end: var(--s-4); }
+.nw-lh h2 { font-size: 16px; line-height: 24px; font-weight: 700; }
+.nw-lh .stats { font-size: 13px; }
+.nw-lh .btn { margin-inline-start: auto; }
+.nw-st .stg-n { color: var(--iqaa-ink); }
+/* the links in words */
+.nw-links { padding-block: var(--s-6) var(--s-12); }
+.nw-links h2 { font-size: 16px; line-height: 24px; font-weight: 700; margin-block-end: var(--s-3); }
+.nw-links ul { list-style: none; margin: 0; padding: 0; }
+.nw-lk { display: grid; grid-template-columns: 9rem minmax(0, 1fr) auto minmax(0, 1fr) minmax(0, 1.4fr) auto; align-items: center; gap: var(--s-3);
+  padding-block: var(--s-3); border-block-start: 1px solid var(--iqaa-n100); font-size: 14px; line-height: 20px; }
+.nw-lk > svg { color: var(--iqaa-n600); }
+[dir='rtl'] .nw-lk > svg { transform: scaleX(-1); }
+.nw-ki { display: inline-flex; align-items: center; gap: 6px; }
+.nw-ki svg { color: var(--iqaa-n600); }
+.nw-path { display: flex; flex-direction: column; min-width: 0; }
+.nw-path small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.nw-rule { font-size: 13px; color: var(--iqaa-n700); }
+.nw-none { font-size: 14px; color: var(--iqaa-n700); }
+/* narrow: the rows stack, so the wires would cross cards; the list carries the links */
+@media (max-width: 900px) {
+  .nw-wires { display: none; }
+  .nw-rows { gap: var(--s-4); }
+  .nw-lk { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); grid-template-areas: 'k k k' 'f a t' 'r r n'; }
+  .nw-ki { grid-area: k; } .nw-lk > .nw-path:first-of-type { grid-area: f; } .nw-lk > svg { grid-area: a; } .nw-lk > .nw-path:last-of-type { grid-area: t; }
+  .nw-rule { grid-area: r; } .nw-lk > .stat { grid-area: n; }
+  .nw-st { overflow-x: auto; }
+}

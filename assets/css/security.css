@@ -1,0 +1,26 @@
+/* Settings · Security: five boxes of the plan's rules, each shown where it holds. */
+.sc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: var(--s-4); align-items: start; padding-block: var(--s-6) var(--s-12); }
+.sc-grid > * { min-width: 0; }
+.sc-box { padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); border: 1px solid var(--iqaa-n200); border-radius: 14px; }
+.sc-list, .sc-fields, .sc-links, .sc-acc { list-style: none; margin: var(--s-2) 0 0; padding: 0; }
+.sc-list li, .sc-fields li, .sc-links li, .sc-acc li { display: flex; align-items: center; gap: var(--s-3); padding-block: var(--s-2); font-size: 14px; line-height: 20px; }
+.sc-list li + li, .sc-fields li + li, .sc-links li + li, .sc-acc li + li { border-block-start: 1px solid var(--iqaa-n100); }
+.sc-list li > span:first-of-type { flex: 1; }
+.sc-list em { font-style: normal; font-size: 11px; font-weight: 600; color: var(--iqaa-n600); }
+.sc-list svg, .sc-fields svg, .sc-links svg { flex: none; color: var(--iqaa-n600); }
+.sc-off { color: var(--iqaa-n500); display: grid; }
+.sc-fields b { min-width: 6rem; }
+.sc-who { display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.sc-chip { padding: 2px 8px; border-radius: 999px; background: var(--iqaa-n100); font-size: 12px; line-height: 18px; }
+.sc-none { font-size: 13px; color: var(--iqaa-n700); }
+.sc-rule { display: flex; align-items: center; gap: 6px; margin-block-start: var(--s-3); font-size: 12px; color: var(--iqaa-n700); }
+.sc-rule svg { flex: none; color: var(--iqaa-n600); }
+.sc-st { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.sc-st small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.sc-links li.is-off { opacity: 0.6; }
+.sc-acc li svg { flex: none; height: 18px; width: auto; }
+[dir='rtl'] .sc-acc li > svg { transform: scaleX(-1); }
+.sc-by { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--iqaa-n700); }
+.sc-by .me-av { width: 24px; height: 24px; font-size: 11px; }
+.sc-keys { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin-block-start: var(--s-2); font-size: 13px; color: var(--iqaa-n700); }
+.sc-keys .stat .sr { display: none; }

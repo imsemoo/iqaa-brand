@@ -2,7 +2,7 @@
    by day. Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn); sizes are quarter-beat multiples. Ink
    is what runs by itself (a connection that works, an event that went through); red is only a problem: a permission
    that ran out and an event that failed; no department or brand colours, and the house's icons, not outside logos. */
-main.ig { background: #fff; }
+main.ig { background: var(--iqaa-white); }
 .ig-page { container: ig / inline-size; padding-block-end: var(--s-12); }
 
 /* ---------- head ---------- */
@@ -65,7 +65,7 @@ body.app .ig-page .btn[aria-disabled='true']:active { transform: none; }
   font: inherit; font-size: 13px; line-height: 20px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
 .ig-f span { font-family: 'Fragment Mono', monospace; font-weight: 400; }
 .ig-f.has-bad span { color: var(--iqaa-red); }
-.ig-f[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 0 0 1px var(--iqaa-n200); }
+.ig-f[aria-pressed='true'] { background: var(--iqaa-white); color: var(--iqaa-ink); box-shadow: 0 0 0 1px var(--iqaa-n200); }
 @media (hover: hover) and (pointer: fine) { .ig-f:hover { color: var(--iqaa-ink); } }
 .ig-f:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
 @media (pointer: coarse) { .ig-f { min-height: 44px; } }
@@ -115,7 +115,7 @@ body.app .ig-page .btn[aria-disabled='true']:active { transform: none; }
 .ig-dl-t { position: relative; height: 24px; direction: ltr; }
 .ig-dl-t::before { content: ''; position: absolute; inset-inline: 0; inset-block-start: 11px; height: 2px; border-radius: 1px; background: var(--iqaa-n200); }
 .ig-dl-t i { position: absolute; inset-block-start: 6px; left: calc(var(--x) * 1% - 6px); width: 12px; height: 12px; border-radius: 50%; background: var(--iqaa-ink); box-shadow: 0 0 0 2px var(--iqaa-n50); }
-.ig-dl-t i.out { background: #fff; box-shadow: inset 0 0 0 3px var(--iqaa-ink), 0 0 0 2px var(--iqaa-n50); }
+.ig-dl-t i.out { background: var(--iqaa-white); box-shadow: inset 0 0 0 3px var(--iqaa-ink), 0 0 0 2px var(--iqaa-n50); }
 .ig-dl-t i.bad { background: var(--iqaa-red); }
 .ig-dl-h { position: relative; height: 16px; margin-block-start: 2px; font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--iqaa-n600); }
 .ig-dl-h span { position: absolute; left: calc(var(--x) * 1%); transform: translateX(-50%); }
@@ -124,6 +124,6 @@ body.app .ig-page .btn[aria-disabled='true']:active { transform: none; }
 .ig-dl-k { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-start: var(--s-2); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
 .ig-dl-k span { display: inline-flex; align-items: center; gap: 6px; }
 .ig-dl-k i { display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--iqaa-ink); }
-.ig-dl-k .out i { background: #fff; box-shadow: inset 0 0 0 2px var(--iqaa-ink); }
+.ig-dl-k .out i { background: var(--iqaa-white); box-shadow: inset 0 0 0 2px var(--iqaa-ink); }
 .ig-dl-k .bad { color: var(--iqaa-red); font-weight: 700; }
 .ig-dl-k .bad i { background: var(--iqaa-red); }

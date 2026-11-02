@@ -23,7 +23,7 @@ html.side-folded body.app:has(.ap-side) {
 }
 
 :where(body.app)>main {
-  background: #fff;
+  background: var(--iqaa-white);
 }
 
 .a-top:has(.ap-side) {
@@ -54,7 +54,7 @@ html.side-folded .a-top:has(.ap-side) {
     min-height: calc(100vh - 2 * var(--s-2));
     border-radius: 16px;
     overflow: clip;
-    box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.07), 0 1px 2px rgba(25, 23, 46, 0.04), 0 16px 40px -24px rgba(25, 23, 46, 0.2);
+    box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.07), 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.04), 0 16px 40px -24px rgba(var(--iqaa-ink-rgb), 0.2);
   }
 
   body.app:has(.ap-side)>.a-foot {
@@ -113,12 +113,12 @@ html.side-folded .a-top:has(.ap-side) {
 
 @media (hover: hover) {
   .ap-org:hover {
-    background: rgba(25, 23, 46, 0.05);
+    background: rgba(var(--iqaa-ink-rgb), 0.05);
   }
 }
 
 .ap-org[aria-expanded='true'] {
-  background: rgba(25, 23, 46, 0.06);
+  background: rgba(var(--iqaa-ink-rgb), 0.06);
 }
 
 .ap-org .org-mark {
@@ -165,9 +165,9 @@ html.side-folded .a-top:has(.ap-side) {
   display: flex;
   flex-direction: column;
   padding: 6px;
-  background: #fff;
+  background: var(--iqaa-white);
   border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 16px 40px -12px rgba(25, 23, 46, 0.3);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 16px 40px -12px rgba(var(--iqaa-ink-rgb), 0.3);
 }
 
 .ap-menu[hidden] {
@@ -241,7 +241,7 @@ html.side-folded .a-top:has(.ap-side) {
   border: 0;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08);
   color: var(--iqaa-n600);
   font: inherit;
   font-size: 14px;
@@ -250,7 +250,7 @@ html.side-folded .a-top:has(.ap-side) {
 
 @media (hover: hover) {
   .ap-search:hover {
-    background: #fff;
+    background: var(--iqaa-white);
     color: var(--iqaa-ink);
   }
 }
@@ -266,8 +266,8 @@ html.side-folded .a-top:has(.ap-side) {
   line-height: 16px;
   padding: 1px 6px;
   border-radius: 6px;
-  background: #fff;
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.12);
+  background: var(--iqaa-white);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.12);
   color: var(--iqaa-n600);
 }
 
@@ -311,17 +311,17 @@ html.side-folded .a-top:has(.ap-side) {
 
 @media (hover: hover) {
   a.ap-l:hover {
-    background: rgba(25, 23, 46, 0.05);
+    background: rgba(var(--iqaa-ink-rgb), 0.05);
     color: var(--iqaa-ink);
   }
 }
 
 /* the screen open is a piece of the sheet: white, lifted a little off the desk */
 .ap-l[aria-current] {
-  background: #fff;
+  background: var(--iqaa-white);
   color: var(--iqaa-ink);
   font-weight: 700;
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.07), 0 1px 3px rgba(25, 23, 46, 0.08);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.07), 0 1px 3px rgba(var(--iqaa-ink-rgb), 0.08);
 }
 
 .ap-l[aria-current] svg {
@@ -401,7 +401,7 @@ a.ap-l:focus-visible,
   justify-content: space-between;
   gap: var(--s-2);
   padding: var(--s-3) 6px 0;
-  border-block-start: 1px solid rgba(25, 23, 46, 0.08);
+  border-block-start: 1px solid rgba(var(--iqaa-ink-rgb), 0.08);
 }
 
 .ap-me {
@@ -459,7 +459,7 @@ a.ap-l:focus-visible,
 
 @media (hover: hover) {
   .ap-fold:hover {
-    background: rgba(25, 23, 46, 0.06);
+    background: rgba(var(--iqaa-ink-rgb), 0.06);
     color: var(--iqaa-ink);
   }
 }
@@ -509,7 +509,7 @@ html.side-folded .ap-n:not(.me) {
 html.side-folded .ap-soon {
   margin-block-start: var(--s-4);
   padding-block-start: var(--s-4);
-  border-block-start: 1px solid rgba(25, 23, 46, 0.08);
+  border-block-start: 1px solid rgba(var(--iqaa-ink-rgb), 0.08);
 }
 
 html.side-folded .ap-menu {
@@ -547,7 +547,7 @@ html.side-folded .ap-fold svg {
   html.side-folded .a-top:has(.ap-side) {
     position: static;
     width: auto;
-    background: #fff;
+    background: var(--iqaa-white);
     border-block-end: 1px solid var(--iqaa-n200);
   }
 
@@ -610,7 +610,7 @@ html.side-folded .ap-fold svg {
     justify-content: space-around;
     gap: 0;
     padding: 6px var(--s-2) calc(6px + env(safe-area-inset-bottom));
-    background: #fff;
+    background: var(--iqaa-white);
     border-block-start: 1px solid var(--iqaa-n200);
   }
 
@@ -642,7 +642,7 @@ html.side-folded .ap-fold svg {
     padding: 0 4px;
     border-radius: 8px;
     background: var(--iqaa-violet);
-    color: #fff;
+    color: var(--iqaa-white);
     font-size: 10px;
     text-align: center;
   }
@@ -690,7 +690,7 @@ html.side-folded .ap-fold svg {
     height: 8px;
     border-radius: 50%;
     background: var(--iqaa-violet);
-    box-shadow: 0 0 0 2px #fff;
+    box-shadow: 0 0 0 2px var(--iqaa-white);
   }
 
   .ap-foot {
@@ -736,9 +736,9 @@ html.side-folded .ap-fold svg {
   padding: 0;
   border: 0;
   border-radius: 16px;
-  background: #fff;
+  background: var(--iqaa-white);
   color: var(--iqaa-ink);
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 24px 64px -16px rgba(25, 23, 46, 0.4);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 24px 64px -16px rgba(var(--iqaa-ink-rgb), 0.4);
   overflow: hidden;
 }
 
@@ -748,7 +748,7 @@ html.side-folded .ap-fold svg {
 }
 
 .cmdk::backdrop {
-  background: rgba(25, 23, 46, 0.32);
+  background: rgba(var(--iqaa-ink-rgb), 0.32);
 }
 
 .cmdk-in {
@@ -1002,7 +1002,7 @@ html.side-folded .ap-fold svg {
 }
 
 .strip .stn {
-  fill: #fff;
+  fill: var(--iqaa-white);
   stroke: var(--iqaa-ink);
   stroke-width: 2;
 }
@@ -1014,7 +1014,7 @@ html.side-folded .ap-fold svg {
 
 .strip .train {
   fill: var(--iqaa-ink);
-  stroke: #fff;
+  stroke: var(--iqaa-white);
   stroke-width: 2;
 }
 
@@ -1061,9 +1061,9 @@ html.side-folded .ap-fold svg {
 }
 
 .vw a[aria-current] {
-  background: #fff;
+  background: var(--iqaa-white);
   color: var(--iqaa-ink);
-  box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1);
+  box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.1);
 }
 
 .ln-hr {
@@ -1203,7 +1203,7 @@ html[dir='rtl'].side-folded .ap-fold svg {
 .ap-sub a[aria-current] {
   color: var(--iqaa-ink);
   font-weight: 700;
-  background: rgba(25, 23, 46, 0.05);
+  background: rgba(var(--iqaa-ink-rgb), 0.05);
 }
 
 .ap-sub a:focus-visible {
@@ -1213,7 +1213,7 @@ html[dir='rtl'].side-folded .ap-fold svg {
 
 @media (hover: hover) {
   .ap-sub a:not([aria-current]):hover {
-    background: rgba(25, 23, 46, 0.05);
+    background: rgba(var(--iqaa-ink-rgb), 0.05);
     color: var(--iqaa-ink);
   }
 }
@@ -1373,7 +1373,7 @@ html.side-folded .ap-sub {
 
 @media (hover: hover) {
   .ap-me-b:hover {
-    background: rgba(25, 23, 46, 0.05);
+    background: rgba(var(--iqaa-ink-rgb), 0.05);
   }
 }
 
@@ -1435,7 +1435,7 @@ html.side-folded .ap-group {
   margin: var(--s-3) 10px;
   overflow: hidden;
   color: transparent;
-  background: rgba(25, 23, 46, 0.08);
+  background: rgba(var(--iqaa-ink-rgb), 0.08);
 }
 
 .ap-more-li,

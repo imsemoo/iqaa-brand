@@ -42,12 +42,12 @@
       link('Notifications', C.href('notify.html'), 'Notifications', newN, '', true), link('Automation', C.href('automate.html'), 'Run log', 0, '', true), link('Templates', C.href('templates.html'), 'Templates', 0, '', true),
       link('Integrations', C.href('integrations.html'), 'Webhook', 0, '', true), link('Reports', C.href('reports.html'), 'Reports', 0, '', true)];
     groups += group(T('{pack} pack', { pack: T(O.pack) }), media
-      ? [link('Sources', C.href('sources.html'), 'Sources'), soon('Publishing', 'Publish'), soon('Saved archive', 'Archive')]
-      : agency ? [soon('Clients', 'Clients'), soon('Campaigns', 'Publish'), soon('Spend', 'Billing')]
-        : [soon('Repositories', 'Repository'), soon('Releases', 'Release'), soon('Environments', 'Environment')]);
+      ? [link('Sources', C.href('sources.html'), 'Sources'), link('Publishing', C.href('publishing.html'), 'Publish'), link('Saved archive', C.href('archive.html'), 'Archive')]
+      : agency ? [link('Clients', C.href('clients.html'), 'Clients'), link('Campaigns', C.href('campaigns.html'), 'Publish'), link('Spend', C.href('spend.html'), 'Billing')]
+        : [link('Repositories', C.href('repos.html'), 'Repository'), link('Releases', C.href('releases.html'), 'Release'), link('Environments', C.href('envs.html'), 'Environment')]);
     groups += group(T('The organization'), [link('People and departments', C.href('people.html'), 'People'), link('Settings', C.href('packs.html'), 'Settings')]);
   } else {
-    main = [link('My work', C.href('work.html'), 'My work', mineN, 'me'), link('Notifications', C.href('notify.html'), 'Notifications', newN), soon('My space', 'My space')];
+    main = [link('My work', C.href('work.html'), 'My work', mineN, 'me'), link('Notifications', C.href('notify.html'), 'Notifications', newN), link('My space', C.href('me.html'), 'My space')];
     // a lead's blocks, each with what is in it: the block's queue
     const led = C.mine.filter((b) => C.leads(b));
     if (led.length) {
@@ -58,8 +58,9 @@
         return `<li><a class="ap-l" href="${href}"${cur}>${icon('Line')}<span>${esc(T(b.name))}</span><i class="ap-n">${n}</i></a></li>`;
       }));
     }
-    groups += group(T('Tools'), media ? [soon('Video templates', 'Templates'), soon('Files', 'Files')]
-      : agency ? [soon('Client approvals', 'Done'), soon('Files', 'Files')] : [soon('Repositories', 'Repository'), soon('Environments', 'Environment')]);
+    const tool = (name, page, ic) => link(name, C.href(page), ic);
+    groups += group(T('Tools'), media ? [tool('Video templates', 'vtemplates.html', 'Templates'), tool('Files', 'files.html', 'Files')]
+      : agency ? [tool('Client approvals', 'approvals.html', 'Done'), tool('Files', 'files.html', 'Files')] : [tool('Repositories', 'repos.html', 'Repository'), tool('Environments', 'envs.html', 'Environment')]);
   }
   // a phone's tab bar holds four; the rest open from More
   const nav = $('[data-nav]');
@@ -80,6 +81,18 @@
     const params = new URLSearchParams(Object.assign({ org: O.id, as: k }, keep));
     return `<a href="${page}?${params}"${k === C.me ? ' aria-current="true"' : ''}><span class="me-av" aria-hidden="true">${esc(T(p.name).charAt(0))}</span><span><b>${esc(T(p.name))}</b><small>${esc(T(p.title))}</small></span></a>`;
   }).join('');
+
+  // ---------- dark mode: the head script set it; the switch keeps the person's choice and redraws the page ----------
+  const themeSw = $('[data-theme-switch]');
+  if (themeSw) {
+    themeSw.setAttribute('aria-pressed', String(html.dataset.theme === 'dark'));
+    themeSw.addEventListener('click', () => {
+      try { localStorage.setItem('iqaa-theme', html.dataset.theme === 'dark' ? 'light' : 'dark'); } catch (e) { /* this page only */ }
+      const u = new URL(location.href);
+      u.searchParams.delete('theme');
+      location.replace(u);
+    });
+  }
 
   // ---------- fold: the sidebar folds to icons and remembers it ----------
   const fold = $('[data-fold]');

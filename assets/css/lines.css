@@ -2,7 +2,7 @@
    block types, and the selected block's inspector. Built on tokens.css, brand.css, auth.css and app.css (the frame,
    .btn, .pj, .field, the house dropdown); sizes are quarter-beat multiples. Violet is a person, ink is what runs by
    itself, the dashed grey pen is the draft, red is a problem only. */
-main.ln2 { background: #fff; }
+main.ln2 { background: var(--iqaa-white); }
 .ln2-page .btn svg { flex: none; }
 /* what the prototype does not do yet: the system's disabled look, in reach of the keyboard, said to be coming */
 .ln2-page .btn em { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--iqaa-n600); }
@@ -33,7 +33,7 @@ body.app .ln2-page .btn[aria-disabled='true']:active { transform: none; }
 
 /* a menu that opens from a button (ui.js): View as, and adding a person to a role */
 .ln2-menu { position: absolute; z-index: 30; inset-block-start: calc(100% + 6px); inset-inline-end: 0; width: 300px; max-height: min(480px, 70vh); overflow-y: auto;
-  display: flex; flex-direction: column; padding: 6px; background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 16px 40px -12px rgba(25, 23, 46, 0.3); }
+  display: flex; flex-direction: column; padding: 6px; background: var(--iqaa-white); border-radius: 12px; box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 16px 40px -12px rgba(var(--iqaa-ink-rgb), 0.3); }
 .ln2-menu[hidden] { display: none; }
 .pr-add .ln2-menu { inset-inline: 0 auto; }
 .ln2-menu-h { padding: 8px 10px 4px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
@@ -95,7 +95,7 @@ div.st-btn { cursor: default; }
 /* the ring: work changes hands here; filled when the block is open in the inspector */
 .st-dot { position: relative; z-index: 1; flex: none; width: 20px; height: 20px; }
 .st-dot svg { display: block; width: 20px; height: 20px; overflow: visible; }
-.st-dot circle { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; transition: fill var(--m-quarter) var(--ease-arrive); }
+.st-dot circle { fill: var(--iqaa-white); stroke: var(--iqaa-ink); stroke-width: 4; transition: fill var(--m-quarter) var(--ease-arrive); }
 .st.on .st-dot circle { fill: var(--iqaa-ink); }
 .st.on .st-t { background: var(--iqaa-n100); }
 @media (hover: hover) and (pointer: fine) { .st:not(.on) button.st-btn:hover .st-t { background: var(--iqaa-n50); } }
@@ -126,7 +126,7 @@ div.st-btn { cursor: default; }
 .lg-tk.draft { stroke: var(--iqaa-n500); stroke-dasharray: 7 7; stroke-linecap: butt; }
 .lg-tk.gone { stroke: var(--iqaa-n200); }
 .lg-tk.back { stroke-width: 3; }
-.lg-r { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; }
+.lg-r { fill: var(--iqaa-white); stroke: var(--iqaa-ink); stroke-width: 4; }
 .lg-r.draft { stroke: var(--iqaa-n500); stroke-dasharray: 3.665 3.665; }
 .lg-r.gone { stroke: var(--iqaa-n300); }
 .lg-gs { display: inline-flex; align-items: center; gap: 4px; }
@@ -145,7 +145,7 @@ div.st-btn { cursor: default; }
 
 .pal-g > p { margin-block-end: 6px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
 .pal-l { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.pal-b { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding-block: 0; padding-inline: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px; background: #fff;
+.pal-b { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding-block: 0; padding-inline: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n200); border-radius: 10px; background: var(--iqaa-white);
   font: inherit; font-size: 14px; line-height: 20px; color: var(--iqaa-ink); cursor: pointer; white-space: nowrap; }
 .pal-b:hover { border-color: var(--iqaa-ink); }
 .pal-b:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
@@ -189,7 +189,7 @@ div.st-btn { cursor: default; }
 .seg label { position: relative; display: inline-flex; }
 .seg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .seg span { display: inline-flex; align-items: center; min-height: 30px; padding: 0 10px; border-radius: 8px; font-size: 13px; line-height: 16px; font-weight: 600; color: var(--iqaa-n700); white-space: nowrap; }
-.seg input:checked + span { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.12); }
+.seg input:checked + span { background: var(--iqaa-white); color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.12); }
 .seg input:focus-visible + span { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
 .seg input:disabled { cursor: default; }
 @media (pointer: coarse) { .seg span { min-height: 40px; } }
@@ -201,7 +201,7 @@ div.st-btn { cursor: default; }
 .pr-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); }
 .pr-h h3 { font-size: 16px; line-height: 24px; font-weight: 700; }
 /* a new role's name, written in place in the draft's pen until it is published */
-.pr-name { width: 200px; max-width: 100%; min-height: 36px; padding: 0 var(--s-2); border: 1px dashed var(--iqaa-n500); border-radius: 8px; background: #fff; font: inherit; font-size: 16px; font-weight: 700; color: var(--iqaa-ink); }
+.pr-name { width: 200px; max-width: 100%; min-height: 36px; padding: 0 var(--s-2); border: 1px dashed var(--iqaa-n500); border-radius: 8px; background: var(--iqaa-white); font: inherit; font-size: 16px; font-weight: 700; color: var(--iqaa-ink); }
 .pr-name:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; border-style: solid; border-color: var(--iqaa-ink); }
 .pr-k { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .pr-a { margin-inline-start: auto; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); font-variant-numeric: tabular-nums; }
@@ -262,7 +262,7 @@ div.st-btn { cursor: default; }
 /* the preview: on the quiet ground, beside the tables while there is room */
 .sw-pv { position: sticky; inset-block-start: var(--s-4); display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-4) var(--s-5, 20px); border-radius: 14px; background: var(--iqaa-n50); }
 .sw-pv .dd { max-width: 220px; }
-.sw-pv .dd-b { min-height: 36px; font-size: 14px; background: #fff; }
+.sw-pv .dd-b { min-height: 36px; font-size: 14px; background: var(--iqaa-white); }
 .pv-s { font-size: 14px; line-height: 20px; font-weight: 700; }
 .pv-n { margin-block-start: var(--s-2); font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-n700); }
 .pv-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -292,7 +292,7 @@ div.st-btn { cursor: default; }
 .md-req { margin-block-start: var(--s-4); padding: var(--s-4); border-radius: 12px; background: var(--iqaa-n50); }
 .md-req > p:first-child { margin-block-end: var(--s-3); font-size: 14px; line-height: 20px; font-weight: 700; }
 .md-rf { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-4); }
-.md-rf .dd-b, .set-f .dd-b { background: #fff; }
+.md-rf .dd-b, .set-f .dd-b { background: var(--iqaa-white); }
 .md-bad { display: flex; align-items: flex-start; gap: 6px; margin-block-start: var(--s-3); font-size: 14px; line-height: 20px; font-weight: 600; color: var(--iqaa-red); }
 .md-bad svg { flex: none; margin-block-start: 2px; }
 .set-x { margin-block-start: var(--s-8); }

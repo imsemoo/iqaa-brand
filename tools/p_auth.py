@@ -28,6 +28,8 @@ def shell(slug, title, top, body, scripts, foot='', css=()):
 <link rel="stylesheet" href="{b}assets/css/tokens.css?v={V}">
 <link rel="stylesheet" href="{b}assets/css/brand.css?v={V}">
 <link rel="stylesheet" href="{b}assets/css/auth.css?v={V}">{extra}
+<link rel="stylesheet" href="{b}assets/css/dark.css?v={V}">
+<script>try{{var q=new URLSearchParams(location.search).get('theme'),k=localStorage.getItem('iqaa-theme'),d=q?q==='dark':k?k==='dark':matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.dataset.theme='dark'}}catch(e){{}}</script>
 {js}
 </head>
 <body class="app">

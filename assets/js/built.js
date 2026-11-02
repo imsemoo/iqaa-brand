@@ -72,7 +72,7 @@
       return m ? `${esc(name(b))} · ${esc(T('beside {block}', { block: name(m) }))}` : '';
     }).filter(Boolean);
     const li = path.map((b) => `<li class="ahead"><span class="stg-g" aria-hidden="true">${IQ.glyph(b.stroke, { test: true })}</span><span class="stg-n">${esc(name(b))}</span></li>`).join('');
-    return `<div class="bt-line"><ol class="stg bt-sig" style="--n:${path.length}" aria-label="${esc(T('{line}, as Watar drew it', { line: T(L.name) }))}">${li}</ol></div>${beside.length ? `<p class="bt-beside">${beside.join('<br>')}</p>` : ''}`;
+    return `<div class="bt-line" tabindex="0" role="region" aria-label="${esc(T('{line}, as Watar drew it', { line: T(L.name) }))}"><ol class="stg bt-sig" style="--n:${path.length}" aria-label="${esc(T('{line}, as Watar drew it', { line: T(L.name) }))}">${li}</ol></div>${beside.length ? `<p class="bt-beside">${beside.join('<br>')}</p>` : ''}`;
   }
 
   // ---------- the departments, the fields, the invitations ----------

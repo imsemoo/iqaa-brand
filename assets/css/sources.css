@@ -2,7 +2,7 @@
    Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn, .field); sizes are quarter-beat multiples.
    Ink is what the machine let in (the grammar's straight run), the dashed grey pen is Watar's proposal, red is a
    problem only: an attempt that failed. */
-main.so { background: #fff; }
+main.so { background: var(--iqaa-white); }
 .so-page { container: so / inline-size; padding-block-end: var(--s-12); }
 .so-page .btn svg { flex: none; }
 /* what the prototype does not do yet: the system's disabled look, in reach of the keyboard, said to be coming */
@@ -42,7 +42,7 @@ body.app .so-page .btn[aria-disabled='true']:active { transform: none; }
 .so-r:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
 /* a source's mark: the kind of source it is, on the quiet ground */
 .so-i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; background: var(--iqaa-n50); color: var(--iqaa-ink); }
-.so-r[aria-current] .so-i { background: #fff; }
+.so-r[aria-current] .so-i { background: var(--iqaa-white); }
 .so-rt { display: flex; flex-direction: column; min-width: 0; }
 .so-ty { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--iqaa-n700); }
 .so-rt b { font-size: 15px; line-height: 20px; overflow-wrap: anywhere; }

@@ -167,10 +167,10 @@ tr.out td { color: var(--c-text-3); }
 /* ---------- buttons ---------- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-5, 20px); border-radius: 10px; border: 1px solid var(--c-rule-strong); background: var(--c-ground); color: var(--c-text); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
 .btn:hover { border-color: var(--c-text); }
-.btn.primary { background: var(--iqaa-violet); border-color: var(--iqaa-violet); color: #fff; }
+.btn.primary { background: var(--iqaa-violet); border-color: var(--iqaa-violet); color: var(--iqaa-white); }
 .btn.primary:hover { background: color-mix(in oklab, var(--iqaa-violet) 88%, var(--iqaa-ink)); }
 .btn.small { min-height: 36px; padding: 0 var(--s-3); font-size: var(--t-sm); border-radius: 9px; }
-.btn[aria-pressed='true'] { background: var(--iqaa-ink); color: #fff; border-color: var(--iqaa-ink); }
+.btn[aria-pressed='true'] { background: var(--iqaa-ink); color: var(--iqaa-white); border-color: var(--iqaa-ink); }
 
 /* ---------- artboards: everything inside is sized in cqw, so a frame scales as one picture ---------- */
 .frame { container-type: inline-size; position: relative; width: 100%; aspect-ratio: var(--ar, 1); border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px var(--c-rule); background: #fff; }

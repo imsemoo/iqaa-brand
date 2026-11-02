@@ -1,6 +1,6 @@
 {
   "ar": {
-    "Skip to content": "تخط إلى المحتوى",
+    "Skip to content": "انتقل إلى المحتوى",
     "Prototype screen, part of the {link}. Nothing is sent or saved.": "شاشة نموذج أولي، جزء من {link}. لا يرسل شيء ولا يحفظ.",
     "Iqaa identity": "هوية إيقاع",
     "Runs on Iqaa": "يعمل على إيقاع",
@@ -25,7 +25,7 @@
     "Start another organization": "أنشئ مؤسسة أخرى",
     "Sign out": "تسجيل الخروج",
     "Search": "بحث",
-    "Signed in as": "مسجل الدخول باسم",
+    "Signed in as": "الحساب:",
     "Owner": "مالك",
     "Member": "عضو",
     "Fold the sidebar": "طي الشريط الجانبي",
@@ -99,21 +99,21 @@
     "{n} min": {
       "zero": "0 دقيقة",
       "one": "دقيقة",
-      "two": "دقيقتين",
+      "two": "دقيقتان",
       "few": "{n} دقائق",
       "many": "{n} دقيقة",
       "other": "{n} دقيقة"
     },
     "{n} hours": {
       "one": "ساعة",
-      "two": "ساعتين",
+      "two": "ساعتان",
       "few": "{n} ساعات",
       "many": "{n} ساعة",
       "other": "{n} ساعة"
     },
     "{n} days": {
       "one": "يوم",
-      "two": "يومين",
+      "two": "يومان",
       "few": "{n} أيام",
       "many": "{n} يوما",
       "other": "{n} يوم"
@@ -123,14 +123,14 @@
     "tomorrow": "غدا",
     "{n} days ago": {
       "one": "قبل يوم",
-      "two": "قبل يومين",
+      "two": "قبل يومان",
       "few": "قبل {n} أيام",
       "many": "قبل {n} يوما",
       "other": "قبل {n} يوم"
     },
     "in {n} days": {
       "one": "بعد يوم",
-      "two": "بعد يومين",
+      "two": "بعد يومان",
       "few": "بعد {n} أيام",
       "many": "بعد {n} يوما",
       "other": "بعد {n} يوم"
@@ -360,7 +360,10 @@
       "few": "{n} اشتراكات",
       "many": "{n} اشتراكا",
       "other": "{n} اشتراك"
-    }
+    },
+    "Dark mode": "الوضع الداكن",
+    "Dark": "داكن",
+    "Light": "فاتح"
   },
   "tr": {
     "Skip to content": "İçeriğe geç",
@@ -375,7 +378,7 @@
     "Clients": "Müşteriler",
     "Ask Watar": "Watar’a sor",
     "Settings": "Ayarlar",
-    "Build": "Tasarım",
+    "Build": "Oluştur",
     "Team": "Ekip",
     "Channels": "Kanallar",
     "Organization": "Kuruluş",
@@ -423,7 +426,7 @@
     "Screens": "Ekranlar",
     "Search screens and orders": "Ekranlarda ve siparişlerde ara",
     "Results": "Sonuçlar",
-    "move": "gez",
+    "move": "gezin",
     "open": "aç",
     "close": "kapat",
     "Sun": "Paz",
@@ -592,7 +595,7 @@
     "{station}: {steps}": "{station}: {steps}",
     ", ": ", ",
     "; ": "; ",
-    "runs by itself": "kendi çalışır",
+    "runs by itself": "kendi kendine çalışır",
     "waits for a person": "bir kişiyi bekler",
     "done by a person": "bir kişi yapar",
     "timed wait": "süreli bekleme",
@@ -639,6 +642,9 @@
     "Yasser Hamdan": "Yasser Hamdan",
     "Iqaa sent Nisreen the arrival time": "Iqaa, Nisreen’e varış saatini gönderdi",
     "{n} orders": "{n} sipariş",
-    "{n} subscriptions": "{n} abonelik"
+    "{n} subscriptions": "{n} abonelik",
+    "Dark mode": "Koyu mod",
+    "Dark": "Koyu",
+    "Light": "Açık"
   }
 }

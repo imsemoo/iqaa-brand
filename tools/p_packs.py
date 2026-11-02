@@ -8,19 +8,27 @@ from p_auth import runs_badge, shell
 from p_ct import icon
 from p_frame import frame
 
-# the settings tabs, in the plan's order; only Packs and integrations is drawn
-TABS = (('organization', 'Organization'), ('packs', 'Packs and integrations'), ('security', 'Security'), ('billing', 'Billing and usage'), ('log', 'Log'))
+# the settings tabs, in the plan's order, and the page each built one is; the others are named as coming
+TABS = (('organization', 'Organization', None), ('packs', 'Packs and integrations', 'packs.html'), ('security', 'Security', 'security.html'),
+        ('billing', 'Billing and usage', None), ('log', 'Log', 'log.html'))
+
+
+def settings_tabs(current):
+    """The tabs; a built tab is a link (its page's script keeps who is looking, data-keep), the current one marked."""
+    def tab(k, n, page):
+        if k == current:
+            return f'<li><span class="pk-tab" aria-current="page">{t(n)}</span></li>'
+        if page:
+            return f'<li><a class="pk-tab" href="{page}" data-keep>{t(n)}</a></li>'
+        return f'<li><span class="pk-tab" aria-disabled="true" title="{t("{name}: coming next", name=t(n))}">{t(n)} <em>{t("Soon")}</em></span></li>'
+    return f'<nav class="pk-tabs" aria-label="{t("Settings")}"><ul>{"".join(tab(*x) for x in TABS)}</ul></nav>'
 
 
 def packs():
-    def tab(k, n):
-        if k == 'packs':
-            return f'<li><span class="pk-tab" aria-current="page">{t(n)}</span></li>'
-        return f'<li><span class="pk-tab" aria-disabled="true" title="{t("{name}: coming next", name=t(n))}">{t(n)} <em>{t("Soon")}</em></span></li>'
-    tabs = ''.join(tab(k, n) for k, n in TABS)
+    tabs_nav = settings_tabs('packs')
     body = f'''<div class="pk-page ap-wrap">
 <header class="pk-head"><h1>{t('Settings')}</h1></header>
-<nav class="pk-tabs" aria-label="{t('Settings')}"><ul>{tabs}</ul></nav>
+{tabs_nav}
 <div class="pk-live" role="status"><p class="pk-note" data-note hidden><span data-note-t></span><button type="button" class="link" data-undo>{t('Undo')}</button></p></div>
 <div data-body>
 <div class="pk-intro"><h2 title="{t('A pack adds blocks, screens and reports; it never changes how the core works. It is the only way to customize: no organization gets its own code.')}">{t('Packs and integrations')}</h2></div>

@@ -2,7 +2,7 @@
    in its own strokes, and the selected block's inspector. Built on tokens.css, brand.css, auth.css and app.css (the
    frame, .btn, .pj, .field, the house dropdown); sizes are quarter-beat multiples. Violet is a person, ink is what the
    machine does, the dashed grey pen is the draft or a trial, red is a problem only: a block stopped, a rule broken. */
-main.au { background: #fff; }
+main.au { background: var(--iqaa-white); }
 .au-page { padding-block-end: var(--s-12); }
 .au-page .btn svg { flex: none; }
 /* what the prototype does not do yet: the system's disabled look, in reach of the keyboard, said to be coming */
@@ -31,7 +31,7 @@ body.app .au-page .btn[aria-disabled='true']:active { transform: none; }
 
 /* a menu that opens from a button (ui.js): the stop, and adding a tool */
 .au-menu { position: absolute; z-index: 30; inset-block-start: calc(100% + 6px); inset-inline-end: 0; width: 320px; max-height: min(480px, 70vh); overflow-y: auto;
-  display: flex; flex-direction: column; padding: 6px; background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 16px 40px -12px rgba(25, 23, 46, 0.3); }
+  display: flex; flex-direction: column; padding: 6px; background: var(--iqaa-white); border-radius: 12px; box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 16px 40px -12px rgba(var(--iqaa-ink-rgb), 0.3); }
 .au-menu[hidden] { display: none; }
 .ai-add .au-menu { inset-inline: 0 auto; }
 .au-menu-h { padding: 8px 10px 4px; font-size: 12px; line-height: 16px; font-weight: 700; color: var(--iqaa-n600); }
@@ -93,7 +93,7 @@ div.au-sb { cursor: default; }
 /* the ring: work changes hands here; filled when the block is open in the inspector, red while it is stopped */
 .au-dot { position: relative; z-index: 1; flex: none; width: 20px; height: 20px; }
 .au-dot svg { display: block; width: 20px; height: 20px; overflow: visible; }
-.au-dot circle { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; transition: fill var(--m-quarter) var(--ease-arrive); }
+.au-dot circle { fill: var(--iqaa-white); stroke: var(--iqaa-ink); stroke-width: 4; transition: fill var(--m-quarter) var(--ease-arrive); }
 .au-s.on .au-dot circle { fill: var(--iqaa-ink); }
 .au-s.on .au-t { background: var(--iqaa-n100); }
 .au-s.is-stopped .au-dot circle { stroke: var(--iqaa-red); }
@@ -116,7 +116,7 @@ div.au-sb { cursor: default; }
 .au-lg-g { display: inline-flex; align-items: center; gap: 4px; }
 .au-lg-g svg { display: block; height: 16px; width: auto; overflow: visible; }
 .lg-tk { fill: none; stroke: var(--iqaa-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.lg-r { fill: #fff; stroke: var(--iqaa-ink); stroke-width: 4; }
+.lg-r { fill: var(--iqaa-white); stroke: var(--iqaa-ink); stroke-width: 4; }
 .lg-r.bad { stroke: var(--iqaa-red); }
 
 /* ---------- the inspector: the block, then how it runs beside what it has done ---------- */
@@ -167,7 +167,7 @@ div.au-sb { cursor: default; }
 .ai-req > p:first-child { margin-block-end: var(--s-3); font-size: 14px; line-height: 20px; font-weight: 700; }
 .ai-req .field { max-width: 320px; }
 .ai-req .field label, .ai-fbs label, .ai-lm .field label { font-size: 13px; }
-.ai-req .dd-b, .ai-fbs .dd-b { background: #fff; }
+.ai-req .dd-b, .ai-fbs .dd-b { background: var(--iqaa-white); }
 .ai-rec { display: flex; align-items: flex-start; gap: 6px; margin-block-start: var(--s-3); font-size: 14px; line-height: 20px; }
 .ai-rec svg { flex: none; margin-block-start: 2px; color: var(--iqaa-ink); }
 
@@ -197,7 +197,7 @@ div.au-sb { cursor: default; }
 .ai-since { margin-block: 2px var(--s-3); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .ai-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--iqaa-n100);
   border: 1px solid var(--iqaa-n200); border-radius: 14px; overflow: hidden; }
-.ai-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-3) var(--s-4); background: #fff; }
+.ai-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-3) var(--s-4); background: var(--iqaa-white); }
 .ai-kpi li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .ai-k { font-family: 'Fragment Mono', monospace; font-size: 26px; line-height: 32px; color: var(--iqaa-ink); }
 .ai-kpi li > span:last-child { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }

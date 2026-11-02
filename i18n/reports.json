@@ -3,7 +3,7 @@
     "Reports of the {line}": "تقارير {line}",
     "Last {n} days": {
       "one": "آخر يوم",
-      "two": "آخر يومين",
+      "two": "آخر يومان",
       "few": "آخر {n} أيام",
       "many": "آخر {n} يوما",
       "other": "آخر {n} يوم"
@@ -133,7 +133,7 @@
       "other": "ترسل تعليقاتك على الفيديو ({n}) مع ما تكتبه."
     },
     "Send to the {team}": "إرسال إلى {team}",
-    "Your changes go back to the {team} on their own.": "تعديلاتك ترجع ل{team} تلقائيا.",
+    "Your changes go back to the {team} on their own.": "تصل تعديلاتك إلى {team} تلقائيا.",
     "You approved it": "اعتمدتها",
     "{org} finishes it": "يكملها {org}",
     "You asked for changes": "طلبت تعديلات",
@@ -171,7 +171,19 @@
     },
     "Why work comes back": "لماذا يرجع العمل",
     "Engagement by kind": "التفاعل حسب النوع",
-    "Visual": "مرئي"
+    "Visual": "مرئي",
+    "Nobody has a step in the log yet.": "لا خطوة لأحد في السجل بعد.",
+    "People in numbers": "الأشخاص بالأرقام",
+    "People who acted": "أشخاص عملوا",
+    "Handed on": "سلموا",
+    "Steps per person": "الخطوات لكل شخص",
+    "{n} handed on": {
+      "one": "تسليم واحد",
+      "two": "تسليمان",
+      "few": "{n} تسليمات",
+      "many": "{n} تسليما",
+      "other": "{n} تسليم"
+    }
   },
   "tr": {
     "Reports of the {line}": "Raporlar: {line}",
@@ -229,7 +241,7 @@
     "Reach": "Erişim",
     "people, on {n} platforms": "kişi, {n} platformda",
     "Best platform": "En iyi platform",
-    "{pct} of the reach": "Erişimin {pct} kadarı",
+    "{pct} of the reach": "Erişimdeki payı: {pct}",
     "Engagement of visual content": "Görsel içerik etkileşimi",
     "Text posts: {pct}": "Metin gönderileri: {pct}",
     "Reach by platform": "Platforma göre erişim",
@@ -270,7 +282,7 @@
     "You asked for changes": "Değişiklik istediniz",
     "The {team} makes a new version": "Yeni sürümü {team} hazırlıyor",
     "You review it again on this link": "Bu bağlantıda yeniden incelersiniz",
-    "until {day}": "{day} tarihine kadar",
+    "until {day}": "son gün: {day}",
     "What you sent": "Gönderdikleriniz",
     "Changes asked for": "Değişiklik istendi",
     "Thank you, {name}.": "Teşekkürler {name}.",
@@ -296,6 +308,12 @@
     "{n} hours from start to end, on average": "Baştan sona ortalama {n} saat",
     "Why work comes back": "İş neden geri dönüyor",
     "Engagement by kind": "Türe göre etkileşim",
-    "Visual": "Görsel"
+    "Visual": "Görsel",
+    "Nobody has a step in the log yet.": "Kayıtta henüz kimsenin adımı yok.",
+    "People in numbers": "Rakamlarla kişiler",
+    "People who acted": "Çalışan kişiler",
+    "Handed on": "Devredilen",
+    "Steps per person": "Kişi başına adımlar",
+    "{n} handed on": "{n} devir"
   }
 }

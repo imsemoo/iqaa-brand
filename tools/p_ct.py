@@ -233,6 +233,10 @@ ICONS = {
     'Video': '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.3v5.4l4.6-2.7z"/>',
     'Take': '<path d="M12 4v10M7.5 9.5L12 14l4.5-4.5M5 19.5h14"/>',
     'More': '<circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/>',
+    # many become one: three lines meeting, then going on as one (the network's aggregate)
+    'Merge': '<path d="M3 6c5 0 7 6 11 6M3 18c5 0 7-6 11-6M3 12h18M17 8.5l4 3.5-4 3.5"/>',
+    'Dark': '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',
+    'Light': '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
     'Sources': '<path d="M5 18.5a1.5 1.5 0 1 0 0-.01M4 11a9 9 0 0 1 9 9M4 4.5A15.5 15.5 0 0 1 19.5 20"/>',
 }
 GROUPS = [
@@ -241,8 +245,8 @@ GROUPS = [
     ('Actions and states', ['Overview', 'Inbox', 'Handoff', 'Undo', 'Lock', 'Draft', 'Publish', 'Test run', 'Retry', 'Run log', 'Late', 'Search', 'Switch', 'Sign out', 'History', 'Date', 'Done', 'Discard']),
     ('People and contact', ['People', 'Clients', 'Contact', 'Company', 'Phone', 'Email', 'Place', 'Link', 'Message']),
     ('Asking Watar', ['Ask', 'New conversation']),
-    ('Settings', ['Billing', 'Invite', 'Image', 'Mark', 'Language', 'Preview']),
-    ('Digital production', ['Archive', 'Notifications', 'My space', 'Files', 'Video',
+    ('Settings', ['Billing', 'Invite', 'Image', 'Mark', 'Language', 'Preview', 'Dark', 'Light']),
+    ('Digital production', ['Merge', 'Archive', 'Notifications', 'My space', 'Files', 'Video',
                             'Repository', 'Release', 'Environment', 'Upload', 'Take', 'More']),
 ]
 

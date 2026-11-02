@@ -1,0 +1,25 @@
+/* A new item: the form beside where it starts on the line. Built on tokens.css, brand.css, auth.css and app.css. */
+main.nn { background: var(--iqaa-white); }
+.nn-head { padding-block: var(--s-8) var(--s-6); }
+.nn-head h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.nn-sum { display: flex; align-items: center; gap: 6px; margin-block-start: var(--s-2); font-size: 14px; color: var(--iqaa-n700); }
+.nn-sum svg { flex: none; color: var(--iqaa-n600); }
+.nn-grid { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: var(--s-8); align-items: start; padding-block-end: var(--s-12); }
+.nn-grid > * { min-width: 0; }
+.nn-form { display: flex; flex-direction: column; gap: var(--s-5, 20px); }
+.nn-who { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+.nn-who legend { font-size: 14px; font-weight: 700; margin-block-end: var(--s-2); }
+.nn-op { display: grid; grid-template-columns: auto 32px minmax(0, 1fr) auto; align-items: center; gap: var(--s-3); padding: var(--s-2) var(--s-3); border-radius: 12px; cursor: pointer; }
+.nn-op:has(input:checked) { background: var(--iqaa-n50); box-shadow: inset 0 0 0 1px var(--iqaa-n300); }
+@media (hover: hover) and (pointer: fine) { .nn-op:hover { background: var(--iqaa-n50); } }
+.nn-op input { accent-color: var(--iqaa-violet); width: 18px; height: 18px; }
+.nn-op input:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.nn-op b { display: block; font-size: 14px; line-height: 20px; }
+.nn-op small { display: block; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.nn-open { background: var(--iqaa-n100); color: var(--iqaa-n700); }
+.nn-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
+.nn-act { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+.nn-line { padding: var(--s-5, 20px); border-radius: 16px; background: var(--iqaa-n50); }
+.nn-no { display: flex; align-items: center; gap: var(--s-2); font-size: 14px; color: var(--iqaa-n700); }
+@media (max-width: 900px) { .nn-grid { grid-template-columns: minmax(0, 1fr); } .nn-line { order: -1; overflow-x: auto; } }
+@media (max-width: 480px) { .nn-two { grid-template-columns: minmax(0, 1fr); } .nn-op .hbar { display: none; } }

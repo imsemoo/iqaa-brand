@@ -1,7 +1,7 @@
 /* Publishing a new version of a line: the changes in the dashed grey pen of a draft, the line they make, the live items
    and where they go, and beside them the check and the two buttons. Built on tokens.css, brand.css, auth.css and app.css
    (the frame, .btn, the stroke list .stg, the dropdown); sizes are quarter-beat multiples. */
-main.pb { background: #fff; }
+main.pb { background: var(--iqaa-white); }
 .pb-page { padding-block-end: var(--s-12); }
 .pb-head { padding-block: var(--s-8) var(--s-6); max-width: 880px; }
 .pb-eyebrow { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }

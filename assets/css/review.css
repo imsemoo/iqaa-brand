@@ -18,7 +18,7 @@ main.rv + .a-foot p { text-align: center; }
 .rv-org[hidden] { display: none; }
 
 /* ---------- the sheet ---------- */
-.rv-sheet { display: flex; flex-direction: column; gap: var(--s-8); padding: var(--s-8); border: 1px solid var(--iqaa-n200); border-radius: 16px; background: #fff; }
+.rv-sheet { display: flex; flex-direction: column; gap: var(--s-8); padding: var(--s-8); border: 1px solid var(--iqaa-n200); border-radius: 16px; background: var(--iqaa-white); }
 .rv-hd { display: flex; flex-direction: column; gap: var(--s-2); }
 .rv-ask { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
 .rv-ask svg { flex: none; color: var(--iqaa-n600); }
@@ -42,15 +42,15 @@ main.rv + .a-foot p { text-align: center; }
   border-radius: 12px; background: var(--iqaa-ink); color: var(--iqaa-n200); font-size: 14px; line-height: 20px; }
 .rv-poster > svg { color: var(--iqaa-n400); }
 .rv-len { position: absolute; inset-block-end: var(--s-3); inset-inline-end: var(--s-3); padding: 2px var(--s-2); border-radius: 6px; background: var(--iqaa-n800);
-  font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: #fff; }
+  font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: var(--iqaa-white); }
 /* a comment at this moment, over the picture as a subtitle would be; its edge is the client's violet */
 .rv-cue { position: absolute; inset-block-end: var(--s-12); inset-inline: var(--s-6); width: fit-content; max-width: calc(100% - 2 * var(--s-6)); margin-inline: auto;
-  padding: var(--s-2) var(--s-3); border-inline-start: 3px solid var(--iqaa-violet); border-radius: 8px; background: var(--iqaa-n800); color: #fff; font-size: 15px; line-height: 22px; text-align: start; }
+  padding: var(--s-2) var(--s-3); border-inline-start: 3px solid var(--iqaa-violet); border-radius: 8px; background: var(--iqaa-n800); color: var(--iqaa-white); font-size: 15px; line-height: 22px; text-align: start; }
 .rv-cue[hidden] { display: none; }
 .rv-cue time { font-family: 'Fragment Mono', monospace; font-size: 13px; }
 /* the controls run left to right in every language, as time does on a video player */
 .rv-ctl { display: flex; align-items: center; gap: var(--s-3); margin-block-start: var(--s-3); }
-.rv-play { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--iqaa-n200); border-radius: 10px; background: #fff; color: var(--iqaa-ink); cursor: pointer; }
+.rv-play { flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--iqaa-n200); border-radius: 10px; background: var(--iqaa-white); color: var(--iqaa-ink); cursor: pointer; }
 @media (hover: hover) and (pointer: fine) { .rv-play:hover { border-color: var(--iqaa-ink); } }
 .rv-play:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
 /* the rail, what has played in ink, the comments as violet ticks, and the slider on top, its thumb kept in step */
@@ -60,12 +60,12 @@ main.rv + .a-foot p { text-align: center; }
 .rv-mk { position: absolute; inset-block-start: 14px; inset-inline-start: calc(var(--t) / 2 + (100% - var(--t)) * var(--f) - 1.5px); width: 3px; height: 16px; border-radius: 2px; background: var(--iqaa-violet); }
 .rv-track input { position: absolute; inset: 0; width: 100%; height: 44px; margin: 0; background: none; -webkit-appearance: none; appearance: none; cursor: pointer; }
 .rv-track input::-webkit-slider-runnable-track { height: 44px; background: none; }
-.rv-track input::-webkit-slider-thumb { -webkit-appearance: none; width: var(--t); height: var(--t); margin-block-start: 14px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: #fff; }
+.rv-track input::-webkit-slider-thumb { -webkit-appearance: none; width: var(--t); height: var(--t); margin-block-start: 14px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: var(--iqaa-white); }
 .rv-track input::-moz-range-track { height: 44px; background: none; }
-.rv-track input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: #fff; }
+.rv-track input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid var(--iqaa-ink); border-radius: 50%; background: var(--iqaa-white); }
 .rv-track input:focus-visible { outline: none; }
-.rv-track input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--iqaa-violet); }
-.rv-track input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--iqaa-violet); }
+.rv-track input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--iqaa-white), 0 0 0 4px var(--iqaa-violet); }
+.rv-track input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--iqaa-white), 0 0 0 4px var(--iqaa-violet); }
 .rv-t { flex: none; font-family: 'Fragment Mono', monospace; font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .rv-t span { color: var(--iqaa-ink); }
 .rv-vid figcaption { margin-block-start: var(--s-1); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
@@ -96,7 +96,7 @@ main.rv + .a-foot p { text-align: center; }
 .rv-fine { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); text-wrap: pretty; }
 .rv-chg { display: flex; flex-direction: column; gap: var(--s-4); padding: var(--s-4); border-radius: 12px; background: var(--iqaa-n50); }
 .rv-chg[hidden] { display: none; }
-.rv-chg .field textarea { min-height: 96px; background: #fff; }
+.rv-chg .field textarea { min-height: 96px; background: var(--iqaa-white); }
 .rv-chg .row-act { flex-direction: column-reverse; }
 .rv-chg .row-act .btn { width: 100%; margin: 0; }
 .rv-lock { display: flex; align-items: flex-start; gap: var(--s-2); padding-block-start: var(--s-4); border-block-start: 1px solid var(--iqaa-n100); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }

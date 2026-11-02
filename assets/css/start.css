@@ -1,7 +1,7 @@
 /* Start, outside the app: the organization and its idea on one side, what happens when Watar builds on the other. Built
    on tokens.css, brand.css and auth.css (the fields, .btn, .lead, .proto, the beats .b, the language switch); sizes are
    quarter-beat multiples. */
-main.st { background: #fff; }
+main.st { background: var(--iqaa-white); }
 .st-top .lang-top { width: auto; }
 .st-page { padding-block: var(--s-12) var(--s-16); }
 .st-grid { display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 380px); justify-content: center; gap: var(--s-16); align-items: start; }
@@ -19,7 +19,7 @@ main.st { background: #fff; }
 /* the templates the packs bring: a row of four; the chosen one in ink, those still to come said so */
 .st-tpls { display: flex; flex-direction: column; gap: var(--s-2); }
 .st-tpl-l { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); }
-.st-tpl { display: flex; align-items: center; gap: var(--s-2); min-height: 48px; padding: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n300); border-radius: 12px; background: #fff;
+.st-tpl { display: flex; align-items: center; gap: var(--s-2); min-height: 48px; padding: var(--s-2) var(--s-3); border: 1px solid var(--iqaa-n300); border-radius: 12px; background: var(--iqaa-white);
   font: inherit; font-size: 14px; line-height: 18px; font-weight: 600; color: var(--iqaa-ink); text-align: start; cursor: pointer;
   transition: border-color var(--m-quarter) var(--ease-arrive), box-shadow var(--m-quarter) var(--ease-arrive); }
 .st-tpl svg { flex: none; color: var(--iqaa-n600); }
@@ -45,7 +45,7 @@ main.st { background: #fff; }
 .st-seg label { position: relative; display: inline-flex; }
 .st-seg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .st-seg span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--s-4); border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); }
-.st-seg input:checked + span { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.st-seg input:checked + span { background: var(--iqaa-white); color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.1); }
 .st-seg input:focus-visible + span { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
 @media (hover: hover) and (pointer: fine) { .st-seg input:not(:checked):hover + span { color: var(--iqaa-ink); } }
 .st-skip { padding-block: 0; min-height: 44px; color: var(--iqaa-n700); }

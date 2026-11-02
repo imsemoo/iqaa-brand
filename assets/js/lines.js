@@ -242,8 +242,10 @@
   // ---------- the head: the organization's lines, this line's state, View as, and the two moves ----------
   function renderHead() {
     const n = D.changes.length;
-    $('[data-lines]').innerHTML = `<a href="${C.href('lines.html')}" aria-current="page"><b>${esc(T(L.name))}</b><span>${esc(T('Version {n}', { n: L.version }))} · ${esc(NO.n(C.items.length, '{n} live job', '{n} live jobs'))}</span></a>`
-      + (O.others || []).map((o) => `<span class="ln2-ls" aria-disabled="true" title="${esc(T('{name}: coming next', { name: T(o.name) }))}"><b>${esc(T(o.name))}</b><span>${esc(NO.n(o.live, '{n} live job', '{n} live jobs'))} · ${T('Soon')}</span></span>`).join('');
+    const net = (O.network || {}).lines || [];
+    $('[data-lines]').innerHTML = `<a href="${C.href('network.html')}"><b>${esc(T('The network'))}</b><span>${esc(NO.n(net.length || 1, '{n} line', '{n} lines'))}</span></a>`
+      + `<a href="${C.href('lines.html')}" aria-current="page"><b>${esc(T(L.name))}</b><span>${esc(T('Version {n}', { n: L.version }))} · ${esc(NO.n(C.items.length, '{n} live job', '{n} live jobs'))}</span></a>`
+      + net.filter((o) => o.id !== L.id).map((o) => `<a href="${C.href('network.html')}#line-${o.id}"><b>${esc(T(o.name))}</b><span>${esc(NO.n(o.live, '{n} live job', '{n} live jobs'))}</span></a>`).join('');
     $('[data-name]').textContent = T(L.name);
     document.title = `${T(L.name)} · ${T(O.name)}`;
     $('[data-state]').innerHTML = n

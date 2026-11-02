@@ -44,7 +44,7 @@
     "{n} invited": {
       "one": "مدعو واحد",
       "two": "مدعوان",
-      "few": "{n} مدعوين",
+      "few": "{n} مدعوون",
       "many": "{n} مدعوا",
       "other": "{n} مدعو"
     },
@@ -411,7 +411,7 @@
     "Edit {name}": "Düzenle: {name}",
     "Write their name.": "Adını yaz.",
     "Enter their work email.": "İş e-postasını gir.",
-    "That doesn’t look like an email address. Check for a missing @ or dot.": "Bu bir e-posta adresine benzemiyor. Eksik bir @ ya da nokta var mı, bak.",
+    "That doesn’t look like an email address. Check for a missing @ or dot.": "Bu bir e-posta adresine benzemiyor. @ ya da nokta eksik olabilir.",
     "{email} already belongs to {name}.": "{email} zaten {name} kişisine ait.",
     "{name} already has an invitation from {day}. Send it again instead.": "{name} için {day} tarihli bir davet zaten var. Bunun yerine onu yeniden gönder.",
     "Invitation to {name} is ready. In this prototype nothing is sent.": "{name} için davet hazır. Bu prototipte hiçbir şey gönderilmez.",

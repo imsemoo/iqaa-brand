@@ -54,7 +54,7 @@
   // the steps as one stroke, as a block writes them in the line's signature (no hand-off inside a block); mirrored
   // right to left with the page (svg.flow)
   function strokes(list) {
-    const M = window.IQAA.mark, w = M.stroke, top = -(M.loop_h + w), bot = 9, pal = window.IQAA.pal.light;
+    const M = window.IQAA.mark, w = M.stroke, top = -(M.loop_h + w), bot = 9, pal = window.IQAA.pal[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'];
     let x = 0, body = '';
     list.forEach(([k, test]) => { body += IQ.cell(k, x, 0, pal, 1, !!test); x += IQ.WIDTH[k]; });
     return `<svg class="flow" viewBox="${-w} ${top} ${x + 2 * w} ${bot - top}" aria-hidden="true">${body}</svg>`;

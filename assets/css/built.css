@@ -1,7 +1,7 @@
 /* Reviewing what Watar built: Watar's account and its line, the departments, fields and invitations side by side, and
    who may do what. The whole proposal hangs from one dashed grey pen down its edge until a person accepts it. Built on
    tokens.css, brand.css, auth.css and app.css (the frame, .btn, the stroke list .stg); sizes are quarter-beat multiples. */
-main.bt { background: #fff; }
+main.bt { background: var(--iqaa-white); }
 .bt-page { container: bt / inline-size; padding-block-end: var(--s-12); }
 .bt-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
 .bt-eyebrow { display: flex; align-items: center; gap: var(--s-2); font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }

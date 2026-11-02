@@ -1,0 +1,52 @@
+/* Dark mode of the product screens. The screens are written on the palette's variables, so dark turns the palette over
+   here: the neutral scale reverses, ink (text and solid fills) and white (grounds and text on fills) trade places, and
+   the accents take their dark-ground values (violet lighter for text and fills, lilac deep so light text reads on it,
+   red and amber as tokens' -dark). Set by the head script on product pages only. */
+:root { --iqaa-ink-rgb: 25, 23, 46; }
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --iqaa-ink-rgb: 236, 233, 245;
+  --iqaa-white: #19172E;
+  --iqaa-ink: #ECE9F5;
+  --iqaa-lavender: #100E22;
+  --iqaa-n0: #19172E;
+  --iqaa-n50: #1F1D35;
+  --iqaa-n100: #2A2841;
+  --iqaa-n200: #3A384F;
+  --iqaa-n300: #4F4D63;
+  --iqaa-n400: #67657A;
+  --iqaa-n500: #807E91;
+  --iqaa-n600: #A3A0B3;
+  --iqaa-n700: #B5B2C2;
+  --iqaa-n800: #D0CDDB;
+  --iqaa-n900: #ECE9F5;
+  --iqaa-n950: #F5F4FA;
+  --iqaa-violet: #A57AFA;
+  --iqaa-lilac: #4B3388;
+  --iqaa-red: #FF9890;
+  --iqaa-amber: #F3A656;
+}
+/* the theme switch in the frame: the moon in light, the sun in dark */
+.ap-theme .i-light, :root[data-theme='dark'] .ap-theme .i-dark { display: none; }
+:root[data-theme='dark'] .ap-theme .i-light { display: block; }
+/* the frame's foot holds the person, then the switches on a row of their own */
+.ap-foot { flex-wrap: wrap; row-gap: var(--s-2); }
+.ap-foot .ap-me-b { flex: 1 1 100%; }
+.ap-foot .ap-theme { margin-inline-end: auto; }
+html.side-folded .ap-foot .ap-theme { margin: 0; }
+@media (max-width: 899px) {
+  .ap-foot { flex-wrap: nowrap; }
+  .ap-foot .ap-me-b { flex: none; }
+  .ap-foot .ap-theme { display: grid; margin: 0; }
+}
+/* a video frame or photo stays a dark screen: inside it the palette keeps its light-mode values */
+:root[data-theme='dark'] :is(.it-poster, .rv-poster, .ar-frame) {
+  --iqaa-ink: #0B0A18;
+  --iqaa-white: #FFFFFF;
+  --iqaa-ink-rgb: 25, 23, 46;
+  --iqaa-n200: #D0CDDB;
+  --iqaa-n300: #B5B2C2;
+  --iqaa-n400: #9A97A9;
+  --iqaa-n700: #4F4D63;
+  --iqaa-n800: #39374D;
+}

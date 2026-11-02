@@ -142,7 +142,7 @@
     "{C} answered {quotes} within an hour": "جاء رد {C} على {quotes} خلال ساعة",
     "{C} answered {quotes} within {n} hours": {
       "one": "جاء رد {C} على {quotes} خلال ساعة",
-      "two": "جاء رد {C} على {quotes} خلال ساعتين",
+      "two": "جاء رد {C} على {quotes} خلال ساعتان",
       "few": "جاء رد {C} على {quotes} خلال {n} ساعات",
       "many": "جاء رد {C} على {quotes} خلال {n} ساعة",
       "other": "جاء رد {C} على {quotes} خلال {n} ساعة"
@@ -369,7 +369,7 @@
     "Arrived {arrived} for {due} · {late}": "وصل {arrived} والموعد {due} · {late}",
     "{n} min late": {
       "one": "تأخر دقيقة",
-      "two": "تأخر دقيقتين",
+      "two": "تأخر دقيقتان",
       "few": "تأخر {n} دقائق",
       "many": "تأخر {n} دقيقة",
       "other": "تأخر {n} دقيقة"

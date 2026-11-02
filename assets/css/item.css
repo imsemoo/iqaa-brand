@@ -2,7 +2,7 @@
    work and a side with its details and Watar. Built on tokens.css, brand.css, auth.css and app.css (the frame, the
    line in strokes); sizes are quarter-beat multiples. Violet is a person, ink is automatic, the dashed grey pen is a
    draft or a test, red is late or failed. */
-main.it { background: #fff; }
+main.it { background: var(--iqaa-white); }
 
 /* ---------- the head ---------- */
 .it-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-4); }
@@ -35,7 +35,7 @@ main.it { background: #fff; }
 
 /* sending back: the note goes with it, so it is asked for in place */
 .it-backf { display: flex; flex-direction: column; gap: var(--s-3); max-width: 720px; margin-block-end: var(--s-4); margin-inline-start: auto; padding: var(--s-4) var(--s-6); border: 1px solid var(--iqaa-ink); border-radius: 14px; background: var(--iqaa-n50); }
-.it-backf textarea, .it-say textarea { min-height: 96px; background: #fff; }
+.it-backf textarea, .it-say textarea { min-height: 96px; background: var(--iqaa-white); }
 .it-backa { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 
 .it-note { display: flex; align-items: center; gap: var(--s-3); margin-block-end: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; line-height: 20px; }
@@ -95,7 +95,7 @@ main.it { background: #fff; }
 .it-poster, .it-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: var(--iqaa-ink); }
 .it-poster { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2); color: var(--iqaa-n200); font-size: 14px; line-height: 20px; }
 .it-poster svg { color: var(--iqaa-n400); }
-.it-len { position: absolute; inset-block-end: var(--s-3); inset-inline-end: var(--s-3); padding: 2px var(--s-2); border-radius: 6px; background: var(--iqaa-n800); font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: #fff; }
+.it-len { position: absolute; inset-block-end: var(--s-3); inset-inline-end: var(--s-3); padding: 2px var(--s-2); border-radius: 6px; background: var(--iqaa-n800); font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 16px; color: var(--iqaa-white); }
 .it-frame figcaption { margin-block-start: var(--s-2); font-size: 14px; line-height: 20px; color: var(--iqaa-n700); }
 .it-frame figcaption b { color: var(--iqaa-ink); }
 .it-vrow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin-block-start: var(--s-2); max-width: 560px; }
@@ -205,7 +205,7 @@ main.it { background: #fff; }
   .it-do { align-items: stretch; }
   .it-hint { text-align: start; max-width: none; }
   .it-act.has-main { position: fixed; z-index: 19; inset-inline: 0; inset-block-end: calc(68px + env(safe-area-inset-bottom, 0px)); flex-wrap: nowrap;
-    padding: var(--s-2) var(--s-4); background: #fff; border-block-start: 1px solid var(--iqaa-n200); }
+    padding: var(--s-2) var(--s-4); background: var(--iqaa-white); border-block-start: 1px solid var(--iqaa-n200); }
   .it-act.has-main .btn { flex: 1 1 auto; min-width: 0; padding-inline: var(--s-3); }
   .it-act.has-main .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Comment shrinks to its icon beside the action; its name stays for the screen reader */
@@ -214,7 +214,7 @@ main.it { background: #fff; }
   .it-act:not(.has-main) { justify-content: flex-start; }
   .it-page.has-act { padding-block-end: 80px; }
   .it-page.has-act .it-note { position: fixed; z-index: 19; inset-inline: var(--s-4); inset-block-end: calc(68px + 61px + var(--s-2) + env(safe-area-inset-bottom, 0px)); margin: 0;
-    box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 8px 24px -12px rgba(25, 23, 46, 0.3); }
+    box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 8px 24px -12px rgba(var(--iqaa-ink-rgb), 0.3); }
   .it-backf { padding: var(--s-4); }
   /* a phone shows where the item is and its two neighbours, as the owner's phone design does; the hand-off strokes at
      the edges say the line goes on */

@@ -41,6 +41,18 @@ SCREENS = [
         'alt_m': 'The canvas on a phone, for viewing: the line down the screen with each block’s roles and people.',
     },
     {
+        'id': 'network', 'name': 'The network of lines', 'url': 'alkhatt.iqaa.co/lines/network', 'href': 'network.html?org=alkhatt',
+        'open': 'Open the network',
+        'what': 'Lines connect three ways, as the plan has it: a call opens an item in another line and waits for its result, a launch opens work there and goes on, an aggregate makes many items one. Every line declares what comes in and goes out.',
+        'ids': [
+            'What feeds the main line sits above it and what it feeds below, so every link joins neighbouring rows.',
+            'A call is a line there and a half-weight way back to where it waits; a launch has an arrow; an aggregate is three thin lines becoming one.',
+            'Each link is also said in one line under the map, with how many items it carried.',
+        ],
+        'alt_d': 'Al-Khatt Media’s network on a desktop: client requests and the quick news line feed the content line, which feeds the monthly invoices.',
+        'alt_m': 'The network on a phone: the lines stacked, and each link in words.',
+    },
+    {
         'id': 'publish', 'name': 'Publish a new version', 'url': 'alkhatt.iqaa.co/lines/publish', 'href': 'publish.html?org=alkhatt',
         'open': 'Open publishing',
         'what': 'What changed since the published version, in the organization’s words; where the live items go; and the same check that runs on every publish, for every organization.',
@@ -75,6 +87,30 @@ SCREENS = [
         ],
         'alt_d': 'My work on a desktop: Heba’s three pieces in progress and new, three open to claim, and where she works beside them.',
         'alt_m': 'My work on a phone: the lists with one action each, and the tab bar.',
+    },
+    {
+        'id': 'notify', 'name': 'Notifications', 'url': 'alkhatt.iqaa.co/notifications', 'href': 'notify.html?org=alkhatt&as=heba',
+        'open': 'Open Notifications',
+        'what': 'What reached the person, newest first: sent back, given, waiting for their approval, late; for the owner also invitations and expired integrations. One of the three screens the phone frame keeps for everyone.',
+        'ids': [
+            'Each notice is one line with its icon; what failed or is late is the only red.',
+            'Unread is a violet dot and a heavier line until it is opened: a person’s matter.',
+            'The organization’s channel (Telegram here) says where the same notices also go.',
+        ],
+        'alt_d': 'Heba’s notifications on a desktop: given Five dishes from Bethlehem, sent back the glassblowers, and the late piece.',
+        'alt_m': 'Omar’s notifications on a phone: two pieces handed over for his approval.',
+    },
+    {
+        'id': 'me', 'name': 'My space', 'url': 'alkhatt.iqaa.co/me', 'href': 'me.html?org=alkhatt&as=heba',
+        'open': 'Open My space',
+        'what': 'The person as the line knows them: their week in hours, the steps they took each day, the blocks they hold a role in, their skills from the organization’s list, and where their notices go.',
+        'ids': [
+            'The week is seven bars counted from every item’s log; today is ink.',
+            'Each block carries its stroke and what is theirs there.',
+            'Skills come from the organization’s own list, theirs filled.',
+        ],
+        'alt_d': 'Heba’s space on a desktop: 35 hours a week, six steps this week, Montage, her skills and Telegram.',
+        'alt_m': 'Omar’s space on a phone: his week, his three blocks and his skills.',
     },
     {
         'id': 'item', 'name': 'The item page', 'url': 'alkhatt.iqaa.co/pieces/MAD-26-0144', 'href': 'item.html?code=MAD-26-0144',
@@ -209,11 +245,11 @@ SCREENS = [
         'alt_m': 'Integrations on a phone: the connections and the log.',
     },
 ]
-COUNT = {7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen'}
+COUNT = {21: 'Twenty-one', 19: 'Nineteen', 20: 'Twenty', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen'}
 
 
 def screens():
-    out = head('Screens', 'The identity at work', f'{COUNT[len(SCREENS)]} screens of the product, in the order an organization meets them: the owner writes a sentence and Watar builds the line; the owner reviews it, shapes it on the canvas and publishes it; the team signs in and works from My work and the item page, and leads run their block’s queue; the owner sees Home, the people, the reports and the settings; clients answer from a link; and what repeats turns into automation, fed by sources and templates through integrations. The demo is two organizations from the owner’s own screens, Al-Khatt Media and Masar, with an agency, Wamda. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
+    out = head('Screens', 'The identity at work', f'{COUNT[len(SCREENS)]} screens of the product, in the order an organization meets them: the owner writes a sentence and Watar builds the line; the owner reviews it, shapes it on the canvas and publishes it; the team signs in and works from My work, Notifications, My space and the item page, and leads run their block’s queue; the owner sees Home, the people, the reports and the settings; clients answer from a link; and what repeats turns into automation, fed by sources and templates through integrations. The demo is two organizations from the owner’s own screens, Al-Khatt Media and Masar, with an agency, Wamda. The identity is not painted on top; it is how each screen says where work stands. Every image opens the live screen.')
     out += '</div>'
     for i, s in enumerate(SCREENS):
         ids = ''.join(f'<li>{esc(t)}</li>' for t in s['ids'])

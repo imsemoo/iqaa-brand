@@ -127,7 +127,7 @@
       return `<li class="${isNew ? 'new' : 'done'}"${U.fresh.has(b.id) ? ' data-fresh' : ''}><span class="stg-g" aria-hidden="true">${IQ.glyph(b.stroke, { test: isNew })}</span><span class="stg-n">${isNew ? `<span class="sr">${esc(T('New'))}: </span>` : ''}${esc(T(b.name))}</span></li>`;
     }).join('');
     const label = T('Version {v} of {line}', { v: U.d.version, line: T(L.name) });
-    return `<div class="pb-line"><ol class="stg pb-sig" style="--n:${path.length}" aria-label="${esc(label)}">${li}</ol></div>${beside.length ? `<p class="pb-beside">${beside.join('<br>')}</p>` : ''}`;
+    return `<div class="pb-line" tabindex="0" role="region" aria-label="${esc(label)}"><ol class="stg pb-sig" style="--n:${path.length}" aria-label="${esc(label)}">${li}</ol></div>${beside.length ? `<p class="pb-beside">${beside.join('<br>')}</p>` : ''}`;
   }
 
   // ---------- what the person decides ----------

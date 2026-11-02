@@ -153,7 +153,31 @@
   }
 
   // ---------- the tabs: the line, its people (coming), and the pack's results where the organization has a pack ----------
-  const TABS = [{ id: 'line', name: T('The line'), ic: 'Line', body: lineTab }, { id: 'people', name: T('People'), ic: 'People', soon: true }]
+  // ---------- people: each person's steps in the line's log over the last days, ranked; what they handed on beside ----------
+  function peopleTab() {
+    const since = FLOW.ms(`${W.dayIso}T23:59`) - days * DAY;
+    const moves = C.items.flatMap((it) => (it.log || []).filter((e) => FLOW.ms(e[2]) >= since).map((e) => ({ who: e[1], what: e[3] })))
+      .concat(((O.newsLine || {}).blocks || []).flatMap((b) => (b.record || []).filter((r) => r.by && FLOW.ms(r.at) >= since).map((r) => ({ who: r.by, what: r.did }))));
+    const ON = ['done', 'sent', 'approved', 'edited'];
+    const rows = Object.keys(O.people).filter((k) => O.people[k].type !== 'invited').map((k) => {
+      const mine = moves.filter((m) => m.who === k);
+      return { k, n: mine.length, on: mine.filter((m) => ON.includes(m.what)).length };
+    }).filter((r) => r.n).sort((a, b) => b.n - a.n);
+    if (!rows.length) return `<p class="rp-none">${esc(T('Nobody has a step in the log yet.'))}</p>`;
+    const most = rows[0].n, total = rows.reduce((a, r) => a + r.n, 0);
+    const kpi = tiles(T('People in numbers'), [
+      { k: T('People who acted'), ic: 'People', n: rows.length },
+      { k: T('Steps'), ic: 'History', n: total },
+      { k: T('Handed on'), ic: 'Handoff', n: rows.reduce((a, r) => a + r.on, 0) },
+    ]);
+    const list = ranked(rows.map((r) => ({
+      name: `<span class="rp-who"><span class="me-av" aria-hidden="true">${esc(C.name(r.k).charAt(0))}</span><span><b>${esc(C.name(r.k))}</b><small>${esc(T(O.people[r.k].title))}</small></span></span>`,
+      f: (r.n / most) * 100, v: `${N(r.n, '{n} step', '{n} steps')} · ${N(r.on, '{n} handed on', '{n} handed on')}`,
+    })));
+    return kpi + panel('rp-pp-h', 'People', T('Steps per person'), `<p>${esc(N(days, 'Last {n} days', 'Last {n} days'))}</p>`, `<div class="rp-wide">${list}</div>`);
+  }
+
+  const TABS = [{ id: 'line', name: T('The line'), ic: 'Line', body: lineTab }, { id: 'people', name: T('People'), ic: 'People', body: peopleTab }]
     .concat(results ? [{ id: 'results', name: T('Results'), ic: 'Reports', body: resultsTab }] : []);
   let tab = TABS.some((x) => x.id === location.hash.slice(1) && !x.soon) ? location.hash.slice(1) : 'line';
   function render() {

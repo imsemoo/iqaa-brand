@@ -1,5 +1,7 @@
 // The signature grammar in the browser. Same strokes as tools/brand.py; constants arrive in window.IQAA.
 (function () {
+  // a product screen in dark mode (dark.css): the light palette's strokes are drawn in the dark one
+  const DARK = document.documentElement.dataset.theme === 'dark';
   const M = window.IQAA.mark;
   const STEP = M.step, W = M.stroke, HANDOFF = M.handoff, LOOP_H = M.loop_h;
   const TOP = -(LOOP_H + W), BOT = 9;
@@ -50,6 +52,7 @@
   // the names when a long line is drawn small), cls.
   function line(blocks, opts) {
     const o = Object.assign({ k: 1, pal: 'light', test: false, cls: 'sig', names: null, me: -1, minLabel: 0 }, opts);
+    if (DARK && o.pal === 'light') o.pal = 'dark';
     const p = window.IQAA.pal[o.pal];
     const { cells, w } = layout(blocks);
     let svg = body(blocks, o.k, p, o.test);
@@ -154,6 +157,7 @@
   // One step on its own, for buttons and legends.
   function glyph(kind, opts) {
     const o = Object.assign({ pal: 'light', test: false }, opts);
+    if (DARK && o.pal === 'light') o.pal = 'dark';
     const w = WIDTH[kind] || STEP;
     return `<svg viewBox="${n(-W)} ${n(TOP)} ${n(w + 2 * W)} ${n(BOT - TOP)}" aria-hidden="true">${cell(kind, 0, 0, window.IQAA.pal[o.pal], 1, o.test)}</svg>`;
   }

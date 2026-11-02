@@ -208,7 +208,7 @@ textarea {
   font: inherit;
   font-size: var(--t-base);
   color: var(--c-text);
-  background: #fff;
+  background: var(--iqaa-white);
   width: 100%;
   min-width: 0;
   border: 1px solid var(--iqaa-n400);
@@ -514,11 +514,11 @@ textarea {
 
 /* ---------- sign-up: a page with the sign-up line in its header and the next move in a bar at its foot ---------- */
 main.su {
-  background: #fff;
+  background: var(--iqaa-white);
 }
 
 main.su+.a-foot {
-  background: #fff;
+  background: var(--iqaa-white);
   border-block-start: 1px solid var(--iqaa-n200);
 }
 
@@ -694,14 +694,14 @@ main.su+.a-foot p {
 .prev-card {
   width: 100%;
   max-width: 360px;
-  background: #fff;
+  background: var(--iqaa-white);
   border: 1px solid var(--iqaa-n200);
   border-radius: 16px;
   padding: var(--s-6);
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
-  box-shadow: 0 1px 2px rgba(25, 23, 46, 0.04), 0 16px 40px -16px rgba(25, 23, 46, 0.16);
+  box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.04), 0 16px 40px -16px rgba(var(--iqaa-ink-rgb), 0.16);
 }
 
 .prev-org {
@@ -765,7 +765,7 @@ main.su+.a-foot p {
   height: 40px;
   border-radius: 10px;
   background: var(--iqaa-violet);
-  color: #fff;
+  color: var(--iqaa-white);
   font-size: 14px;
   font-weight: 600;
 }
@@ -823,7 +823,7 @@ main.su+.a-foot p {
   margin-block-start: var(--s-12);
   margin-inline: calc(-1 * clamp(var(--s-6), 5vw, var(--s-24)));
   padding-inline: clamp(var(--s-6), 5vw, var(--s-24));
-  background: #fff;
+  background: var(--iqaa-white);
   border-block-start: 1px solid var(--iqaa-n200);
 }
 
@@ -924,7 +924,7 @@ main.su+.a-foot p {
 
 .su .field input,
 .su .field textarea {
-  background: #fff;
+  background: var(--iqaa-white);
 }
 
 @media (max-width: 700px) {
@@ -992,7 +992,7 @@ main.su+.a-foot p {
 .btn.ink {
   background: var(--iqaa-ink);
   border-color: var(--iqaa-ink);
-  color: #fff;
+  color: var(--iqaa-white);
 }
 
 .btn.ink:hover {
@@ -1005,7 +1005,7 @@ main.su+.a-foot p {
   gap: var(--s-3);
   padding: var(--s-4);
   border-radius: 12px;
-  background: #fff;
+  background: var(--iqaa-white);
   box-shadow: inset 0 0 0 1px transparent;
   cursor: pointer;
   transition: box-shadow var(--m-quarter) var(--ease-arrive);
@@ -1069,7 +1069,7 @@ main.su+.a-foot p {
   column-gap: var(--s-4);
   row-gap: var(--s-2);
   padding: var(--s-4) var(--s-12) var(--s-4) var(--s-4);
-  background: #fff;
+  background: var(--iqaa-white);
   border: 1px solid var(--iqaa-n200);
   border-radius: 16px;
   cursor: pointer;
@@ -1437,14 +1437,14 @@ main.si {
   overflow-clip-margin: 24px;
   width: 100%;
   max-width: 416px;
-  background: #fff;
+  background: var(--iqaa-white);
   border: 1px solid var(--iqaa-n200);
   border-radius: 16px;
   padding: var(--s-8);
   display: flex;
   flex-direction: column;
   gap: var(--s-6);
-  box-shadow: 0 1px 2px rgba(25, 23, 46, 0.04), 0 12px 32px -12px rgba(25, 23, 46, 0.12);
+  box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.04), 0 12px 32px -12px rgba(var(--iqaa-ink-rgb), 0.12);
 }
 
 .card-org {
@@ -1684,7 +1684,7 @@ body.app .btn:active:not([disabled]) {
 }
 
 .su .addr-row {
-  background: #fff;
+  background: var(--iqaa-white);
   box-shadow: inset 0 0 0 1px var(--iqaa-n200);
 }
 
@@ -1799,7 +1799,7 @@ body.app:has(main.si) {
 
 @media (hover: hover) and (pointer: fine) {
   .lang-b:hover {
-    background: rgba(25, 23, 46, 0.05);
+    background: rgba(var(--iqaa-ink-rgb), 0.05);
   }
 
   .lang-b:hover .lang-cv {
@@ -1808,7 +1808,7 @@ body.app:has(main.si) {
 }
 
 .lang-b[aria-expanded='true'] {
-  background: rgba(25, 23, 46, 0.06);
+  background: rgba(var(--iqaa-ink-rgb), 0.06);
 }
 
 .lang-b:focus-visible {
@@ -1825,10 +1825,10 @@ body.app:has(main.si) {
   display: flex;
   flex-direction: column;
   padding: 4px;
-  background: #fff;
+  background: var(--iqaa-white);
   border: 1px solid var(--iqaa-n200);
   border-radius: 12px;
-  box-shadow: 0 12px 32px -12px rgba(25, 23, 46, 0.22), 0 2px 6px -2px rgba(25, 23, 46, 0.08);
+  box-shadow: 0 12px 32px -12px rgba(var(--iqaa-ink-rgb), 0.22), 0 2px 6px -2px rgba(var(--iqaa-ink-rgb), 0.08);
 }
 
 .lang-menu[hidden] {
@@ -1971,7 +1971,7 @@ body.app:has(main.si) {
   padding: 0 var(--s-3);
   border: 1px solid var(--iqaa-n300);
   border-radius: 10px;
-  background: #fff;
+  background: var(--iqaa-white);
   color: var(--iqaa-ink);
   font: inherit;
   font-size: 15px;
@@ -2027,9 +2027,9 @@ body.app:has(main.si) {
   margin: 0;
   padding: 6px;
   list-style: none;
-  background: #fff;
+  background: var(--iqaa-white);
   border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 16px 40px -12px rgba(25, 23, 46, 0.3);
+  box-shadow: 0 0 0 1px rgba(var(--iqaa-ink-rgb), 0.08), 0 16px 40px -12px rgba(var(--iqaa-ink-rgb), 0.3);
 }
 
 .dd-list[hidden] {

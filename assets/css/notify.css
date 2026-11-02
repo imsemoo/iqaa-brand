@@ -1,13 +1,13 @@
 /* Notifications: one line per notice, its icon at the start, unread marked by a violet dot (a person's matter). Built
    on tokens.css, brand.css, auth.css and app.css; sizes are quarter-beat multiples. */
-main.nt { background: #fff; }
+main.nt { background: var(--iqaa-white); }
 .nt-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-8) var(--s-4); }
 .nt-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
 .nt-sum { margin-block-start: var(--s-2); font-size: 14px; color: var(--iqaa-n700); }
 .stat.ch b { font-family: inherit; font-weight: 600; font-size: 13px; }
 .nt-filter { display: inline-flex; padding: 3px; gap: 2px; border-radius: 12px; background: var(--iqaa-n100); margin-block-end: var(--s-4); }
 .nt-filter button { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 36px; padding: 0 var(--s-4); border: 0; border-radius: 9px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
-.nt-filter button[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.nt-filter button[aria-pressed='true'] { background: var(--iqaa-white); color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(var(--iqaa-ink-rgb), 0.1); }
 .nt-filter span { font-family: 'Fragment Mono', monospace; font-size: 12px; font-weight: 400; color: var(--iqaa-n600); }
 .nt-filter button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
 @media (pointer: coarse) { .nt-filter button { min-height: 44px; } }

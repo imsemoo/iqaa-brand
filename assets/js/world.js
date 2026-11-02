@@ -90,6 +90,31 @@
     }],
     // the other lines Home counts: the quick news line (automation, built later) and client requests
     others: [{ id: 'news', name: 'Quick news line', live: 9 }, { id: 'requests', name: 'Client requests', live: 6 }],
+    // the network: every line declares what comes in and what goes out, so one can change inside without breaking the
+    // others, and an invoice line still leads back to the pieces that made it (the plan's three ways lines connect)
+    network: {
+      lines: [
+        { id: 'requests', name: 'Client requests', version: 2, live: 6, blocks: [
+          { id: 'ask', name: 'New request', stroke: 'struck' }, { id: 'brief', name: 'Brief', stroke: 'struck' },
+          { id: 'accept', name: 'Accept the request', stroke: 'held' }, { id: 'reply', name: 'Reply to the client', stroke: 'run' }] },
+        { id: 'content' },
+        { id: 'news', name: 'Quick news line', version: 2, live: 9, blocks: [
+          { id: 'filter', name: 'Filter and stop duplicates', stroke: 'run' }, { id: 'refine', name: 'Refine the text', stroke: 'struck' },
+          { id: 'carousel', name: 'Carousel output', stroke: 'run' }, { id: 'review', name: 'Editorial review', stroke: 'held' },
+          { id: 'telegram', name: 'Publish on Telegram', stroke: 'run' }] },
+        { id: 'invoices', name: 'Monthly invoices', version: 1, live: 1, blocks: [
+          { id: 'gather', name: 'Gather the month', stroke: 'run' }, { id: 'draft', name: 'Draft the invoice', stroke: 'struck' },
+          { id: 'approve', name: 'Approve the invoice', stroke: 'held' }, { id: 'send', name: 'Send to the client', stroke: 'run' }] },
+      ],
+      links: [
+        { kind: 'call', from: ['requests', 'accept'], to: ['content', 'idea'], back: ['requests', 'reply'], n: 6,
+          rule: 'An accepted request opens a piece at Idea and waits until it is published' },
+        { kind: 'launch', from: ['news', 'telegram'], to: ['content', 'idea'], n: 3,
+          rule: 'A story that does well opens a deeper piece at Idea' },
+        { kind: 'aggregate', from: ['content', 'publish'], to: ['invoices', 'gather'], n: 31,
+          rule: 'Every piece published in the month, one invoice per client' },
+      ],
+    },
     // published this week on the pages the media pack follows; the pack's own numbers for Home
     packStats: { published: 31, pages: 9, risk: 1, riskPage: 'Hikaya Stories' },
     // Home's facts that the items do not carry. since: when an item came into the block it is in now, for the items
@@ -263,6 +288,36 @@
     // database refuses output from one). outputs: what was made from a version, each keeping that version and its values
     // so it can be made again. sample: a real item's values (its code, the line it is on), for the preview.
     brands: { Hikaya: { en: 'Hikaya', ar: 'حكايا', tr: 'Hikaya' } },
+    // the media pack: this week's posts per platform (from the pieces on the line) and the saved archive
+    posts: [
+      { code: 'MAD-26-0140', platform: 'TikTok', at: '2026-11-01T09:08', state: 'published' },
+      { code: 'MAD-26-0140', platform: 'Instagram', at: '2026-11-01T09:15', state: 'failed', why: 'The permission expired, so the post waits for it.' },
+      { code: 'MAD-26-0141', platform: 'Instagram', at: '2026-11-02T18:00', state: 'waiting', why: 'Waits for management review' },
+      { code: 'MAD-26-0138', platform: 'Instagram', at: '2026-11-03T18:00', state: 'scheduled' },
+      { code: 'MAD-26-0139', platform: 'TikTok', at: '2026-11-03T20:00', state: 'scheduled' },
+      { code: 'MAD-26-0146', platform: 'Instagram', at: '2026-11-04T07:00', state: 'scheduled' },
+      { code: 'MAD-26-0142', platform: 'Instagram', at: '2026-11-05T18:00', state: 'waiting', why: 'Waits for the client’s approval' },
+      { code: 'MAD-26-0142', platform: 'TikTok', at: '2026-11-05T18:30', state: 'waiting', why: 'Waits for the client’s approval' },
+      { code: 'MAD-26-0144', platform: 'Instagram', at: '2026-11-07T18:00', state: 'scheduled' },
+      { code: 'MAD-26-0144', platform: 'TikTok', at: '2026-11-07T18:30', state: 'scheduled' },
+    ],
+    archive: [
+      { code: 'MAD-26-0136', title: 'The kite makers of Gaza', at: '2026-10-30T18:00', platforms: ['Instagram', 'TikTok'], reach: 133000, page: 'live' },
+      { code: 'MAD-26-0133', title: 'Jerusalem’s oldest bakery', at: '2026-10-27T18:00', platforms: ['Instagram'], reach: 175000, page: 'live' },
+      { code: 'MAD-26-0129', title: 'Olive harvest in Burqin', at: '2026-10-24T18:00', platforms: ['TikTok'], reach: 98000, page: 'live' },
+      { code: 'MAD-26-0127', title: 'Fishermen of Gaza', at: '2026-10-21T18:00', platforms: ['Instagram', 'TikTok'], reach: 241000, page: 'live' },
+      { code: 'MAD-26-0124', title: 'The keys of the old houses', at: '2026-10-18T18:00', platforms: ['Instagram'], reach: 152000, page: 'gone', gone: 'The page was removed from the site by a WordPress update' },
+      { code: 'MAD-26-0118', title: 'The night bakers of Nablus', at: '2026-10-14T18:00', platforms: ['Instagram', 'TikTok'], reach: 386000, page: 'live' },
+    ],
+    // the house's video templates the editors start from: frame, length, who keeps it, and its uses in the last 30 days
+    videoTemplates: [
+      { name: 'Lower third: name and title', kind: 'lower', ratio: '16:9', len: '00:06', by: 'omar', at: '2026-10-12T10:00', used: 61 },
+      { name: 'Reel frame with captions', kind: 'reel', ratio: '9:16', len: '01:00', by: 'heba', at: '2026-10-20T14:00', used: 44 },
+      { name: 'Opening: the mark in five seconds', kind: 'intro', ratio: '16:9', len: '00:05', by: 'rawan', at: '2026-09-28T09:00', used: 38 },
+      { name: 'End card with the channels', kind: 'end', ratio: '16:9', len: '00:08', by: 'rawan', at: '2026-09-28T09:00', used: 35 },
+      { name: 'Square quote card', kind: 'quote', ratio: '1:1', len: '00:10', by: 'yousef', at: '2026-10-05T11:00', used: 12 },
+      { name: 'Breaking strip', kind: 'strip', ratio: '16:9', len: '00:04', by: 'omar', at: '2026-10-31T18:00', used: 0, draft: true },
+    ],
     templates: [
       { id: 'carousel', name: 'News carousel', kind: 'carousel', slides: 6, size: '1080×1350', made: 'watar', brand: 'Hikaya',
         slots: [
@@ -425,7 +480,30 @@
       ],
     }],
     others: [{ id: 'support', name: 'Support line', live: 5 }],
+    network: {
+      lines: [
+        { id: 'support', name: 'Support line', version: 3, live: 5, blocks: [
+          { id: 'report', name: 'Customer report', stroke: 'struck' }, { id: 'triage', name: 'Triage', stroke: 'held' },
+          { id: 'answer', name: 'Answer the customer', stroke: 'run' }] },
+        { id: 'features' },
+      ],
+      links: [
+        { kind: 'call', from: ['support', 'triage'], to: ['features', 'request'], back: ['support', 'answer'], n: 4,
+          rule: 'A confirmed bug opens a ticket in the feature line and waits for its release' },
+      ],
+    },
     packStats: { releases: 2, bugs: 7, speed: '3.1' },
+    // the software pack's: the repositories GitHub connects, and the environments the releases run in
+    repos: [
+      { name: 'masar-api', stack: 'PHP · Laravel', last: '2026-11-01T09:28', commits: 42 },
+      { name: 'masar-web', stack: 'TypeScript · React', last: '2026-10-31T17:40', commits: 27 },
+      { name: 'masar-app', stack: 'Dart · Flutter', last: '2026-10-30T12:10', commits: 11 },
+    ],
+    envs: [
+      { name: 'Production', version: '2.7.2', at: '2026-10-29T16:00', state: 'works', errors: 3 },
+      { name: 'Staging', version: '2.8 · candidate 1', at: '2026-11-01T08:30', state: 'works', errors: 0, note: 'Arabic invoices under test' },
+      { name: 'Preview of PR #214', version: 'PR #214', at: '2026-11-01T09:20', state: 'building', errors: 0, code: 'DEV-26-0088' },
+    ],
     // People and departments, and Settings, as Al-Khatt's
     teams: [
       { id: 'backend', name: 'Backend team', dept: 'engineering', lead: 'mazen', people: ['wasim'], grants: [{ block: 'dev', role: 'Developer' }] },
@@ -560,9 +638,35 @@
       ],
     }],
     others: [],
+    network: {
+      lines: [
+        { id: 'campaigns' },
+        { id: 'billing', name: 'Monthly billing', version: 1, live: 1, blocks: [
+          { id: 'gather', name: 'Gather the month', stroke: 'run' }, { id: 'check', name: 'Check the spend', stroke: 'struck' },
+          { id: 'send', name: 'Send the invoice', stroke: 'run' }] },
+      ],
+      links: [
+        { kind: 'aggregate', from: ['campaigns', 'launch'], to: ['billing', 'gather'], n: 14,
+          rule: 'Every campaign launched in the month, one invoice per client' },
+      ],
+    },
     // the agency pack's numbers for Home, from the ad accounts over the last 30 days: what was spent against the
     // clients' budgets for those days, and the return on the ads (sales for every dollar spent)
     packStats: { spend: 18400, budget: 26000, roas: 3.2, days: 30 },
+    // the same 30 days per client (they add up to packStats), and per day from each ad account, 2 to 31 October
+    clients: [
+      { name: 'Rawabi Café', spent: 5200, budget: 7000, roas: 3.8 },
+      { name: 'Galilee Honey Store', spent: 3900, budget: 5200, roas: 4.1 },
+      { name: 'Al-Nour School', spent: 2600, budget: 3600, roas: 2.1 },
+      { name: 'Jericho Dates', spent: 2100, budget: 3000, roas: 3.5 },
+      { name: 'Sama Gym', spent: 1700, budget: 2600, roas: 2.4 },
+      { name: 'Yafa Bookshop', spent: 1300, budget: 2000, roas: 2.9 },
+      { name: 'Bethlehem Ceramics', spent: 900, budget: 1600, roas: 2.6 },
+      { name: 'Green Hills Nursery', spent: 700, budget: 1000, roas: 1.8 },
+    ],
+    spendDaily: { from: '2026-10-02',
+      metaads: [317,  449,  414,  402,  441,  415,  293,  319,  481,  484,  433,  442,  459,  340,  328,  489,  550,  490,  442,  481,  393,  355,  485,  596,  567,  456,  482,  440,  403,  430],
+      googleads: [130,  184,  169,  164,  180,  170,  119,  130,  196,  198,  177,  180,  187,  139,  134,  200,  225,  200,  180,  196,  161,  145,  198,  244,  231,  186,  197,  180,  164,  160] },
     invited: { kareem: '2026-10-30T11:00' },
     invitedAs: { kareem: 'freelancer' },
     skills: ['Arabic copy', 'Motion', 'Paid social'],
@@ -603,11 +707,11 @@
     { code: 'CMP-26-0076', title: 'Spring planting season', at: ['strategy'], who: null, state: 'open', due: '2026-11-03T17:00', opened: '2026-10-29T10:00',
       fields: { client: 'Green Hills Nursery', budget: '$450', channels: 'Facebook' }, talk: 0, log: [] },
     { code: 'CMP-26-0068', title: 'Opening of the second branch', at: ['creative'], who: 'bilal', state: 'work', due: '2026-11-02T12:00', opened: '2026-10-26T10:00',
-      fields: { client: 'Rawabi Café', budget: '$1,800', channels: 'Instagram, Facebook, Google', brief: 'The second branch opens in Al-Masyoun on 12 November; the first week, a free cup with every breakfast.' },
+      fields: { files: [{ name: 'second-branch-post-1.png', kind: 'image', by: 'nadine', at: '2026-10-31T16:40', size: '1.4 MB' }, { name: 'second-branch-story.mp4', kind: 'video', by: 'nadine', at: '2026-11-01T08:50', size: '18 MB' }, { name: 'second-branch-copy.docx', kind: 'doc', by: 'bilal', at: '2026-10-30T12:00', size: '24 KB' }], client: 'Rawabi Café', budget: '$1,800', channels: 'Instagram, Facebook, Google', brief: 'The second branch opens in Al-Masyoun on 12 November; the first week, a free cup with every breakfast.' },
       talk: 1, discussion: [{ by: 'tala', at: '2026-10-31T15:10', text: 'Lead with the street, not the cup: people should know where it is.' }],
       log: [['creative', 'bilal', '2026-10-29T10:30', 'claimed'], ['strategy', 'majd', '2026-10-29T10:00', 'done']] },
     { code: 'CMP-26-0069', title: 'Sidr honey season', at: ['creative'], who: 'nadine', state: 'work', due: '2026-11-02T17:00', opened: '2026-10-27T09:00',
-      fields: { client: 'Galilee Honey Store', budget: '$1,900', channels: 'Instagram, Google' }, talk: 0, log: [['strategy', 'majd', '2026-10-29T14:00', 'done']] },
+      fields: { files: [{ name: 'sidr-honey-carousel.pdf', kind: 'doc', by: 'nadine', at: '2026-10-31T13:20', size: '6.2 MB' }], client: 'Galilee Honey Store', budget: '$1,900', channels: 'Instagram, Google' }, talk: 0, log: [['strategy', 'majd', '2026-10-29T14:00', 'done']] },
     { code: 'CMP-26-0070', title: 'New year memberships', at: ['creative'], who: 'nadine', state: 'new', due: '2026-11-03T12:00', opened: '2026-10-28T09:00',
       assigned: { by: 'tala', at: '2026-10-31T09:30' }, fields: { client: 'Sama Gym', budget: '$400', channels: 'Instagram' },
       talk: 0, log: [['creative', 'tala', '2026-10-31T09:30', 'assigned'], ['strategy', 'majd', '2026-10-30T12:00', 'done']] },
@@ -616,9 +720,9 @@
     { code: 'CMP-26-0073', title: 'Ceramics workshop weekends', at: ['creative'], who: null, state: 'open', due: '2026-11-04T17:00', opened: '2026-10-29T09:00', needs: 'Motion',
       fields: { client: 'Bethlehem Ceramics', budget: '$500', channels: 'Instagram' }, talk: 0, log: [['strategy', 'majd', '2026-10-31T11:00', 'done']] },
     { code: 'CMP-26-0062', title: 'Autumn breakfast offer', at: ['clientok'], who: 'lama', state: 'approval', due: '2026-10-27T10:00', opened: '2026-10-18T10:00',
-      fields: { client: 'Rawabi Café', budget: '$1,400', channels: 'Instagram, Facebook' }, talk: 0, log: [['clientok', 'lama', '2026-10-25T10:05', 'sent'], ['creative', 'tala', '2026-10-25T10:00', 'approved']] },
+      fields: { files: [{ name: 'autumn-breakfast-post.png', kind: 'image', by: 'nadine', at: '2026-10-24T17:00', size: '1.1 MB' }, { name: 'autumn-breakfast-copy.docx', kind: 'doc', by: 'bilal', at: '2026-10-24T11:30', size: '19 KB' }], client: 'Rawabi Café', budget: '$1,400', channels: 'Instagram, Facebook' }, talk: 0, log: [['clientok', 'lama', '2026-10-25T10:05', 'sent'], ['creative', 'tala', '2026-10-25T10:00', 'approved']] },
     { code: 'CMP-26-0064', title: 'Honey for gifts', at: ['clientok'], who: 'lama', state: 'approval', due: '2026-10-27T15:00', opened: '2026-10-19T10:00',
-      fields: { client: 'Galilee Honey Store', budget: '$1,200', channels: 'Instagram, Google' }, talk: 0, log: [['creative', 'tala', '2026-10-25T15:00', 'approved']] },
+      fields: { files: [{ name: 'honey-gift-reel.mp4', kind: 'video', by: 'nadine', at: '2026-10-25T13:40', size: '22 MB' }], client: 'Galilee Honey Store', budget: '$1,200', channels: 'Instagram, Google' }, talk: 0, log: [['creative', 'tala', '2026-10-25T15:00', 'approved']] },
     { code: 'CMP-26-0066', title: 'Registration for the new year', at: ['clientok'], who: 'lama', state: 'approval', due: '2026-11-02T12:00', opened: '2026-10-20T10:00',
       fields: { client: 'Al-Nour School', budget: '$800', channels: 'Facebook, Google' }, talk: 0, log: [['creative', 'tala', '2026-10-27T09:00', 'approved']] },
     { code: 'CMP-26-0067', title: 'Membership drive', at: ['clientok'], who: 'lama', state: 'approval', due: '2026-11-02T17:00', opened: '2026-10-21T10:00',

@@ -69,10 +69,21 @@
     return before;
   }
 
+  // ---------- new items, made this visit: kept in sessionStorage 'iqaa-new:<org>' ----------
+  function made(O) { try { return JSON.parse(store.get(`iqaa-new:${O.id}`) || '[]') || []; } catch (e) { return []; } }
+  function create(O, it) { store.set(`iqaa-new:${O.id}`, JSON.stringify(made(O).concat([it]))); }
+  // the next code of an organization's line: its prefix, the year, and one past the highest number in use
+  function nextCode(O) {
+    const n = Math.max(0, ...O.lines[0].items.concat(made(O)).map((x) => +(x.code.split('-').pop()) || 0)) + 1;
+    return `${O.prefix}-${W.dayIso.slice(2, 4)}-${String(n).padStart(4, '0')}`;
+  }
+
   function make(O, me) {
     // a page that names nobody in this organization opens for its owner
     if (!O.people[me]) me = Object.keys(O.people).find((k) => O.people[k].owner);
     const line = O.lines[0], blocks = line.blocks, items = line.items;
+    // the items made this visit (new.html) join the line before anything else reads it
+    made(O).forEach((it) => { if (!items.some((x) => x.code === it.code)) items.push(it); });
     const saved = moved();
     items.forEach((it) => { if (saved[it.code]) Object.assign(it, saved[it.code]); });
     const noun = window.I18N.noun(O.noun);
@@ -159,7 +170,7 @@
     // the same place as one pen line, for rows: the line's signature, written in colour up to the item, the item's
     // block underlined, the rest in the dashed pen (grammar.js draws each stroke)
     function strip(it) {
-      const M = window.IQAA.mark, p = window.IQAA.pal.light, k = 0.5, here = placeOf(it);
+      const M = window.IQAA.mark, p = window.IQAA.pal[document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'], k = 0.5, here = placeOf(it);
       const n = (v) => +(+v).toFixed(2);
       let x = 0, svg = '';
       path.forEach((b, i) => {
@@ -232,5 +243,5 @@
   const read = (C) => { try { return JSON.parse(store.get(readKey(C)) || '[]') || []; } catch (e) { return []; } };
   const markRead = (C, ids) => store.set(readKey(C), JSON.stringify([...new Set(read(C).concat(ids))]));
 
-  window.FLOW = { read, markRead, context, make, move, when, ago, late, hm, date, dayOf, ms, esc, stat, hbar, now: NOW, store };
+  window.FLOW = { create, nextCode, read, markRead, context, make, move, when, ago, late, hm, date, dayOf, ms, esc, stat, hbar, now: NOW, store };
 })();

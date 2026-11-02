@@ -1,7 +1,7 @@
 /* Home: the owner's morning. The numbers in one divided strip, the line block by block, what waits for a decision, and
    Watar's suggestion in the dashed grey pen. Built on tokens.css, brand.css, auth.css and app.css (the frame, .btn);
    sizes are quarter-beat multiples. */
-main.hm { background: #fff; }
+main.hm { background: var(--iqaa-white); }
 .hm-page { container: hm / inline-size; padding-block-end: var(--s-12); }
 .hm-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
 .hm-day { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
@@ -19,7 +19,7 @@ body.app .hm-page .btn[aria-disabled='true']:active { transform: none; }
 /* ---------- the numbers: one strip, divided by the hairlines between them, not a row of cards ---------- */
 .hm-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1px;
   background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
-.hm-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: #fff; }
+.hm-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: var(--iqaa-white); }
 .hm-k { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
 .hm-k svg { flex: none; color: var(--iqaa-n600); }
 .hm-n { font-family: 'Fragment Mono', monospace; font-size: 32px; line-height: 40px; color: var(--iqaa-ink); }
@@ -44,7 +44,7 @@ body.app .hm-page .btn[aria-disabled='true']:active { transform: none; }
 }
 
 /* a panel: white on the white sheet, held by its hairline; its head set off by a lighter one */
-.hm-pn { background: #fff; border: 1px solid var(--iqaa-n200); border-radius: 16px; }
+.hm-pn { background: var(--iqaa-white); border: 1px solid var(--iqaa-n200); border-radius: 16px; }
 .hm-ph { display: flex; flex-direction: column; gap: 2px; padding: var(--s-4) var(--s-5, 20px); border-block-end: 1px solid var(--iqaa-n100); }
 .hm-ph h2, .hm-wr h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
 .hm-ph h2 svg, .hm-wr h2 svg { flex: none; color: var(--iqaa-n600); }

@@ -239,7 +239,7 @@
   $('[data-day]').textContent = T(window.WORLD.day);
   $('[data-hi]').textContent = T('Good morning, {name}', { name: C.first(C.me) });
   // the one primary action is named by what the organization's line carries; creating comes in a later phase
-  $('[data-new]').innerHTML = soon(NO.t('New job'), 'primary', 'Create');
+  $('[data-new]').innerHTML = `<a class="btn primary" href="${C.href('new.html')}">${IQ.icon('Create', 18)}<span>${esc(NO.t('New job'))}</span></a>`;
   document.title = `${T('Home')} · ${T(O.name)}`;
   numbers();
   decisions();

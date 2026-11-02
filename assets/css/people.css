@@ -2,7 +2,7 @@
    into one card per person when the sheet is narrow. Built on tokens.css, brand.css, auth.css (.field, .err) and
    app.css (the frame, the person's initial); sizes are quarter-beat multiples. Violet is a person (an active one's
    dot); the dashed grey pen is what is not yet so (an invitation, the roles it will bring). */
-main.pp { background: #fff; }
+main.pp { background: var(--iqaa-white); }
 .pp-page { padding-block-end: var(--s-12); }
 
 /* ---------- head: the organization, how many people and departments, and the two ways to grow it ---------- */
@@ -17,7 +17,7 @@ main.pp { background: #fff; }
 .pp-stats { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
 /* a department's people as a stack of faces */
 .pp-faces { display: flex; margin-block: var(--s-2) var(--s-1); }
-.pp-faces .me-av { width: 28px; height: 28px; font-size: 12px; box-shadow: 0 0 0 2px #fff; }
+.pp-faces .me-av { width: 28px; height: 28px; font-size: 12px; box-shadow: 0 0 0 2px var(--iqaa-white); }
 .pp-faces .me-av + .me-av { margin-inline-start: -8px; }
 .pp-faces .me-av.more { background: var(--iqaa-n100); color: var(--iqaa-n700); font-family: 'Fragment Mono', monospace; font-size: 11px; }
 /* hours a week as a bar against a full week of 40 */
@@ -44,7 +44,7 @@ main.pp { background: #fff; }
 .pp-fg > * { min-width: 0; }
 .pp-until[hidden] { display: none; }
 /* the house's dropdown at the height of the fields beside it */
-.pp-form .dd-b { min-height: 48px; border-color: var(--iqaa-n400); border-radius: 12px; background: #fff; }
+.pp-form .dd-b { min-height: 48px; border-color: var(--iqaa-n400); border-radius: 12px; background: var(--iqaa-white); }
 .pp-form input[type='date'] { padding-inline-end: var(--s-3); }
 .pp-hint { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .pp-err[hidden] { display: none; }
@@ -57,7 +57,7 @@ main.pp { background: #fff; }
 /* ---------- the departments: one strip, divided by the hairlines between them, as Home's numbers ---------- */
 .pp-ds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px;
   background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
-.pp-ds li { display: flex; min-width: 0; background: #fff; }
+.pp-ds li { display: flex; min-width: 0; background: var(--iqaa-white); }
 .pp-d { position: relative; flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); color: inherit; text-decoration: none; }
 .pp-d b { font-size: 16px; line-height: 24px; overflow-wrap: anywhere; }
 .pp-d span { font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
@@ -110,7 +110,7 @@ main.pp { background: #fff; }
 .pp-who { display: flex; align-items: flex-start; gap: var(--s-2); min-width: 0; }
 .pp-who .me-av { width: 28px; height: 28px; font-size: 13px; margin-block-start: -4px; }
 /* invited: not here yet, so the initial is drawn in the dashed pen */
-.me-av.inv { background: #fff; border: 1.5px dashed var(--iqaa-n500); color: var(--iqaa-n700); }
+.me-av.inv { background: var(--iqaa-white); border: 1.5px dashed var(--iqaa-n500); color: var(--iqaa-n700); }
 .pp-pn { display: flex; flex-direction: column; min-width: 0; }
 .pp-pn b { font-weight: 700; }
 .pp-pn small { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); overflow-wrap: anywhere; }

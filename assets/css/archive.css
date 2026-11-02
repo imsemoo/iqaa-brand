@@ -1,0 +1,29 @@
+/* The saved archive: a card per published piece, its frame in the brand's ink, its reach as a bar. */
+main.ar { background: var(--iqaa-white); }
+.ar-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-8) var(--s-6); }
+.ar-head h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.ar-sum { margin-block-start: var(--s-2); font-size: 14px; }
+.ar-q { min-width: min(100%, 280px); }
+.ar-note { margin-block-end: var(--s-4); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--iqaa-n50); font-size: 14px; }
+.ar-grid { list-style: none; margin: 0; padding: 0 0 var(--s-12); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: var(--s-4); }
+.ar-card { display: flex; flex-direction: column; border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; min-width: 0; }
+.ar-card.is-gone { border-color: var(--iqaa-red); }
+.ar-frame { position: relative; aspect-ratio: 4 / 5; max-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: var(--s-4); background: var(--iqaa-ink); color: var(--iqaa-white); }
+.ar-frame svg { position: absolute; inset-block-start: var(--s-4); inset-inline-start: var(--s-4); color: var(--iqaa-lilac); }
+.ar-frame b { font-size: 18px; line-height: 24px; }
+.ar-frame span { font-size: 12px; color: var(--iqaa-n200); }
+.ar-card.is-gone .ar-frame { background: var(--iqaa-n700); }
+.ar-card.is-gone { border-style: dashed; }
+.ar-b { display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3) var(--s-4) var(--s-4); }
+.ar-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--s-2); }
+.ar-t b { font-size: 15px; line-height: 22px; }
+.ar-t code { font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--iqaa-n600); }
+.ar-m { font-size: 12px; color: var(--iqaa-n700); }
+.ar-reach { display: flex; align-items: center; gap: var(--s-2); font-size: 12px; color: var(--iqaa-n700); }
+.ar-bar { flex: 1; height: 6px; border-radius: 3px; background: var(--iqaa-n100); overflow: hidden; }
+.ar-bar i { display: block; height: 100%; width: calc(var(--f) * 1%); border-radius: 3px; background: var(--iqaa-n500); }
+.ar-gone { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--iqaa-red); font-weight: 700; }
+.ar-live-p { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--iqaa-n700); }
+.ar-live-p svg { color: var(--iqaa-n600); }
+.ar-card .btn { align-self: flex-start; }
+.ar-none { font-size: 14px; color: var(--iqaa-n700); }

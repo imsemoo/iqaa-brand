@@ -239,7 +239,7 @@
     "The {ev} was on {date}.": "كان موعد {ev} يوم {date}.",
     "{n} min late": {
       "one": "تأخر دقيقة",
-      "two": "تأخر دقيقتين",
+      "two": "تأخر دقيقتان",
       "few": "تأخر {n} دقائق",
       "many": "تأخر {n} دقيقة",
       "other": "تأخر {n} دقيقة"
@@ -622,7 +622,7 @@
     "Draft it on the Line screen": "اكتبها في شاشة الخط",
     "The line is {name}’s to change.": "تغيير الخط من صلاحية {name}.",
     "Discard: {title}": "تجاهل: {title}",
-    "Discard": "تجاهل",
+    "Discard": "استبعاد",
     "In the draft of version {v}, {station} waits {len} for the client’s answer before it reminds them.": "في مسودة النسخة {v}، تنتظر محطة {station} رد العميل {len} قبل أن تذكره.",
     "Every new order’s client would be reminded {len} sooner. Running orders keep version {v}, so {title} still needs its own reminder.": "سيذكر عميل كل طلب جديد أبكر بمقدار {len}. وتبقى الطلبات الجارية على النسخة {v}، لذا لا يزال {title} بحاجة إلى تذكيره الخاص.",
     "Every new order’s client would be reminded {len} sooner. Running orders keep version {v}.": "سيذكر عميل كل طلب جديد أبكر بمقدار {len}. وتبقى الطلبات الجارية على النسخة {v}.",
@@ -698,7 +698,7 @@
     "Bina": "بناء",
     "a day": "يوم",
     "an hour": "ساعة",
-    "two days": "يومين",
+    "two days": "يومان",
     "three days": "ثلاثة أيام",
     "a week": "أسبوع",
     "lunch": "الغداء",

@@ -1,7 +1,7 @@
 /* Reports: the line's last 30 days for its owner. The core's numbers in one divided strip (Home's), the blocks in one
    table with Home's bar of time against what each block expects, and the pack's results under their own tab. Built on
    tokens.css, brand.css, auth.css and app.css (the frame, .btn); sizes are quarter-beat multiples. */
-main.rp { background: #fff; }
+main.rp { background: var(--iqaa-white); }
 .rp-page { container: rp / inline-size; padding-block-end: var(--s-12); }
 .rp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-4); }
 .rp-ht { display: flex; flex-direction: column; gap: var(--s-1); min-width: 0; }
@@ -41,7 +41,7 @@ body.app .rp-page .btn[aria-disabled='true']:active { transform: none; }
 /* ---------- the numbers: one strip, divided by the hairlines between them, not a row of cards (Home's) ---------- */
 .rp-kpi { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1px;
   background: var(--iqaa-n100); border: 1px solid var(--iqaa-n200); border-radius: 16px; overflow: hidden; }
-.rp-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: #fff; }
+.rp-kpi li { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: var(--s-4) var(--s-5, 20px); background: var(--iqaa-white); }
 .rp-k { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
 .rp-k svg { flex: none; color: var(--iqaa-n600); }
 .rp-n { font-family: 'Fragment Mono', monospace; font-size: 32px; line-height: 40px; color: var(--iqaa-ink); overflow-wrap: anywhere; }
@@ -50,7 +50,7 @@ body.app .rp-page .btn[aria-disabled='true']:active { transform: none; }
 .rp-s { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
 
 /* a panel: white on the white sheet, held by its hairline; its head set off by a lighter one (Home's) */
-.rp-pn { background: #fff; border: 1px solid var(--iqaa-n200); border-radius: 16px; min-width: 0; }
+.rp-pn { background: var(--iqaa-white); border: 1px solid var(--iqaa-n200); border-radius: 16px; min-width: 0; }
 .rp-ph { display: flex; flex-direction: column; gap: 2px; padding: var(--s-4) var(--s-5, 20px); border-block-end: 1px solid var(--iqaa-n100); }
 .rp-ph h2 { display: flex; align-items: center; gap: var(--s-2); font-size: 15px; line-height: 22px; font-weight: 700; }
 .rp-ph h2 svg { flex: none; color: var(--iqaa-n600); }
@@ -176,5 +176,10 @@ body.app .rp-page .btn[aria-disabled='true']:active { transform: none; }
 .rp-cols + .rp-pn, .rp-pn + .rp-cols, .rp-pn + .rp-pn { margin-block-start: var(--s-6); }
 @media (max-width: 700px) { .rp-jt { padding-inline: var(--s-4); } .rp-jt li span { display: none; } }
 /* the roads back read in one line on a wide panel */
-.rp-wide .rp-rk li { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) 7.5em; }
+.rp-wide .rp-rk li { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(7.5em, auto); }
 .rp-wide .rp-rk-n { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); }
+/* a person in the ranked list: their face and title */
+.rp-who { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.rp-who .me-av { flex: none; width: 28px; height: 28px; font-size: 12px; }
+.rp-who b { display: block; font-size: 14px; line-height: 20px; }
+.rp-who small { display: block; font-size: 12px; line-height: 16px; font-weight: 400; color: var(--iqaa-n700); }

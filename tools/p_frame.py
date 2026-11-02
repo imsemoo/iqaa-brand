@@ -28,6 +28,7 @@ def frame(current, slug):
 <div class="ap-foot">
 <button type="button" class="ap-me ap-me-b" data-menu aria-expanded="false" aria-controls="ap-me-menu"><span class="me-av" aria-hidden="true" data-me-av></span><span class="ap-me-t"><span class="sr">{t('Signed in as')} </span><b data-me-name></b><span data-me-role></span></span></button>
 <div class="ap-menu ap-me-menu" id="ap-me-menu" hidden><p class="ap-menu-h">{t('See the screens as')}</p><div data-people></div></div>
+<button type="button" class="ap-fold ap-theme" data-theme-switch aria-pressed="false" aria-label="{t('Dark mode')}" title="{t('Dark mode')}">{icon('Dark', 18).replace('<svg', '<svg class="i-dark"', 1)}{icon('Light', 18).replace('<svg', '<svg class="i-light"', 1)}</button>
 {lang_switch(slug, up=True)}
 <button type="button" class="ap-fold" data-fold aria-pressed="false" aria-label="{t('Fold the sidebar')}" title="{t('Fold the sidebar')}">{fold}</button>
 </div>

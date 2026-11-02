@@ -17,6 +17,22 @@ from p_ms import motion, system  # noqa: E402
 from p_auth import signin  # noqa: E402
 from p_work import work  # noqa: E402
 from p_notify import notify  # noqa: E402
+from p_me import me  # noqa: E402
+from p_network import network  # noqa: E402
+from p_new import new  # noqa: E402
+from p_log import log  # noqa: E402
+from p_security import security  # noqa: E402
+from p_publishing import publishing  # noqa: E402
+from p_archive import archive  # noqa: E402
+from p_repos import repos  # noqa: E402
+from p_releases import releases  # noqa: E402
+from p_envs import envs  # noqa: E402
+from p_clients import clients  # noqa: E402
+from p_campaigns import campaigns  # noqa: E402
+from p_spend import spend  # noqa: E402
+from p_files import files  # noqa: E402
+from p_vtemplates import vtemplates  # noqa: E402
+from p_approvals import approvals  # noqa: E402
 from p_item import item  # noqa: E402
 from p_queue import queue  # noqa: E402
 from p_home import home  # noqa: E402
@@ -52,10 +68,10 @@ PAGES = [
 
 APP = (('signin', signin),
        # the digital production screens (the owner's 22), on world.js
-       ('work', work), ('notify', notify), ('item', item), ('queue', queue), ('home', home),
-       ('lines', lines), ('publish', publish), ('built', built), ('start', start),
-       ('people', people), ('reports', reports), ('packs', packs), ('review', review),
-       ('automate', automate), ('sources', sources), ('templates', templates), ('integrations', integrations))
+       ('work', work), ('notify', notify), ('me', me), ('item', item), ('queue', queue), ('home', home),
+       ('lines', lines), ('network', network), ('new', new), ('publish', publish), ('built', built), ('start', start),
+       ('people', people), ('reports', reports), ('packs', packs), ('log', log), ('security', security), ('review', review),
+       ('automate', automate), ('sources', sources), ('publishing', publishing), ('archive', archive), ('repos', repos), ('releases', releases), ('envs', envs), ('clients', clients), ('campaigns', campaigns), ('spend', spend), ('files', files), ('vtemplates', vtemplates), ('approvals', approvals), ('templates', templates), ('integrations', integrations))
 
 if __name__ == '__main__':
     # --only today,watar   builds just those product screens, in every language, and skips the book and its exports

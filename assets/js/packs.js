@@ -141,6 +141,7 @@
     }
   });
 
+  document.querySelectorAll('a[data-keep]').forEach((a) => { a.href = C.href(a.getAttribute('href')); });
   document.title = `${T('Settings')} · ${T(O.name)}`;
   // the settings are the owner's: someone else is told so, and sent to their own work
   if (!C.P.owner) {
