@@ -69,9 +69,14 @@
 
   // ---------- the strip of departments ----------
   const peopleIn = (all, d) => Object.keys(all.people).filter((k) => all.people[k].dept === d.id);
+  // a number beside its icon; the words stay for the screen reader and the tooltip
+  const stat = (ic, n, words) => `<span class="pp-st-n" title="${esc(words)}">${icon(ic, 16)}<b aria-hidden="true">${n}</b><span class="sr">${esc(words)}</span></span>`;
   function counts(all, d) {
-    const n = peopleIn(all, d).length, t = teams.filter((x) => x.dept === d.id).length, b = blocks.filter((x) => x.dept === d.id).length;
-    return [n ? N(n, '{n} person', '{n} people') : T('Nobody yet'), t ? N(t, '{n} team', '{n} teams') : '', b ? N(b, '{n} block', '{n} blocks') : ''].filter(Boolean).join(' · ');
+    const ks = peopleIn(all, d), t = teams.filter((x) => x.dept === d.id).length, b = blocks.filter((x) => x.dept === d.id).length;
+    const faces = ks.slice(0, 4).map((k) => `<span class="me-av${invited(all.people[k]) ? ' inv' : ''}" aria-hidden="true">${initial(all.people[k])}</span>`).join('')
+      + (ks.length > 4 ? `<span class="me-av more" aria-hidden="true">+${ks.length - 4}</span>` : '');
+    return `<span class="pp-faces">${faces}</span><span class="pp-stats">${stat('People', ks.length, N(ks.length, '{n} person', '{n} people'))}`
+      + `${t ? stat('Clients', t, N(t, '{n} team', '{n} teams')) : ''}${b ? stat('Line', b, N(b, '{n} block', '{n} blocks')) : ''}</span>`;
   }
   // the department the page opens on: the one asked for, else the one with the most people (ties: more teams), where
   // most of the owner's questions about people are
@@ -84,11 +89,12 @@
   let sel = null;
   function strip(all) {
     $('[data-depts]').innerHTML = `<ul class="pp-ds">${all.depts.map((d) => `<li><a class="pp-d" href="${C.href('people.html', { dept: d.id })}" data-dept="${esc(d.id)}"${d.id === sel ? ' aria-current="true"' : ''}>`
-      + `<b>${esc(T(d.name))}</b><span>${esc(counts(all, d))}</span></a></li>`).join('')}</ul>`;
+      + `<b>${esc(T(d.name))}</b>${counts(all, d)}</a></li>`).join('')}</ul>`;
   }
   function head(all) {
     const n = Object.keys(all.people).length, inv = Object.values(all.people).filter(invited).length;
-    $('[data-sum]').textContent = [N(n, '{n} person', '{n} people'), N(all.depts.length, '{n} department', '{n} departments'), inv ? N(inv, '{n} invited', '{n} invited') : ''].filter(Boolean).join(' · ');
+    $('[data-sum]').innerHTML = stat('People', n, N(n, '{n} person', '{n} people')) + stat('Company', all.depts.length, N(all.depts.length, '{n} department', '{n} departments'))
+      + (inv ? stat('Invite', inv, N(inv, '{n} invited', '{n} invited')) : '');
   }
 
   // ---------- a department: its blocks, its teams, its people ----------
@@ -103,7 +109,7 @@
 <td class="pp-c-t">${p.title ? esc(T(p.title)) : dash}</td>
 <td class="pp-c-y">${membership(k, p) ? esc(membership(k, p)) : dash}</td>
 <td class="pp-c-s"><span class="pp-l">${esc(T('Skills'))}</span>${skills ? `<span class="pp-sks">${skills}</span>` : dash}</td>
-<td class="pp-c-h"><span class="pp-l">${esc(T('Hours a week'))}</span>${p.hours ? `<span>${esc(N(p.hours, '{n} h', '{n} h'))}</span>` : dash}</td>
+<td class="pp-c-h"><span class="pp-l">${esc(T('Hours a week'))}</span>${p.hours ? `<span class="pp-hb"><i aria-hidden="true" style="--h:${Math.min(1, p.hours / 40)}"></i><span>${esc(N(p.hours, '{n} h', '{n} h'))}</span></span>` : dash}</td>
 <td class="pp-c-w"><span class="pp-l">${esc(T('Where they work'))}</span>${roleList(w.list)}${w.note ? `<small class="pp-wn">${esc(w.note)}</small>` : ''}</td>
 <td class="pp-c-st">${inv ? `<span class="pp-st inv"><i aria-hidden="true"></i>${esc(T('Not joined yet'))}</span>${at ? `<small>${esc(T('Invited {when}', { when: FLOW.ago(at) }))}</small>` : ''}`
       : `<span class="pp-st on"><i aria-hidden="true"></i>${esc(T('Active'))}</span>`}</td></tr>`;
@@ -145,9 +151,8 @@ ${table(all, members, t, T(t.name))}</section>`;
       sections.push(`<section class="pp-team" aria-labelledby="pp-t-none"><div class="pp-th"><h3 id="pp-t-none">${icon('Clients', 18)}<span>${esc(h)}</span><span class="pp-n">${loose.length}</span></h3>`
         + `${own.length ? '' : `<p>${esc(T('No team in this department: each person’s roles are given one by one.'))}</p>`}</div>${table(all, loose, null, h)}</section>`);
     }
-    el.innerHTML = `${top}<p class="pp-rule">${icon('Lock', 18)}<span>${esc(T('A new member inherits every permission of their team. A title is free text and gives no permission: what a person may do comes from their role in each block.'))}</span></p>`
-      + sections.join('')
-      + ((O.skills || []).length ? `<p class="pp-org-sk">${esc(T('Skills come from {org}’s own list: {list}.', { org: T(O.name), list: O.skills.map((s) => T(s)).join(T(', ')) }))}</p>` : '');
+    el.innerHTML = `${top}<p class="pp-rule">${icon('Lock', 18)}<span>${esc(T('A new member inherits their team’s permissions.'))}</span></p>`
+      + sections.join('');
   }
 
   function render() {

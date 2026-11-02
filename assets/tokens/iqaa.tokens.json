@@ -81,6 +81,27 @@
   },
   "hue": 25
  },
+ "caution": {
+  "light": {
+   "hex": "#AC6600",
+   "rgb": "172 102 0",
+   "hsl": "36 100% 34%",
+   "oklch": "57.6% 0.129 64.9",
+   "cmyk": "0 41 100 33",
+   "on_white": 4.51,
+   "on_ink": 3.87
+  },
+  "dark": {
+   "hex": "#F3A656",
+   "rgb": "243 166 86",
+   "hsl": "31 87% 65%",
+   "oklch": "78.5% 0.132 64.7",
+   "cmyk": "0 32 65 5",
+   "on_white": 2.02,
+   "on_ink": 8.64
+  },
+  "hue": 65
+ },
  "semantic": {
   "light": {
    "ground": "#FFFFFF",
@@ -94,6 +115,7 @@
    "machine": "#19172E",
    "person": "#8845F8",
    "alert": "#E20025",
+   "caution": "#AC6600",
    "test": "#807E91"
   },
   "dark": {
@@ -108,6 +130,7 @@
    "machine": "#FFFFFF",
    "person": "#C9A4FF",
    "alert": "#FF9890",
+   "caution": "#F3A656",
    "test": "#9A97A9"
   }
  },
@@ -306,6 +329,38 @@
   ],
   [
    {
+    "text": "amber",
+    "ground": "white",
+    "ratio": 4.51,
+    "grade": "AA"
+   },
+   {
+    "text": "amber",
+    "ground": "n50",
+    "ratio": 4.13,
+    "grade": "Large"
+   },
+   {
+    "text": "amber",
+    "ground": "lavender",
+    "ratio": 3.77,
+    "grade": "Large"
+   },
+   {
+    "text": "amber",
+    "ground": "ink",
+    "ratio": 3.87,
+    "grade": "Large"
+   },
+   {
+    "text": "amber",
+    "ground": "n900",
+    "ratio": 3.46,
+    "grade": "Large"
+   }
+  ],
+  [
+   {
     "text": "white",
     "ground": "white",
     "ratio": 1.0,
@@ -429,6 +484,38 @@
     "text": "red-dark",
     "ground": "n900",
     "ratio": 7.54,
+    "grade": "AAA"
+   }
+  ],
+  [
+   {
+    "text": "amber-dark",
+    "ground": "white",
+    "ratio": 2.02,
+    "grade": "Fail"
+   },
+   {
+    "text": "amber-dark",
+    "ground": "n50",
+    "ratio": 1.85,
+    "grade": "Fail"
+   },
+   {
+    "text": "amber-dark",
+    "ground": "lavender",
+    "ratio": 1.69,
+    "grade": "Fail"
+   },
+   {
+    "text": "amber-dark",
+    "ground": "ink",
+    "ratio": 8.64,
+    "grade": "AAA"
+   },
+   {
+    "text": "amber-dark",
+    "ground": "n900",
+    "ratio": 7.73,
     "grade": "AAA"
    }
   ],

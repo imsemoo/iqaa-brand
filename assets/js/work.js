@@ -11,11 +11,12 @@
   const M = window.IQAA.motion;
   let filter = 'all', undo = null;
 
-  // due, or late by how much: late is the one red on the screen
+  // due, or late by how much: the plan keeps red and yellow for risk only, so late is red, due today amber, the rest grey
+  const today = (it) => FLOW.dayOf(it.due) === 0;
   function flag(it) {
     const l = FLOW.late(it.due);
     return l ? `<span class="wk-flag late">${IQ.icon('Late', 16)}${esc(l)}</span>`
-      : `<span class="wk-flag">${IQ.icon('Date', 16)}${esc(T('Due {when}', { when: FLOW.when(it.due) }))}</span>`;
+      : `<span class="wk-flag${today(it) ? ' soon' : ''}">${IQ.icon('Date', 16)}${esc(T('Due {when}', { when: FLOW.when(it.due) }))}</span>`;
   }
   // the last thing that happened to the item, as its person needs to know it
   function event(it) {
@@ -23,37 +24,44 @@
     if (it.state === 'returned' && it.note) return T('Sent back from {block} by {name}: “{text}”', { block: T(C.block(it.note.from).name), name: C.name(it.note.by), text: T(it.note.text) });
     if (it.state === 'new' && it.assigned) return T('Given to you by {name}, {when}', { name: C.name(it.assigned.by), when: FLOW.ago(it.assigned.at) });
     if (it.state === 'open') return it.needs ? T('Needs {skill}', { skill: T(it.needs) }) : T('Nobody has it yet');
-    if (it.state === 'approval') return T('Waiting for your approval');
+    if (it.state === 'approval') return it.who && it.who !== C.me ? T('{name} handed it over for your approval', { name: C.name(it.who) }) : T('Waiting for your approval');
     if (f.pr) return N(f.pr.passed, 'Pull request #{pr}: {n} check passed, {running} running', 'Pull request #{pr}: {n} checks passed, {running} running', { pr: f.pr.n, running: f.pr.running });
     if (f.video && f.video.length) return T('Version {n} uploaded {when}', { n: f.video[0].v, when: FLOW.ago(f.video[0].at) });
     return '';
   }
-  function row(it, act) {
+  // a row: the title and its risk; where it is on the line; its code and what happened to it last; one action.
+  // What is in progress shows the line's stage names, as the owner's design does (a phone keeps the one pen strip);
+  // new and open work is all in the person's own block, so its block is named only when they work in more than one
+  function row(it, act, stages) {
     const ev = event(it);
-    return `<li class="wk-row${FLOW.late(it.due) ? ' is-late' : ''}${it.state === 'returned' ? ' is-back' : ''}" data-code="${it.code}">
+    const where = `<div class="wk-where">${C.strip(it)}<span class="wk-at">${esc(T(C.at(it).name))}</span></div>`;
+    const line = stages ? `<div class="wk-stg">${C.stages(it)}</div>${where}` : C.mine.length > 1 ? where : '';
+    return `<li class="wk-row${stages ? ' has-stg' : ''}${FLOW.late(it.due) ? ' is-late' : ''}${it.state === 'returned' ? ' is-back' : ''}" data-code="${it.code}">
 <div class="wk-top"><a class="wk-title" href="${C.href('item.html', { code: it.code })}">${esc(T(it.title))}</a>${flag(it)}</div>
-<div class="wk-where">${C.strip(it)}<span class="wk-at">${esc(T(C.at(it).name))}</span><code dir="ltr">${it.code}</code></div>
-${ev ? `<p class="wk-ev">${esc(ev)}</p>` : ''}
+${line}<p class="wk-ev"><code dir="ltr">${it.code}</code>${ev ? `<span>${esc(ev)}</span>` : ''}</p>
 <div class="wk-act">${act}</div></li>`;
   }
 
   const open = (it) => `<a class="btn small" href="${C.href('item.html', { code: it.code })}">${T('Open')}</a>`;
   function render() {
     const w = C.work();
-    const all = w.doing.concat(w.fresh), lateN = all.filter((it) => FLOW.late(it.due)).length;
-    const only = (a) => (filter === 'late' ? a.filter((it) => FLOW.late(it.due)) : a);
-    const sec = (key, title, list, act, hint) => (list.length ? `<section class="wk-sec" aria-labelledby="wk-${key}">
+    const all = w.doing.concat(w.fresh), lateN = all.filter((it) => FLOW.late(it.due)).length, todayN = all.filter(today).length;
+    const only = (a) => (filter === 'late' ? a.filter((it) => FLOW.late(it.due)) : filter === 'today' ? a.filter(today) : a);
+    const sec = (key, title, list, act, hint, stages) => (list.length ? `<section class="wk-sec" aria-labelledby="wk-${key}">
 <div class="wk-sh"><h2 id="wk-${key}">${esc(title)} <span>${list.length}</span></h2>${hint ? `<p>${esc(hint)}</p>` : ''}</div>
-<ol class="wk-list">${list.map((it) => row(it, act(it))).join('')}</ol></section>` : '');
-    const html = sec('doing', T('In progress'), only(w.doing), open)
-      + sec('fresh', T('New for you'), only(w.fresh), (it) => `<button type="button" class="btn small ink" data-start="${it.code}">${IQ.icon('Take', 18)}<span>${T('Start working')}</span></button>`)
-      + (filter === 'all' ? sec('open', T('Open to claim'), w.open, (it) => `<button type="button" class="btn small" data-claim="${it.code}">${IQ.icon('Take', 18)}<span>${T('Claim')}</span></button>`,
-        T('Your role here may take work nobody has yet.')) : '');
-    $('[data-lists]').innerHTML = html || `<div class="wk-empty"><p><b>${esc(filter === 'late' ? T('Nothing of yours is late.') : NO.t('No job is yours right now.'))}</b></p>
+<ol class="wk-list">${list.map((it) => row(it, act(it), stages)).join('')}</ol></section>` : '');
+    // what waits for the person's approval names the decision; the item page holds Approve and Send back
+    const doingAct = (it) => (it.state === 'approval' ? `<a class="btn small" href="${C.href('item.html', { code: it.code })}">${T('Review and approve')}</a>` : open(it));
+    const html = sec('doing', T('In progress'), only(w.doing), doingAct, '', true)
+      + sec('fresh', T('New for you'), only(w.fresh), (it) => `<button type="button" class="btn small primary" data-start="${it.code}">${IQ.icon('Take', 18)}<span>${T('Start working')}</span></button>`)
+      + (filter === 'all' ? sec('open', T('Open to claim'), w.open, (it) => `<button type="button" class="btn small" data-claim="${it.code}">${IQ.icon('Take', 18)}<span>${T('Claim')}</span></button>`) : '');
+    const none = { late: T('Nothing of yours is late.'), today: T('Nothing of yours is due today.') }[filter] || NO.t('No job is yours right now.');
+    $('[data-lists]').innerHTML = html || `<div class="wk-empty"><p><b>${esc(none)}</b></p>
 <p>${esc(T('New work reaches you here when someone gives it to you, or when you claim it.'))}</p></div>`;
-    $('[data-sum]').textContent = all.length ? `${NO.n(all.length, '{n} job', '{n} jobs')}${lateN ? ` · ${NO.n(lateN, '{n} late job', '{n} late jobs')}` : ''}` : NO.t('No job is yours right now.');
+    $('[data-sum]').innerHTML = all.length ? `<span class="stats">${FLOW.stat('My work', all.length, NO.n(all.length, '{n} job', '{n} jobs'))}${lateN ? FLOW.stat('Late', lateN, NO.n(lateN, '{n} late job', '{n} late jobs'), 'late') : ''}${todayN ? FLOW.stat('Date', todayN, T('Due today')) : ''}</span>` : esc(NO.t('No job is yours right now.'));
     $('[data-n-all]').textContent = all.length;
     $('[data-n-late]').textContent = lateN;
+    $('[data-n-today]').textContent = todayN;
     renderSide(w);
   }
 
@@ -61,15 +69,19 @@ ${ev ? `<p class="wk-ev">${esc(ev)}</p>` : ''}
   function renderSide(w) {
     const where = C.mine.map((b) => {
       const roles = C.rolesIn(b).map((r) => T(r.role)).join(T(', '));
-      const n = C.items.filter((it) => it.at.includes(b.id) && it.who === C.me).length;
+      const n = w.doing.concat(w.fresh).filter((it) => it.at.includes(b.id)).length;
       return `<li><span class="wk-g" aria-hidden="true">${IQ.glyph(b.stroke)}</span><span><b>${esc(T(b.name))}</b><small>${esc(roles)}</small></span><i>${n}</i></li>`;
     }).join('');
     const seen = [];
     C.items.filter((it) => it.who === C.me || (it.note && it.note.by === C.me)).forEach((it) => {
-      if (it.note && it.who === C.me) seen.push({ at: it.note.at, t: T('{name} sent back {title}', { name: C.name(it.note.by), title: T(it.title) }) });
-      if (it.assigned && it.who === C.me) seen.push({ at: it.assigned.at, t: T('{name} gave you {title}', { name: C.name(it.assigned.by), title: T(it.title) }) });
+      if (it.note && it.who === C.me) seen.push({ code: it.code, at: it.note.at, t: T('{name} sent back {title}', { name: C.name(it.note.by), title: T(it.title) }) });
+      if (it.assigned && it.who === C.me) seen.push({ code: it.code, at: it.assigned.at, t: T('{name} gave you {title}', { name: C.name(it.assigned.by), title: T(it.title) }) });
     });
     seen.sort((a, b) => b.at.localeCompare(a.at));
+    // on a phone the side falls under the lists, so the latest notice also sits at the top, as the owner's design has it
+    const flash = $('[data-flash]');
+    flash.hidden = !seen.length;
+    if (seen.length) flash.innerHTML = `<a href="${C.href('item.html', { code: seen[0].code })}">${IQ.icon('Notifications', 18)}<span>${esc(seen[0].t)}</span><time>${esc(FLOW.ago(seen[0].at))}</time></a>`;
     $('[data-side]').innerHTML = `<section class="wk-box"><h2>${IQ.icon('Line', 18)}${T('Where you work')}</h2><p class="wk-line">${esc(T(C.line.name))}</p><ul class="wk-blocks">${where}</ul></section>`
       + (seen.length ? `<section class="wk-box"><h2>${IQ.icon('Notifications', 18)}${T('Lately')}</h2><ul class="wk-feed">${seen.slice(0, 4).map((e) => `<li><span>${esc(e.t)}</span><time>${esc(FLOW.ago(e.at))}</time></li>`).join('')}</ul></section>` : '');
   }

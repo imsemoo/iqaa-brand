@@ -411,12 +411,14 @@ ${kept ? `<h3 class="it-h3">${esc(T('Test cases kept for testing'))}</h3><ol cla
     const roles = C.rolesIn(b).map((r) => T(r.role)), hidden = Object.keys(C.O.fields).filter((k) => !shown(F, k));
     const role = roles.length ? T('Your role here: {roles}.', { roles: roles.join(T(', ')) })
       : C.P.owner ? T('You have no role in {block}; you see it as the owner.', { block: T(b.name) }) : T('You have no role in {block}.', { block: T(b.name) });
-    const hid = !hidden.length ? T('You see every field.') : hidden.length === 1
+    // the role and how many fields it does not see; the full rule is the tooltip and what a screen reader says
+    const rule = !hidden.length ? T('You see every field.') : hidden.length === 1
       ? T('{field} is hidden from you; its value never reaches your browser.', { field: T(C.O.fields[hidden[0]].name) })
       : N(hidden.length, '{n} field is hidden from you; its value never reaches your browser.', '{n} fields are hidden from you; their values never reach your browser.');
+    const hid = hidden.length ? N(hidden.length, '{n} hidden field', '{n} hidden fields') : '';
     const details = `<section class="it-box" aria-labelledby="it-d-h"><h2 id="it-d-h">${icon('Overview')}${T('Details')}</h2>
 <dl class="it-dl">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
-<p class="it-role">${icon('Lock', 16)}<span><b>${esc(role)}</b> ${esc(hid)}</span></p></section>`;
+<p class="it-role" title="${esc(rule)}">${icon('Lock', 16)}<span><b>${esc(role)}</b> ${esc(hid)}<span class="sr"> ${esc(rule)}</span></span></p></section>`;
     return details + (C.rolesIn(b).length && sight() === 'yes' ? watarHtml(F) : '');
   }
   function watarHtml(F) {
@@ -427,7 +429,7 @@ ${kept ? `<h3 class="it-h3">${esc(T('Test cases kept for testing'))}</h3><ol cla
     }).join('');
     const open = TOOLS.filter((id) => kept[id] || drafts[id]).map((id) => draftHtml(F, id, kept[id])).join('');
     return `<section class="it-box it-watar" aria-labelledby="it-w-h"><h2 id="it-w-h">${icon('Ask Watar')}${T('Watar')}</h2>
-<p class="it-wl">${esc(T('Watar drafts. Nothing is sent, and nothing changes until a person accepts.'))}</p><ul class="it-tools">${tools}</ul>${open}</section>`;
+<ul class="it-tools" title="${esc(T('Watar drafts. Nothing is sent, and nothing changes until a person accepts.'))}">${tools}</ul>${open}</section>`;
   }
   // a draft in the dashed grey pen until a person accepts it; then the pen is ink and the loop is theirs
   function draftHtml(F, id, k) {

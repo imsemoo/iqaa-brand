@@ -13,7 +13,7 @@
 
   // ---------- time: every demo time is a wall-clock string with no zone, read as UTC so every browser agrees ----------
   const ms = (iso) => Date.parse(`${iso.length === 16 ? `${iso}:00` : iso}Z`);
-  const NOW = ms(W.now), DAY = 864e5;
+  const NOW = ms(W.now), DAY = 864e5, NOW_ISO = W.now;
   const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const hm = (iso) => iso.slice(11, 16);
   const dayOf = (iso) => Math.round((ms(`${iso.slice(0, 10)}T00:00`) - ms(`${W.dayIso}T00:00`)) / DAY);
@@ -106,7 +106,11 @@
     function work(who) {
       const w = who || me;
       const ofMe = items.filter((it) => it.who === w);
-      const doing = ofMe.filter((it) => it.state === 'work' || it.state === 'returned' || (it.state === 'approval' && block(it.at[0]).kind === 'approval'));
+      // waiting for their approval: in an approval block it is the reviewer's own; in a work block someone handed it over
+      // and the role the block names as approver (its lead) decides
+      const approves = (it) => { const b = block(it.at[0]); return b.approve && rolesIn(b, w).some((r) => r.role === b.approve); };
+      const doing = ofMe.filter((it) => it.state === 'work' || it.state === 'returned' || (it.state === 'approval' && block(it.at[0]).kind === 'approval'))
+        .concat(items.filter((it) => it.state === 'approval' && it.who !== w && approves(it)));
       const fresh = ofMe.filter((it) => it.state === 'new');
       const open = items.filter((it) => !it.who && it.state === 'open' && rolesIn(at(it), w).some((r) => r.claim));
       const byDue = (a, b) => a.due.localeCompare(b.due);
@@ -194,8 +198,39 @@
       return `${page}?${s}`;
     };
 
-    return { O, me, P, line, blocks, items, noun, block, person, name, first, rolesIn, leads, mine, standing, path, at, placeOf, next, work, queue, fieldsFor, stages, strip, href, draft, change, discard };
+    // ---------- what reached the person: sent back, given, waiting for their approval, late; for the owner also the
+    // invitations nobody accepted and the integrations that lost their permission. Newest first. ----------
+    function inbox(who) {
+      const w = who || me, out = [];
+      const approves = (it) => { const b = block(it.at[0]); return b.approve && rolesIn(b, w).some((r) => r.role === b.approve); };
+      items.forEach((it) => {
+        if (it.who === w && it.state === 'returned' && it.note) out.push({ id: `back-${it.code}`, kind: 'back', at: it.note.at, code: it.code, by: it.note.by, from: it.note.from, text: it.note.text });
+        if (it.who === w && it.state === 'new' && it.assigned) out.push({ id: `given-${it.code}`, kind: 'given', at: it.assigned.at, code: it.code, by: it.assigned.by });
+        if (it.state === 'approval' && it.who !== w && approves(it)) {
+          const sent = (it.log || []).find((e) => e[3] === 'sent' && e[1] === it.who);
+          out.push({ id: `approve-${it.code}`, kind: 'approve', at: sent ? sent[2] : NOW_ISO, code: it.code, by: it.who });
+        }
+        if (it.who === w && late(it.due)) out.push({ id: `late-${it.code}`, kind: 'late', at: it.due, code: it.code });
+      });
+      if (O.people[w] && O.people[w].owner) {
+        Object.entries(O.invited || {}).forEach(([k, at]) => { if (O.people[k]) out.push({ id: `invite-${k}`, kind: 'invite', at, who: k }); });
+        (O.integrations || []).filter((x) => x.state === 'expired').forEach((x) => out.push({ id: `expired-${x.id}`, kind: 'expired', at: x.since, name: x.name }));
+      }
+      return out.sort((a, b) => b.at.localeCompare(a.at));
+    }
+
+    return { O, me, P, line, blocks, items, noun, block, person, name, first, rolesIn, leads, mine, standing, path, at, placeOf, next, work, queue, fieldsFor, stages, strip, href, draft, change, discard, inbox };
   }
 
-  window.FLOW = { context, make, move, when, ago, late, hm, date, dayOf, ms, esc, now: NOW, store };
+  // a count as an icon and a number; its words are the tooltip and what a screen reader says (app.css .stat)
+  const stat = (ic, n, words, cls) => `<span class="stat${cls ? ` ${cls}` : ''}" title="${esc(words)}">${window.IQ.icon(ic, 16)}<b aria-hidden="true">${n}</b><span class="sr">${esc(words)}</span></span>`;
+  // hours a week as a bar against a full week of 40 (app.css .hbar)
+  const hbar = (h, words) => `<span class="hbar" title="${esc(words)}"><i aria-hidden="true" style="--h:${Math.min(1, h / 40)}"></i><span aria-hidden="true">${esc(N(h, '{n} h', '{n} h'))}</span><span class="sr">${esc(words)}</span></span>`;
+
+  // the notices a person has opened, kept for the visit
+  const readKey = (C) => `iqaa-read:${C.O.id}:${C.me}`;
+  const read = (C) => { try { return JSON.parse(store.get(readKey(C)) || '[]') || []; } catch (e) { return []; } };
+  const markRead = (C, ids) => store.set(readKey(C), JSON.stringify([...new Set(read(C).concat(ids))]));
+
+  window.FLOW = { read, markRead, context, make, move, when, ago, late, hm, date, dayOf, ms, esc, stat, hbar, now: NOW, store };
 })();

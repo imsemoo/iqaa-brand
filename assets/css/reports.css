@@ -155,3 +155,26 @@ body.app .rp-page .btn[aria-disabled='true']:active { transform: none; }
   .rp-best { padding-inline: var(--s-4); }
 }
 @media (pointer: coarse) { .rp-page .btn.small { min-height: 44px; } }
+
+/* ---------- charts (user, 2 Nov: fewer words, more drawing) ---------- */
+/* a tile's share as a thin bar under its number */
+.rp-share { display: block; height: 6px; margin-block-start: var(--s-2); border-radius: 3px; background: var(--iqaa-n100); overflow: hidden; }
+.rp-share i { display: block; height: 100%; width: calc(var(--f) * 1%); border-radius: 3px; background: var(--iqaa-n500); }
+/* where the journey's time goes: one bar split by block, in the line's order */
+.rp-jt { list-style: none; margin: 0; padding: var(--s-4) var(--s-5, 20px) var(--s-5, 20px); display: flex; align-items: flex-start; gap: 2px; }
+.rp-jt li { flex: var(--w) 1 0; min-width: 4px; display: flex; flex-direction: column; gap: var(--s-1); }
+.rp-jt li i { flex: none; display: block; height: 28px; border-radius: 6px; background: var(--iqaa-n300); }
+.rp-jt li.b i { background: var(--iqaa-n400); }
+.rp-jt li.hot i { background: var(--iqaa-red); }
+.rp-jt li span { font-size: 12px; line-height: 16px; color: var(--iqaa-n700); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rp-jt li b { font-family: 'Fragment Mono', monospace; font-size: 12px; font-weight: 400; color: var(--iqaa-ink); }
+.rp-jt li.hot span, .rp-jt li.hot b { color: var(--iqaa-red); font-weight: 700; }
+/* a road back: from, an arrow, to */
+.rp-rd { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.rp-rd svg { flex: none; color: var(--iqaa-n600); }
+[dir='rtl'] .rp-rd svg { transform: scaleX(-1); }
+.rp-cols + .rp-pn, .rp-pn + .rp-cols, .rp-pn + .rp-pn { margin-block-start: var(--s-6); }
+@media (max-width: 700px) { .rp-jt { padding-inline: var(--s-4); } .rp-jt li span { display: none; } }
+/* the roads back read in one line on a wide panel */
+.rp-wide .rp-rk li { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) 7.5em; }
+.rp-wide .rp-rk-n { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px var(--s-3); }

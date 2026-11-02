@@ -342,7 +342,7 @@ ${owner ? '' : `<p class="ai-hint">${icon('Lock', 18)}<span>${T('Only the owner 
       return `<label class="ai-mo"><input type="radio" name="ai-mode" value="${esc(m)}" data-mode${m === b.mode ? ' checked' : ''}><span class="ai-mg">${glyphs(b, m)}</span><span class="ai-mt"><b>${esc(T(m))}${tag}</b><small>${esc(T(d))}</small></span></label>`;
     };
     return `<section class="ai-s" aria-labelledby="ai-who-h"><h3 id="ai-who-h">${T('Who does it')}</h3>
-<p class="ai-hint">${icon('Draft', 18)}<span>${esc(T('Changing it is a change of the draft: it takes effect when version {n} is published.', { n: version + 1 }))}</span></p>
+<p class="ai-hint">${icon('Draft', 18)}<span>${esc(T('Takes effect when the version is published.'))}</span></p>
 ${roles}
 <div class="ai-md" role="radiogroup" aria-labelledby="ai-who-h">${MODES.map(opt).join('')}</div>
 ${full ? `<div class="ai-req"><p>${T('Fully automatic is published only with a daily cap, a budget and a named person’s acceptance.')}</p>
@@ -367,10 +367,12 @@ ${b.tools.length ? `<ul class="ai-tl">${rows}</ul>` : `<p class="ai-none">${esc(
   function limits(b) {
     if (!machine(b)) return `<section class="ai-s" aria-labelledby="ai-lm-h"><h3 id="ai-lm-h">${T('Limits')}</h3><p class="ai-none">${T('No limits: a person does it.')}</p></section>`;
     const L = b.limits, use = b.use || { today: 0, spent: 0 };
-    const field = (k, label, pre, post, help, max) => `<div class="field"><label for="ai-${k}">${label}</label><span class="ai-in">${pre ? `<span>${pre}</span>` : ''}<input id="ai-${k}" type="number" inputmode="numeric" min="1" max="${max}" data-set="${k}" value="${L[k] || ''}" aria-describedby="ai-${k}-h">${post ? `<span>${post}</span>` : ''}</span><small id="ai-${k}-h">${esc(help)}</small></div>`;
+    // a limit, and how much of it is used, drawn as a bar under its field (amber once past four fifths)
+    const field = (k, label, pre, post, help, max, f) => `<div class="field"><label for="ai-${k}">${label}</label><span class="ai-in">${pre ? `<span>${pre}</span>` : ''}<input id="ai-${k}" type="number" inputmode="numeric" min="1" max="${max}" data-set="${k}" value="${L[k] || ''}" aria-describedby="ai-${k}-h">${post ? `<span>${post}</span>` : ''}</span>`
+      + `${f != null ? `<span class="ai-use${f > 0.8 ? ' soon' : ''}" style="--f:${(Math.min(1, f) * 100).toFixed(1)}" aria-hidden="true"><i></i></span>` : ''}<small id="ai-${k}-h">${esc(help)}</small></div>`;
     return `<section class="ai-s" aria-labelledby="ai-lm-h"><h3 id="ai-lm-h">${T('Limits')}</h3>
-<div class="ai-lm">${field('cap', T('Daily cap'), '', T('per day'), L.cap ? T('Today: {n} of {cap}', { n: use.today, cap: L.cap }) : T('No cap yet'), 9999)}
-${field('budget', T('This month’s budget'), '$', '', L.budget ? T('Spent this month: {spent} of {budget}', { spent: money(use.spent), budget: money(L.budget) }) : T('No budget yet'), 99999)}
+<div class="ai-lm">${field('cap', T('Daily cap'), '', T('per day'), L.cap ? T('Today: {n} of {cap}', { n: use.today, cap: L.cap }) : T('No cap yet'), 9999, L.cap ? use.today / L.cap : null)}
+${field('budget', T('This month’s budget'), '$', '', L.budget ? T('Spent this month: {spent} of {budget}', { spent: money(use.spent), budget: money(L.budget) }) : T('No budget yet'), 99999, L.budget ? use.spent / L.budget : null)}
 ${field('confidence', T('Lowest confidence'), '', '%', T('Below it, the work goes to a person.'), 100)}</div></section>`;
   }
 
@@ -410,8 +412,7 @@ ${owner ? `<div class="field ai-fbs"><label for="ai-fallback">${T('Who takes the
       // an item's code is kept whole: it never breaks at its hyphens
       return `<li class="${r.by ? 'by-person' : 'by-machine'}"><span class="au-g" aria-hidden="true">${strokes([[g]])}</span><div><p>${esc(text).replace(r.code, `<span class="ai-cd">${r.code}</span>`)}</p>${meta}</div><time>${esc(FLOW.when(r.at))}</time></li>`;
     }).join('');
-    return `<section class="ai-s" aria-labelledby="ai-lg-h"><h3 id="ai-lg-h">${T('Its record')}</h3>
-${b.record.some((r) => !r.by) ? `<p class="ai-hint">${icon('History', 18)}<span>${T('Every step the machine takes is recorded with its confidence and its cost, and its actor is Automation, not a person.')}</span></p>` : ''}
+    return `<section class="ai-s" aria-labelledby="ai-lg-h"><h3 id="ai-lg-h" title="${T('Every step the machine takes is recorded with its confidence and its cost, and its actor is Automation, not a person.')}">${T('Its record')}</h3>
 <ol class="ai-log">${rows}</ol></section>`;
   }
 

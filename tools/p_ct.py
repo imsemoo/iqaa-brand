@@ -101,14 +101,17 @@ def colour():
     alert = f'''<div class="g2">
 <div class="sw"><div class="chip" style="background:{T.RED};color:#fff">Alert</div><p class="note">Failed and late, on light grounds. OKLCH {T.describe(T.RED)['oklch']}: violet’s lightness and chroma at hue 25.</p><dl><dt>HEX</dt><dd>{T.RED}</dd><dt>On white</dt><dd>{contrast(T.RED, W):.2f}:1</dd><dt>CMYK</dt><dd>{T.describe(T.RED)['cmyk']}</dd></dl></div>
 <div class="sw"><div class="chip" style="background:{T.RED_DARK};color:{INK}">Alert on ink</div><p class="note">The same hue at lilac’s lightness and chroma.</p><dl><dt>HEX</dt><dd>{T.RED_DARK}</dd><dt>On ink</dt><dd>{contrast(T.RED_DARK, INK):.2f}:1</dd></dl></div>
-</div>'''
+<div class="sw"><div class="chip" style="background:{T.AMBER};color:#fff">Caution</div><p class="note">Due today and not late yet, on light grounds. OKLCH {T.describe(T.AMBER)['oklch']}: the same rule at hue 65; sRGB clips its chroma.</p><dl><dt>HEX</dt><dd>{T.AMBER}</dd><dt>On white</dt><dd>{contrast(T.AMBER, W):.2f}:1</dd></dl></div>
+<div class="sw"><div class="chip" style="background:{T.AMBER_DARK};color:{INK}">Caution on ink</div><p class="note">The same hue at lilac’s lightness and chroma.</p><dl><dt>HEX</dt><dd>{T.AMBER_DARK}</dd><dt>On ink</dt><dd>{contrast(T.AMBER_DARK, INK):.2f}:1</dd></dl></div>
+</div>
+<p class="note">The plan keeps red and yellow for risk only: red for what is late or failed, amber for what is due today and still on time. Everything else is ink and grey.</p>'''
     prop = f'''<div class="prop"><div style="flex:80;background:#fff"></div><div style="flex:6;background:{T.NEUTRAL['100']}"></div><div style="flex:11;background:{INK}"></div><div style="flex:3;background:{T.BRAND['violet']}"></div></div>
 <div class="row" style="gap:var(--s-6)"><span class="lg"><i style="background:#fff;box-shadow:inset 0 0 0 1px var(--c-rule)"></i>Ground ~80%</span><span class="lg"><i style="background:{T.NEUTRAL['100']}"></i>Lavender ~6%</span><span class="lg"><i style="background:{INK}"></i>Ink ~11%</span><span class="lg"><i style="background:{T.BRAND['violet']}"></i>Violet ≤ 3%</span></div>
 <p class="note">Not a quota, a consequence of the rules: violet marks only what people did or must do, and one primary action. If violet passes a few percent of a surface, something that is not a person has been coloured.</p>'''
-    return (head('Colour', 'Ink for machines, violet for people', 'Four colours from the client’s deck, a neutral ramp computed between two of them, and one alert colour drawn at violet’s own strength. Nothing else.')
+    return (head('Colour', 'Ink for machines, violet for people', 'Four colours from the client’s deck, a neutral ramp computed between two of them, and two colours for risk, alert and caution, drawn at violet’s own strength. Nothing else.')
             + sec('Brand', 'The client’s four colours', f'<div class="g4">{sw}</div><p class="note">CMYK values are a naive conversion for a first proof. Before printing, match on coated stock and record the printer’s values here.</p>')
             + sec('Neutrals', 'A ramp from lavender to ink', ramp())
-            + sec('Alert', 'One colour for what needs attention now', alert)
+            + sec('Risk', 'Red for late, amber for due today', alert)
             + sec('Semantic', 'Tokens for light and dark', semantic())
             + sec('Contrast', 'Every pair, measured', matrix())
             + sec('Proportion', 'How much of each', prop)

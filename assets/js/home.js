@@ -93,14 +93,14 @@
     return m ? T('beside {block}', { block: T(m.name) }) : '';
   }
   function line() {
-    $('[data-ln-hint]').textContent = `${T(C.line.name)} · ${T('Press a block to open its queue.')}`;
+    $('[data-ln-hint]').textContent = T(C.line.name);
     $('[data-ln]').innerHTML = C.blocks.map(blockNow).map((r) => {
       const b = r.b;
       const exp = [T('Expected {time}', { time: span(b.hours) }), beside(b)].filter(Boolean).join(' · ');
       // the bar: the time here on average, with what the block expects always at its middle; past it, the bar is red
       const fill = r.avg == null ? 0 : Math.min(r.avg / b.hours, 2) * 50;
       const time = r.avg == null ? `<span class="hm-tt none">${esc(NO.t('No job here now'))}</span>`
-        : `<span class="hm-bar" style="--f:${fill.toFixed(1)}" aria-hidden="true"><i></i><i></i></span><span class="hm-tt">${esc(T('{time} here on average', { time: span(r.avg) }))}${r.slow ? ` <b class="hm-slow">${icon('Late', 14)}${esc(T('Slower than expected'))}</b>` : ''}</span>`;
+        : `<span class="hm-bar" style="--f:${fill.toFixed(1)}" aria-hidden="true"><i></i><i></i></span><span class="hm-tt"><span aria-hidden="true" title="${esc(T('{time} here on average', { time: span(r.avg) }))}">${esc(span(r.avg))}</span><span class="sr">${esc(T('{time} here on average', { time: span(r.avg) }))}</span>${r.slow ? ` <b class="hm-slow">${icon('Late', 14)}${esc(T('Slower than expected'))}</b>` : ''}</span>`;
       return `<li><a class="hm-b${r.here.length ? '' : ' is-empty'}" href="${C.href('queue.html', { block: b.id })}">${glyph(b.stroke)}<span class="hm-b-n"><b>${esc(T(b.name))}</b><small>${esc(exp)}</small></span>
 <span class="hm-b-c"><span>${esc(NO.n(r.here.length, '{n} job', '{n} jobs'))}</span>${r.late ? `<b>${esc(NO.n(r.late, '{n} late job', '{n} late jobs'))}</b>` : ''}</span><span class="hm-b-t">${time}</span></a></li>`;
     }).join('');
@@ -118,7 +118,7 @@
     const rows = C.items.filter(waitsForMe).sort((a, b) => a.due.localeCompare(b.due)).map((it) => {
       const l = FLOW.late(it.due), b = C.at(it);
       return `<li><a class="hm-d" href="${C.href('item.html', { code: it.code })}">${glyph(b.stroke)}<span class="hm-d-t"><b>${esc(T(it.title))}</b><small>${esc(`${T(b.name)} · ${T('Waiting for your approval')}`)}</small></span>
-<span class="hm-d-x${l ? ' late' : ''}">${icon(l ? 'Late' : 'Date', 16)}<span>${esc(l || T('Due {when}', { when: FLOW.when(it.due) }))}</span></span></a></li>`;
+<span class="hm-d-x${l ? ' late' : FLOW.dayOf(it.due) === 0 ? ' soon' : ''}">${icon(l ? 'Late' : 'Date', 16)}<span>${esc(l || T('Due {when}', { when: FLOW.when(it.due) }))}</span><em class="hm-go">${esc(T('Review and approve'))}</em></span></a></li>`;
     });
     // invitations are the owner's: they sent them, and People and departments is theirs
     if (C.standing === 'owner') {

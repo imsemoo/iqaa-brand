@@ -75,11 +75,12 @@
     $('[data-n]').textContent = S.length;
     $('[data-list]').innerHTML = S.map((s) => {
       const c = counts(s), L = lineOf(s);
-      const what = stateOf(s) === 'paused' && !c.all ? T('Nothing comes in while it is paused')
-        : c.all ? [N(c.all, '{n} attempt today', '{n} attempts today'), N(c.item, '{n} became an item', '{n} became items')].join(' · ') : T('Nothing came in today');
+      // the day in icons and numbers: attempts, items, failures (the words are the tooltip and for the screen reader)
+      const what = stateOf(s) === 'paused' && !c.all ? esc(T('Nothing comes in while it is paused'))
+        : c.all ? `<span class="stats">${FLOW.stat('History', c.all, N(c.all, '{n} attempt today', '{n} attempts today'))}${FLOW.stat('Done', c.item, N(c.item, '{n} became an item', '{n} became items'))}${c.failed ? FLOW.stat('Late', c.failed, N(c.failed, '{n} failed', '{n} failed'), 'late') : ''}</span>` : esc(T('Nothing came in today'));
       return `<li><button type="button" class="so-r" data-pick="${s.id}" aria-expanded="${s.id === sel}" aria-controls="so-d"${s.id === sel ? ' aria-current="true"' : ''}>
 <span class="so-i">${icon(TYPE[s.type][1], 20)}</span><span class="so-rt"><span class="so-ty">${esc(T(TYPE[s.type][0]))}</span><b>${esc(T(s.name))}</b>
-<small>${esc(what)}${c.failed ? ` · <b class="bad">${esc(N(c.failed, '{n} failed', '{n} failed'))}</b>` : ''}</small></span>
+<small>${what}</small></span>
 <span class="so-rx">${stateMark(s)}${L ? `<small>${esc(T(L.name))}</small>` : ''}</span></button></li>`;
     }).join('');
   }
@@ -130,8 +131,11 @@
         : next ? T('Nothing came in today. It runs next on {when}.', { when: FLOW.when(next) }) : T('Nothing came in today.');
       return `<section class="sd-s" aria-labelledby="sd-in-h"><h3 id="sd-in-h">${T('What came in today')}</h3><p class="sd-none">${glyph(stateOf(s) === 'paused' ? 'rest' : 'run')}<span>${esc(was)}</span></p></section>`;
     }
-    const sum = [N(c.all, '{n} attempt', '{n} attempts'), c.item && N(c.item, '{n} became an item', '{n} became items'), c.duplicate && N(c.duplicate, '{n} duplicate', '{n} duplicates'),
-      c.turned && N(c.turned, '{n} turned away', '{n} turned away'), c.failed && N(c.failed, '{n} failed', '{n} failed')].filter(Boolean).join(' · ');
+    // today's attempts as one bar split by outcome, each part as wide as its count, with its number in the legend
+    const parts = [['item', c.item, N(c.item, '{n} became an item', '{n} became items')], ['duplicate', c.duplicate, N(c.duplicate, '{n} duplicate', '{n} duplicates')],
+      ['turned', c.turned, N(c.turned, '{n} turned away', '{n} turned away')], ['failed', c.failed, N(c.failed, '{n} failed', '{n} failed')]].filter((p) => p[1]);
+    const sum = `<div class="sd-split" role="img" aria-label="${esc(parts.map((p) => p[2]).join(T(', ')))}">${parts.map((p) => `<i class="is-${p[0]}" style="flex:${p[1]}"></i>`).join('')}</div>`
+      + `<ul class="sd-key" aria-hidden="true">${parts.map((p) => `<li class="is-${p[0]}"><i></i><span>${esc(p[2])}</span></li>`).join('')}</ul>`;
     const rows = t.map((r, i) => {
       let mark, what, side = '';
       if (r.result === 'item') {
@@ -153,10 +157,9 @@
       }
       return `<li class="is-${r.result}"><time>${esc(FLOW.hm(r.at))}</time>${mark}<span class="sl-t"><b>${esc(T(r.title))}</b><small>${what}</small></span>${side ? `<span class="sl-x">${side}</span>` : ''}</li>`;
     }).join('');
-    return `<section class="sd-s" aria-labelledby="sd-in-h"><h3 id="sd-in-h">${T('What came in today')}</h3><p class="sd-sum">${esc(sum)}</p>
-<ol class="sd-log">${rows}</ol>
-<ul class="sd-foot"><li>${icon('Discard', 16)}<span>${T('Nothing enters a line twice: the same link or title within 30 days stops at the door as a duplicate.')}</span></li>
-<li>${icon('History', 16)}<span>${T('Every attempt is logged, even what was turned away, with its reason, so “why did this not come in?” always has an answer.')}</span></li></ul></section>`;
+    const rules = `${T('Nothing enters a line twice: the same link or title within 30 days stops at the door as a duplicate.')} ${T('Every attempt is logged, even what was turned away, with its reason, so “why did this not come in?” always has an answer.')}`;
+    return `<section class="sd-s" aria-labelledby="sd-in-h"><h3 id="sd-in-h" title="${esc(rules)}">${T('What came in today')}<span class="sr"> ${esc(rules)}</span></h3>${sum}
+<ol class="sd-log">${rows}</ol></section>`;
   }
   function renderDetail() {
     const s = S.find((x) => x.id === sel), off = stateOf(s) === 'paused';

@@ -428,7 +428,9 @@
       "other": "من سجل الخط، آخر {days} يوما: مرت به {n} حملة"
     },
     "By the budgets of their live campaigns": "حسب ميزانيات حملاتهم الحية",
-    "Headline": "العنوان"
+    "Headline": "العنوان",
+    "An approved version never changes; an edit is a new version.": "النسخة المعتمدة لا تتغير، وأي تعديل نسخة جديدة.",
+    "Today: {n} events": "اليوم: {n} حدث"
   },
   "tr": {
     "Image": "Görsel",
@@ -683,6 +685,8 @@
     "No campaign is yours right now.": "Şu an sende kampanya yok.",
     "From the line’s log, last {days} days: {n} campaigns went through it": "Hattın kaydından, son {days} gün: içinden {n} kampanya geçti",
     "By the budgets of their live campaigns": "Canlı kampanyalarının bütçelerine göre",
-    "Headline": "Başlık"
+    "Headline": "Başlık",
+    "An approved version never changes; an edit is a new version.": "Onaylı sürüm değişmez; her düzenleme yeni bir sürümdür.",
+    "Today: {n} events": "Bugün: {n} olay"
   }
 }

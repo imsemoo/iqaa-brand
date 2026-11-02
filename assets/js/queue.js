@@ -37,11 +37,11 @@
   // a block's part is due within the block's hours from when the item reaches it
   const inHours = (h) => new Date(FLOW.now + h * 36e5).toISOString().slice(0, 16);
 
-  // due, or late by how much: late is the one red on the screen
+  // due, or late by how much: red for late and amber for due today, the plan's two colours for risk
   function flag(it) {
     const l = FLOW.late(it.due);
     return l ? `<span class="qu-flag late">${IQ.icon('Late', 16)}${esc(l)}</span>`
-      : `<span class="qu-flag">${IQ.icon('Date', 16)}${esc(T('Due {when}', { when: FLOW.when(it.due) }))}</span>`;
+      : `<span class="qu-flag${FLOW.dayOf(it.due) === 0 ? ' soon' : ''}">${IQ.icon('Date', 16)}${esc(T('Due {when}', { when: FLOW.when(it.due) }))}</span>`;
   }
 
   // the card's two fields as the person's role sees them; a secret one carries a lock
@@ -77,20 +77,20 @@
     const count = `<span class="qu-n" aria-hidden="true">${n}</span><span class="sr">, ${esc(NO.n(n, '{n} job', '{n} jobs'))}</span>`;
     if (c.kind === 'open') {
       const claim = B.roles.find((r) => !r.lead && r.claim);
-      return `<div class="qu-ch"><h2 id="qu-h-open">${IQ.icon('Inbox', 18)}<span>${T('Unassigned')}</span>${count}</h2>`
-        + `${claim ? `<p>${esc(T('The {role} role may also claim these.', { role: T(claim.role) }))}</p>` : ''}</div>`;
+      return `<div class="qu-ch"><h2 id="qu-h-open"${claim ? ` title="${esc(T('The {role} role may also claim these.', { role: T(claim.role) }))}"` : ''}>${IQ.icon('Inbox', 18)}<span>${T('Unassigned')}</span>${count}</h2></div>`;
     }
     if (c.kind === 'approval') {
       const nx = C.next(B);
       const hint = !nx ? '' : B.approve ? T('Once approved, it goes on to {block}.', { block: T(nx.name) })
         : T('Hand-overs from {block} go straight to {next}.', { block: T(B.name), next: T(nx.name) });
+      // where an approved item goes, as an arrow to the next block; the sentence is its tooltip
       return `<div class="qu-ch"><h2 id="qu-h-approval"><span class="qu-g" aria-hidden="true">${IQ.glyph('held')}</span><span>${T('Waiting for your approval')}</span>${count}</h2>`
-        + `${hint ? `<p>${esc(hint)}</p>` : ''}</div>`;
+        + `${nx ? `<p class="qu-to-nx" title="${esc(hint)}">${IQ.icon('Handoff', 16)}<span>${esc(T(nx.name))}</span><span class="sr">${esc(hint)}</span></p>` : ''}</div>`;
     }
     const p = C.person(c.k), also = elsewhere(c.k);
     const skills = (p.skills || []).map((s) => `<span class="qu-sk">${esc(T(s))}</span>`).join('');
     return `<div class="qu-ch qu-ph"><span class="me-av" aria-hidden="true">${initial(c.k)}</span><h2 id="qu-h-${c.k}"><span>${esc(C.name(c.k))}</span>${count}</h2>`
-      + `<p>${esc(T(p.title))}${p.team ? ` · ${esc(T(p.team))}` : ''}</p><p>${esc(kind(p))} · ${esc(hours(p))}</p>`
+      + `<p>${esc(T(p.title))}</p><p class="qu-cap">${FLOW.hbar(p.hours, `${kind(p)} · ${hours(p)}`)}${p.type === 'freelancer' ? `<span class="qu-fl">${esc(until(p))}</span>` : ''}</p>`
       + `${skills ? `<p class="qu-sks">${skills}</p>` : ''}${also ? `<p>${esc(also)}</p>` : ''}</div>`;
   }
 
@@ -139,7 +139,7 @@
     }
     return `<li class="qu-card${FLOW.late(it.due) ? ' is-late' : ''}" data-code="${it.code}">
 <div class="qu-top"><a class="qu-title" href="${C.href('item.html', { code: it.code })}">${esc(title)}</a>${flag(it)}</div>
-<div class="qu-where">${C.strip(it)}<code dir="ltr">${it.code}</code></div>
+<div class="qu-where"><code dir="ltr">${it.code}</code></div>
 ${fields(it)}${st}${act ? `<div class="qu-act">${act}</div>` : ''}${more}</li>`;
   }
 
@@ -152,7 +152,7 @@ ${fields(it)}${st}${act ? `<div class="qu-act">${act}</div>` : ''}${more}</li>`;
   function render() {
     if (window.UI) UI.closeMenu();
     const cols = columns(), all = C.queue(B).all, lateN = all.filter((it) => FLOW.late(it.due)).length;
-    $('[data-sum]').textContent = `${NO.n(all.length, '{n} job', '{n} jobs')}${lateN ? ` · ${NO.n(lateN, '{n} late job', '{n} late jobs')}` : ''}`;
+    $('[data-sum]').innerHTML = `<span class="stats">${FLOW.stat('Line', all.length, NO.n(all.length, '{n} job', '{n} jobs'))}${lateN ? FLOW.stat('Late', lateN, NO.n(lateN, '{n} late job', '{n} late jobs'), 'late') : ''}</span>`;
     if (!cols.some((c) => c.k === col)) col = 'open';
     // a redraw keeps where the switcher and the board were scrolled to
     const kept = ['.qu-switch', '.qu-board'].map((s) => { const el = $(s, root); return el ? el.scrollLeft : 0; });

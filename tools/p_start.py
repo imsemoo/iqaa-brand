@@ -24,7 +24,7 @@ def start():
 <div class="st-grid">
 <form class="st-form" data-form novalidate>
 <header class="st-head"><h1 id="st-h">{t('Write your organization and its idea, and your production line is ready on the canvas')}</h1>
-<p class="lead">{t('Watar builds the line from your words, as a draft. You review it before anyone is invited, and only you publish it.')}</p></header>
+</header>
 <fieldset class="st-fs" data-fs>
 <legend class="sr">{t('Your organization')}</legend>
 <div class="field" data-field="org"><label for="org">{t('Organization name')}</label>
@@ -33,9 +33,9 @@ def start():
 <textarea id="idea" name="idea" rows="4" required aria-describedby="idea-hint idea-err" data-idea></textarea>
 <p class="hint" id="idea-hint">{t('Say what you make and who works on it. Watar reads the departments, the blocks and the fields from it.')}</p><p class="err" id="idea-err" hidden></p></div>
 <div class="st-tpls" role="group" aria-labelledby="st-tpl-h"><p class="st-k" id="st-tpl-h">{t('Or start from a template')}</p><div class="st-tpl-l" data-tpls>{tpl}</div>
-<p class="hint">{t('Each pack brings its templates, and you can save your own later.')}</p></div>
+<p class="sr">{t('Each pack brings its templates, and you can save your own later.')}</p></div>
 <section class="st-ask" aria-labelledby="st-ask-h"><h2 id="st-ask-h"><span class="st-w" aria-hidden="true" data-watar></span>{t('Watar asks before building')}</h2>
-<p class="hint">{t('At most three questions, chosen from your idea. Skip any of them.')}</p>
+<p class="sr">{t('At most three questions, chosen from your idea. Skip any of them.')}</p>
 <div data-questions></div><p class="sr" data-q-live aria-live="polite"></p></section>
 </fieldset>
 <div class="st-go"><button type="submit" class="btn primary wide" data-build>{t('Build the production line')}</button>

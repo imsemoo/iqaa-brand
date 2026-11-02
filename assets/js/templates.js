@@ -104,13 +104,12 @@
 
   // ---------- the slots, the identity, the versions ----------
   function slots(tp) {
-    return `<section class="tm-sec" aria-labelledby="tm-sl-h"><h3 id="tm-sl-h">${icon('Templates', 18)}<span>${esc(T('Slots'))}</span><span class="tm-c">${tp.slots.length}</span></h3>
-<ul class="tm-slots">${tp.slots.map((x) => `<li>${icon(SLOT[x.kind] || 'Templates', 18)}<span><b>${esc(T(x.name))}</b><small>${esc(`${T(x.kind)} · ${T(x.rule)}`)}</small></span></li>`).join('')}</ul>
-<p class="tm-foot">${esc(T('A template is a structured description, not code: Watar writes no code that runs on a server.'))}</p></section>`;
+    return `<section class="tm-sec" aria-labelledby="tm-sl-h"><h3 id="tm-sl-h" title="${esc(T('A template is a structured description, not code: Watar writes no code that runs on a server.'))}">${icon('Templates', 18)}<span>${esc(T('Slots'))}</span><span class="tm-c">${tp.slots.length}</span></h3>
+<ul class="tm-slots">${tp.slots.map((x) => `<li>${icon(SLOT[x.kind] || 'Templates', 18)}<span><b>${esc(T(x.name))}</b><small>${esc(`${T(x.kind)} · ${T(x.rule)}`)}</small></span></li>`).join('')}</ul></section>`;
   }
   function identity(tp) {
     return `<section class="tm-sec" aria-labelledby="tm-id-h"><h3 id="tm-id-h">${icon('Mark', 18)}<span>${esc(T('Identity'))}</span></h3>
-<div class="tm-id">${logo(tp, 'is-chip')}<span><b>${esc(T('{brand}’s identity', { brand: T(tp.brand) }))}</b><small>${esc(T('Its logo, its colours and its type, the same in every output'))}</small></span></div></section>`;
+<div class="tm-id" title="${esc(T('Its logo, its colours and its type, the same in every output'))}">${logo(tp, 'is-chip')}<span><b>${esc(T('{brand}’s identity', { brand: T(tp.brand) }))}</b></span></div></section>`;
   }
   function verRow(tp, v, use) {
     if (v.state === 'draft') {
@@ -126,9 +125,10 @@
     // the newest two, then the earlier ones folded
     const head = vs.slice(0, 2), rest = vs.slice(2);
     return `<section class="tm-sec" aria-labelledby="tm-vs-h"><h3 id="tm-vs-h">${icon('History', 18)}<span>${esc(T('Versions'))}</span><span class="tm-c">${vs.length}</span></h3>
+<ol class="tm-vline" aria-hidden="true">${vs.slice().reverse().map((v) => `<li class="${v.state === 'draft' ? 'draft' : v === use ? 'use' : ''}"><i></i><span>${v.v}</span></li>`).join('')}</ol>
 <ol class="tm-vers">${head.map((v) => verRow(tp, v, use)).join('')}</ol>
 ${rest.length ? `<details class="tm-more"><summary>${esc(N(rest.length, 'One earlier version', '{n} earlier versions'))}</summary><ol class="tm-vers">${rest.map((v) => verRow(tp, v, use)).join('')}</ol></details>` : ''}
-<p class="tm-foot">${esc(T('An approved template never changes; any edit is a new version. Every output keeps its version and its values, so it can be made again.'))}</p></section>`;
+<p class="tm-foot" title="${esc(T('An approved template never changes; any edit is a new version. Every output keeps its version and its values, so it can be made again.'))}">${icon('Lock', 16)}<span>${esc(T('An approved version never changes; an edit is a new version.'))}</span></p></section>`;
   }
 
   // ---------- the template selected ----------
@@ -138,7 +138,7 @@ ${rest.length ? `<details class="tm-more"><summary>${esc(N(rest.length, 'One ear
     const vs = versions(tp), v = vs[0], use = inUse(vs), draft = v.state === 'draft';
     const state = draft ? `<span class="tm-st is-draft">${pen('held')}<span>${esc(T('Draft'))}</span></span>` : `<span class="tm-st">${icon('Done', 16)}<span>${esc(T('Approved'))}</span></span>`;
     // a draft's rule, where it applies: nothing is made from it, and what is in use until it is approved
-    const rule = draft ? `<div class="tm-draft"><p><b>${esc(T('Nothing is made from a draft.'))}</b> ${esc(T('The database itself refuses output from it until a person approves it.'))}</p>`
+    const rule = draft ? `<div class="tm-draft"><p title="${esc(T('The database itself refuses output from it until a person approves it.'))}"><b>${esc(T('Nothing is made from a draft.'))}</b></p>`
       + `<p>${esc(use ? T('Version {v} stays in use until then.', { v: use.v }) : T('Until then, this template makes nothing.'))}</p></div>` : '';
     // approving: the owner's, in their own name, confirmed in place
     let act = soon(T('Edit by talking'), '', 'Ask Watar');

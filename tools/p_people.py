@@ -13,7 +13,7 @@ from p_frame import frame
 def people():
     body = f'''<div class="pp-page ap-wrap">
 <header class="pp-head">
-<div class="pp-ht"><p class="pp-eye">{t('The organization')}</p><h1>{t('People and departments')}</h1><p class="pp-sum" data-sum></p></div>
+<div class="pp-ht"><h1>{t('People and departments')}</h1><p class="pp-sum" data-sum></p></div>
 <div class="pp-acts" data-acts><button type="button" class="btn" data-open="dept" aria-expanded="false" aria-controls="pp-panel">{icon('Create', 20)}<span>{t('New department')}</span></button><button type="button" class="btn primary" data-open="invite" aria-expanded="false" aria-controls="pp-panel">{icon('Invite', 20)}<span>{t('Invite a person')}</span></button></div>
 </header>
 <div class="pp-live" role="status"><p class="pp-note" data-note hidden><span data-note-t></span><button type="button" class="link" data-undo>{t('Undo')}</button></p></div>

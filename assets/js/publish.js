@@ -138,7 +138,7 @@
     const R = check(U.blocks, { people: true });
     $('[data-line]').innerHTML = `<span class="pb-g" aria-hidden="true">${IQ.glyph('held', { test: true })}</span><span>${esc(T(L.name))} · ${esc(T('Draft of version {v}', { v }))}</span>`;
     $('[data-h]').textContent = T('Publish version {v} of {line}', { v, line: T(L.name) });
-    $('[data-sum]').textContent = NO.t('Read what changes and where the live jobs go, then publish. Until then the line runs on version {old}.', { old });
+    $('[data-sum]').textContent = T('The line runs on version {n} until you publish.', { n: old });
     document.title = `${T('Publish a new version')} · ${T(O.name)}`;
     if (!U.d.changes.length) {
       $('[data-body]').innerHTML = `<div class="pb-none"><p><b>${esc(T('Nothing to publish.'))}</b></p><p>${esc(T('The draft is the same as version {old}. Change the line on the canvas first.', { old }))}</p>
@@ -162,13 +162,13 @@ ${items.length > 5 ? `<p class="pb-more">${esc(N(items.length - 5, 'and {n} more
     // the decisions down the main column; the check and the two buttons beside them, in sight while the person decides
     $('[data-body]').innerHTML = `<div class="pb-grid"><div class="pb-main">
 <section class="pb-sec" aria-labelledby="pb-ch-h"><h2 id="pb-ch-h">${icon('History', 18)}${esc(T('What changed since version {old}', { old }))}</h2>
-<div class="pb-draft"><p class="pb-pen">${esc(T('What this version adds is drawn in the dashed grey pen until you publish it.'))}</p>${changes(U.d)}${drawn(U, false)}</div></section>
+<div class="pb-draft" title="${esc(T('What this version adds is drawn in the dashed grey pen until you publish it.'))}">${changes(U.d)}${drawn(U, false)}</div></section>
 <section class="pb-sec" aria-labelledby="pb-live-h"><h2 id="pb-live-h">${icon('Line', 18)}${esc(NO.n(live, '{n} live job on this line', '{n} live jobs on this line'))}</h2>
 <fieldset class="pb-keep"><legend class="sr">${esc(NO.t('What happens to the live jobs'))}</legend>
 ${choice('finish', NO.t('Live jobs finish on version {old}, and new ones start on version {v}', { old, v }), NO.t('Nothing moves under anyone’s hands: each job keeps the line it started on.'), T('Safe'))}
 ${choice('move', NO.t('Move every live job to version {v}', { v }), [NO.t('Each job carries on from the same block on the new version.')].concat(moves.length ? [NO.t('Jobs in a block this version removes need a new place.')] : []).join(' '))}
 </fieldset>${moves.map(place).join('')}</section></div>
-<aside class="pb-side" aria-labelledby="pb-ck-h"><h2 id="pb-ck-h">${icon('Test run', 18)}${esc(T('The check'))}</h2><p class="pb-hint">${esc(T('The same check runs on every publish, for every organization.'))}</p><ul class="pb-ck">${checks}</ul>
+<aside class="pb-side" aria-labelledby="pb-ck-h"><h2 id="pb-ck-h">${icon('Test run', 18)}${esc(T('The check'))}</h2><ul class="pb-ck">${checks}</ul>
 <div class="pb-act"><button type="button" class="btn primary" data-publish aria-describedby="pb-why">${icon('Publish', 18)}<span>${esc(T('Publish version {v}', { v }))}</span></button>
 <a class="btn" href="${C.href('lines.html')}">${esc(T('Cancel'))}</a><p class="pb-why" id="pb-why" data-why aria-live="polite"></p></div></aside></div>`;
     update(U, R, moves);

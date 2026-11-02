@@ -1,0 +1,35 @@
+/* Notifications: one line per notice, its icon at the start, unread marked by a violet dot (a person's matter). Built
+   on tokens.css, brand.css, auth.css and app.css; sizes are quarter-beat multiples. */
+main.nt { background: #fff; }
+.nt-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4); padding-block: var(--s-8) var(--s-4); }
+.nt-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
+.nt-sum { margin-block-start: var(--s-2); font-size: 14px; color: var(--iqaa-n700); }
+.stat.ch b { font-family: inherit; font-weight: 600; font-size: 13px; }
+.nt-filter { display: inline-flex; padding: 3px; gap: 2px; border-radius: 12px; background: var(--iqaa-n100); margin-block-end: var(--s-4); }
+.nt-filter button { display: inline-flex; align-items: center; gap: var(--s-2); min-height: 36px; padding: 0 var(--s-4); border: 0; border-radius: 9px; background: none; font: inherit; font-size: 14px; font-weight: 600; color: var(--iqaa-n700); cursor: pointer; }
+.nt-filter button[aria-pressed='true'] { background: #fff; color: var(--iqaa-ink); box-shadow: 0 1px 2px rgba(25, 23, 46, 0.1); }
+.nt-filter span { font-family: 'Fragment Mono', monospace; font-size: 12px; font-weight: 400; color: var(--iqaa-n600); }
+.nt-filter button:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 1px; }
+@media (pointer: coarse) { .nt-filter button { min-height: 44px; } }
+.nt-day { margin-block: var(--s-6) var(--s-2); font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-n700); }
+.nt-list { list-style: none; margin: 0; padding: 0; max-width: 880px; }
+.nt-n a { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto 10px; align-items: center; gap: var(--s-3); min-height: 64px; padding: var(--s-3);
+  border-radius: 12px; color: inherit; text-decoration: none; }
+.nt-n + .nt-n { border-block-start: 1px solid var(--iqaa-n100); }
+@media (hover: hover) and (pointer: fine) { .nt-n a:hover { background: var(--iqaa-n50); } .nt-n a:hover b { text-decoration: underline; text-underline-offset: 3px; } }
+.nt-n a:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+.nt-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--iqaa-n50); color: var(--iqaa-n700); }
+.nt-n.is-bad .nt-ic { color: var(--iqaa-red); }
+.nt-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nt-t b { font-size: 15px; line-height: 22px; font-weight: 400; overflow-wrap: anywhere; }
+.nt-n.is-new .nt-t b { font-weight: 700; }
+.nt-t q { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
+:lang(ar) .nt-t q { quotes: '«' '»'; }
+.nt-n time { font-size: 12px; line-height: 16px; color: var(--iqaa-n600); white-space: nowrap; }
+.nt-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--iqaa-violet); }
+.nt-empty { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-8) 0; color: var(--iqaa-n700); }
+.nt-empty svg { color: var(--iqaa-n600); }
+@media (max-width: 700px) {
+  .nt-n a { grid-template-columns: 36px minmax(0, 1fr) 10px; grid-template-areas: 'i t d' 'i m d'; padding-inline: 0; }
+  .nt-ic { grid-area: i; width: 36px; height: 36px; } .nt-t { grid-area: t; } .nt-n time { grid-area: m; } .nt-dot { grid-area: d; }
+}

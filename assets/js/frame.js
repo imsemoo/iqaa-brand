@@ -24,6 +24,7 @@
   // ---------- the screens, by who is looking ----------
   const w = C.work();
   const mineN = w.doing.length + w.fresh.length;
+  const readN = FLOW.read(C), newN = C.inbox().filter((n) => !readN.includes(n.id)).length;
   // wide: on a phone the screen leaves the tab bar for More (the tab bar holds the first three and More)
   const link = (name, href, ic, count, extra, wide) => {
     const cur = name === current ? ' aria-current="page"' : '';
@@ -38,7 +39,7 @@
   if (C.standing === 'owner') {
     // the owner's screens, in the plan's order: the line, then what runs on it by itself, then the numbers
     main = [link('Home', C.href('home.html'), 'Home'), link('My work', C.href('work.html'), 'My work', mineN, 'me'), link('Lines', C.href('lines.html'), 'Line'),
-      link('Automation', C.href('automate.html'), 'Run log', 0, '', true), link('Templates', C.href('templates.html'), 'Templates', 0, '', true),
+      link('Notifications', C.href('notify.html'), 'Notifications', newN, '', true), link('Automation', C.href('automate.html'), 'Run log', 0, '', true), link('Templates', C.href('templates.html'), 'Templates', 0, '', true),
       link('Integrations', C.href('integrations.html'), 'Webhook', 0, '', true), link('Reports', C.href('reports.html'), 'Reports', 0, '', true)];
     groups += group(T('{pack} pack', { pack: T(O.pack) }), media
       ? [link('Sources', C.href('sources.html'), 'Sources'), soon('Publishing', 'Publish'), soon('Saved archive', 'Archive')]
@@ -46,7 +47,7 @@
         : [soon('Repositories', 'Repository'), soon('Releases', 'Release'), soon('Environments', 'Environment')]);
     groups += group(T('The organization'), [link('People and departments', C.href('people.html'), 'People'), link('Settings', C.href('packs.html'), 'Settings')]);
   } else {
-    main = [link('My work', C.href('work.html'), 'My work', mineN, 'me'), soon('Notifications', 'Notifications'), soon('My space', 'My space')];
+    main = [link('My work', C.href('work.html'), 'My work', mineN, 'me'), link('Notifications', C.href('notify.html'), 'Notifications', newN), soon('My space', 'My space')];
     // a lead's blocks, each with what is in it: the block's queue
     const led = C.mine.filter((b) => C.leads(b));
     if (led.length) {

@@ -187,11 +187,12 @@ def decisions():
         f'Lilac on white is {contrast(T.BRAND["lilac"], w):.2f}:1, so half of any such gradient fails as a ground for text.',
         'Covers keep their weight with flat ink; violet stays a point of focus, never a ground.',
     ])
-    alert = decision('alert', 'Alert', f'One alert colour, {T.RED}, for failed and late. On ink, {T.RED_DARK}. No green.', [
+    alert = decision('alert', 'Alert', f'One alert colour, {T.RED}, for failed and late, and one caution colour, {T.AMBER}, for due today. On ink, {T.RED_DARK} and {T.AMBER_DARK}. No green.', [
         f'Computed, not picked: OKLCH at the violet’s own lightness and chroma, hue 25. It is exactly as loud as a person and never louder ({contrast(T.RED, w):.2f}:1 on white).',
         f'On ink it takes the lilac’s lightness, as violet does: {contrast(T.RED_DARK, ink):.2f}:1.',
         'A step that worked needs no colour; it is ink, like every automatic step. A step that failed or a job that is late needs one.',
         'A failed step is also a different shape (the stroke snaps), so the red is never the only signal.',
+        f'The owner’s plan (1 Nov) keeps red and yellow for risk only, so caution follows the same rule at hue 65: {contrast(T.AMBER, w):.2f}:1 on white, enough for text. It always comes with words (“Due today, 17:00”), never alone.',
     ])
     neutrals = decision('neutrals', 'Neutrals', 'A cool ramp with the client’s lavender as step 100 and ink as step 950.', [
         'Steps between are evenly spaced in OKLCH lightness; chroma and hue move from one end to the other, so every grey belongs to ink.',

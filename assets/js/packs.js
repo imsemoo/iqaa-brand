@@ -36,12 +36,14 @@
     $('[data-packs]').innerHTML = list.map((p) => {
       const on = p === own, name = T('{pack} pack', { pack: T(p.name) });
       const adds = `<ul class="pk-adds" aria-label="${esc(T('What it adds'))}">${p.adds.map(([a, ic]) => `<li>${icon(ic, 18)}<span>${esc(T(a))}</span></li>`).join('')}</ul>`;
-      const facts = [on && p.blocks ? N(p.blocks, '{n} block', '{n} blocks') : '', on && p.templates ? N(p.templates, '{n} template', '{n} templates') : '',
-        T('Integrations: {list}', { list: p.integrations.join(T(', ')) })].filter(Boolean).join(' · ');
+      // its numbers as icons, its integrations as chips (the words stay in the tooltip and for the screen reader)
+      const facts = `<div class="pk-facts">${on && p.blocks ? FLOW.stat('Line', p.blocks, N(p.blocks, '{n} block', '{n} blocks')) : ''}`
+        + `${on && p.templates ? FLOW.stat('Templates', p.templates, N(p.templates, '{n} template', '{n} templates')) : ''}`
+        + `<ul class="pk-chips" aria-label="${esc(T('Integrations: {list}', { list: p.integrations.join(T(', ')) }))}">${p.integrations.map((x) => `<li dir="ltr">${esc(x)}</li>`).join('')}</ul></div>`;
       const state = on ? `<span class="pk-on">${icon('Done', 18)}<span>${esc(T('The pack is on'))}</span></span>`
         : soon(T('Turn on'), 'small', 'Create', T('After the event'));
-      return `<li class="pk-pack${on ? ' is-on' : ''}"><div class="pk-ph"><h4>${esc(name)}</h4>${state}</div>${adds}<p class="pk-facts">${esc(facts)}</p>`
-        + `${on ? `<p class="pk-off">${esc(T('Turning it off hides its screens, blocks and templates. Nothing is deleted: its data stays.'))}</p>` : ''}</li>`;
+      const off = on ? T('Turning it off hides its screens, blocks and templates. Nothing is deleted: its data stays.') : '';
+      return `<li class="pk-pack${on ? ' is-on' : ''}"${off ? ` title="${esc(off)}"` : ''}><div class="pk-ph"><h4>${esc(name)}</h4>${state}</div>${adds}${facts}${off ? `<span class="sr">${esc(off)}</span>` : ''}</li>`;
     }).join('');
   }
 
@@ -72,7 +74,7 @@
     const lang = (O.identity || {}).language;
     $('[data-identity]').innerHTML = `<div class="pk-who"><span class="org-mark pk-mark" data-mark></span><span class="pk-wt"><b>${esc(T(O.name))}</b><span dir="ltr">${esc(O.address)}</span></span></div>`
       + `${lang ? `<dl class="pk-dl"><div><dt>${esc(T('Main language'))}</dt><dd>${esc(T(LANG[lang] || lang))}</dd></div></dl>` : ''}`
-      + `<p class="pk-say">${esc(T('The identity is light: a mark, an address and a language. Iqaa’s own look stays as it is.'))}</p>`;
+      + `<span class="sr">${esc(T('The identity is light: a mark, an address and a language. Iqaa’s own look stays as it is.'))}</span>`;
     const initial = (O.mark || {})[I18N.lang] || (O.mark || {}).en || O.name;
     window.Beats.sig($('[data-mark]'), C.line.blocks.filter((b) => !b.side).map((b) => ({ name: b.name, steps: [b.stroke] })),
       { mode: 'mark', size: 48, name: initial, label: T('{org}’s mark', { org: T(O.name) }) });
@@ -93,13 +95,14 @@
       { k: T('Storage'), n: U.storage, of: U.storageOf, say: '{n} of {of} GB' },
       { k: T('Seats'), n: seats(), of: U.seatsOf, say: '{n} of {of}', hint: T('Everyone with an account or an invitation takes a seat.') },
     ];
-    $('[data-usage]').innerHTML = `<div class="pk-eg"><p>${esc(T('The limits come from the organization’s plan. Prices are not decided yet: the numbers here are an example.'))}</p>`
+    // the numbers are an example and say so in one word; the reason is the tooltip
+    $('[data-usage]').innerHTML = `<div class="pk-eg"><p class="pk-ex" title="${esc(T('The limits come from the organization’s plan. Prices are not decided yet: the numbers here are an example.'))}">${icon('Draft', 16)}<span>${esc(T('Example numbers'))}</span><span class="sr">${esc(T('The limits come from the organization’s plan. Prices are not decided yet: the numbers here are an example.'))}</span></p>`
       + `<dl class="pk-use">${rows.map((r) => {
         const pct = Math.min(100, Math.round((r.n / r.of) * 100)), full = r.n >= r.of;
         // the number used in the house's figures, the limit after it in words
         const say = T(r.say, { n: `<b>${num(r.n)}</b>`, of: num(r.of) });
-        return `<div><dt>${esc(r.k)}</dt><dd><span class="pk-un${full ? ' bad' : ''}">${say}</span>`
-          + `<span class="pk-bar${full ? ' bad' : ''}" role="img" aria-label="${esc(T('{pct}% used', { pct }))}"><i style="inline-size:${pct}%"></i></span>${r.hint ? `<small>${esc(r.hint)}</small>` : ''}</dd></div>`;
+        return `<div${r.hint ? ` title="${esc(r.hint)}"` : ''}><dt>${esc(r.k)}</dt><dd><span class="pk-un${full ? ' bad' : ''}">${say}</span>`
+          + `<span class="pk-bar${full ? ' bad' : ''}" role="img" aria-label="${esc(T('{pct}% used', { pct }))}"><i style="inline-size:${pct}%"></i></span>${r.hint ? `<span class="sr">${esc(r.hint)}</span>` : ''}</dd></div>`;
       }).join('')}</dl></div>`;
   }
 

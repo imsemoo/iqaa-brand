@@ -16,6 +16,7 @@ from p_mark import mark, signature  # noqa: E402
 from p_ms import motion, system  # noqa: E402
 from p_auth import signin  # noqa: E402
 from p_work import work  # noqa: E402
+from p_notify import notify  # noqa: E402
 from p_item import item  # noqa: E402
 from p_queue import queue  # noqa: E402
 from p_home import home  # noqa: E402
@@ -51,7 +52,7 @@ PAGES = [
 
 APP = (('signin', signin),
        # the digital production screens (the owner's 22), on world.js
-       ('work', work), ('item', item), ('queue', queue), ('home', home),
+       ('work', work), ('notify', notify), ('item', item), ('queue', queue), ('home', home),
        ('lines', lines), ('publish', publish), ('built', built), ('start', start),
        ('people', people), ('reports', reports), ('packs', packs), ('review', review),
        ('automate', automate), ('sources', sources), ('templates', templates), ('integrations', integrations))

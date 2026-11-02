@@ -84,6 +84,8 @@ screens as", switches it; the organization is kept for the visit under `iqaa-org
 - `signin.html`: Al-Khatt's own sign-in; `#signed-in` plays the success as Heba and opens My work.
 - `work.html`: My work: in progress, new for you, open to claim; starting, claiming and handing over are kept for the
   visit under `iqaa-moves`.
+- `notify.html`: what reached the person (sent back, given, waiting for their approval, late; for the owner also
+  invitations and expired integrations), unread until opened (`iqaa-read:<org>:<person>`), and the organization's channel.
 - `item.html?code=MAD-26-0144`: one template for any item (a piece with its video versions; `?code=DEV-26-0088` a
   ticket with its pull request and checks); tabs by hash (`#work`, `#files`, `#discussion`, `#log`, `#platforms`, `#code`).
 - `queue.html?block=montage`: a block's queue for its lead, `?view=list|board`; assigning and approving.

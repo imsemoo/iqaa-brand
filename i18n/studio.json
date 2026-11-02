@@ -401,7 +401,38 @@
       "few": "{n} تذاكر تنتظرك في {station}.",
       "many": "{n} تذكرة تنتظرك في {station}.",
       "other": "{n} تذكرة تنتظرك في {station}."
-    }
+    },
+    "Nothing of yours is due today.": "لا شيء عندك مطلوب تسليمه اليوم.",
+    "{name} handed it over for your approval": "سلمها {name} وتنتظر اعتمادك",
+    "Review and approve": "راجع واعتمد",
+    "Due today": "تسليم اليوم",
+    "{n} hidden fields": {
+      "one": "حقل مخفي",
+      "two": "حقلان مخفيان",
+      "few": "{n} حقول مخفية",
+      "many": "{n} حقلا مخفيا",
+      "other": "{n} حقل مخفي"
+    },
+    "People apply at once; new roles wait for the version.": "الأشخاص يطبقون فورا، والأدوار الجديدة تنتظر النسخة.",
+    "Takes effect when the version is published.": "يسري عند نشر النسخة.",
+    "The line runs on version {n} until you publish.": "يعمل الخط على النسخة {n} حتى تنشر.",
+    "Example numbers": "أرقام للمثال",
+    "Unread": "غير مقروءة",
+    "{n} unread": {
+      "one": "إشعار غير مقروء",
+      "two": "إشعاران غير مقروءين",
+      "few": "{n} إشعارات غير مقروءة",
+      "many": "{n} إشعارا غير مقروء",
+      "other": "{n} إشعار غير مقروء"
+    },
+    "Mark all as read": "علم الكل كمقروء",
+    "You have read everything.": "قرأت كل شيء.",
+    "Nothing has reached you yet.": "لم يصلك شيء بعد.",
+    "{name} handed over {title} for your approval": "سلم {name} «{title}» لاعتمادك",
+    "{title} is past its due time": "«{title}» تجاوزت موعدها",
+    "{name} has not accepted the invitation": "{name} لم يقبل الدعوة بعد",
+    "{name} lost its permission; posts wait for it": "{name} فقد إذنه، والمنشورات تنتظره",
+    "The same notices also go to {name}": "الإشعارات نفسها تصل أيضا إلى {name}"
   },
   "tr": {
     "Khaled Mansour": "Khaled Mansour",
@@ -695,6 +726,25 @@
     "Block statistics": "Blok istatistikleri",
     "Open My work": "İşlerimi aç",
     "{n} pieces are waiting for you at {station}.": "{station} bloğunda seni {n} içerik bekliyor.",
-    "{n} tickets are waiting for you at {station}.": "{station} bloğunda seni {n} talep bekliyor."
+    "{n} tickets are waiting for you at {station}.": "{station} bloğunda seni {n} talep bekliyor.",
+    "Nothing of yours is due today.": "Bugün teslim edeceğin bir şey yok.",
+    "{name} handed it over for your approval": "{name} devretti, onayını bekliyor",
+    "Review and approve": "İncele ve onayla",
+    "Due today": "Bugün teslim",
+    "{n} hidden fields": "{n} gizli alan",
+    "People apply at once; new roles wait for the version.": "Kişiler hemen uygulanır; yeni roller sürümü bekler.",
+    "Takes effect when the version is published.": "Sürüm yayınlanınca geçerli olur.",
+    "The line runs on version {n} until you publish.": "Yayınlayana kadar hat {n}. sürümde çalışır.",
+    "Example numbers": "Örnek rakamlar",
+    "Unread": "Okunmamış",
+    "{n} unread": "{n} okunmamış",
+    "Mark all as read": "Tümünü okundu say",
+    "You have read everything.": "Her şeyi okudun.",
+    "Nothing has reached you yet.": "Henüz sana bir şey ulaşmadı.",
+    "{name} handed over {title} for your approval": "{name}, “{title}” işini onayına sundu",
+    "{title} is past its due time": "“{title}” teslim saatini geçti",
+    "{name} has not accepted the invitation": "{name} daveti henüz kabul etmedi",
+    "{name} lost its permission; posts wait for it": "{name} iznini kaybetti; gönderiler onu bekliyor",
+    "The same notices also go to {name}": "Aynı bildirimler {name} kanalına da gider"
   }
 }

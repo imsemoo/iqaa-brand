@@ -12,7 +12,7 @@ from p_frame import frame
 def sources():
     body = f'''<div class="so-page ap-wrap">
 <header class="so-head">
-<div class="so-ht"><h1>{t('Sources')}</h1><p class="so-sum">{t('What opens items in a line by itself, and every attempt that came in from it today, even what was turned away.')}</p></div>
+<div class="so-ht"><h1 title="{t('What opens items in a line by itself, and every attempt that came in from it today, even what was turned away.')}">{t('Sources')}</h1></div>
 <div class="so-new" data-new></div>
 </header>
 <p class="so-bar" data-note role="status" hidden><span data-note-t></span> <button type="button" class="link" data-undo>{t('Undo')}</button></p>

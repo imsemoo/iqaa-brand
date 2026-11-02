@@ -363,7 +363,7 @@ ${view ? `<hr><button type="button" data-view="">${icon('Undo', 18)}<span><b>${T
       lanes(backR.filter((r) => !r.deep));
       lanes(backR.filter((r) => r.deep));
       const map = inner.parentElement, edge = Math.max(phone.matches ? 16 : 32, (map.clientWidth - 1440) / 2);
-      inner.style.setProperty('--col', `${Math.round(Math.min(200, Math.max(112, (map.clientWidth - 2 * edge) / main.length)))}px`);
+      inner.style.setProperty('--col', `${Math.floor(Math.min(200, Math.max(112, (map.clientWidth - 2 * edge) / main.length)))}px`);
       inner.style.paddingInline = `${edge}px`;
       inner.style.removeProperty('--rail');
     }
@@ -516,7 +516,7 @@ ${ppl.length ? `<ul class="pr-pl">${Object.keys(teams).map(team).join('')}${solo
 <div class="pr-s"><span id="pr-s-${i}">${T('Sees')}</span>${seg(`sees-${i}`, SEES, seesItems(b, r), T('Which items {role} sees', { role: roleName(r.role) }), `data-sees data-ri="${i}"`)}</div></div></li>`;
     }).join('');
     const none = PERSON.includes(b.kind) ? T('Nobody holds this block yet. Add a role, then its people.') : T('This block runs by itself: no person works in it.');
-    return `<p class="in-hint">${icon('People', 18)}<span>${T('People apply at once, without publishing a version. Roles are part of the line: a new one waits for the version.')}</span></p>
+    return `<p class="in-hint">${icon('People', 18)}<span>${T('People apply at once; new roles wait for the version.')}</span></p>
 ${b.roles.length ? `<ul class="pr-l">${roles}</ul>` : `<p class="in-none">${esc(none)}</p>`}
 <div class="pr-new"><p id="pr-new-h">${T('Add a role')}</p><div class="pr-new-l" role="group" aria-labelledby="pr-new-h">${KINDS.map(([k, n]) => `<button type="button" class="btn small" data-role-kind="${k}">${icon('Create', 16)}<span>${esc(T(n))}</span></button>`).join('')}</div></div>`;
   }
@@ -541,12 +541,12 @@ ${R.map((r, i) => `<td class="${other(b, r)}">${seg(`acc-${i}-${f}`, ACCESS, fie
     }).join('')}</tr>`).join('');
     const seesRow = `<tr><th scope="row">${T('Sees which items')}</th>${R.map((r, i) => `<td class="${other(b, r)}"><label class="sr" for="sw-sees-${i}">${esc(T('Which items {role} sees', { role: roleName(r.role) }))}</label><select id="sw-sees-${i}" data-sees data-ri="${i}">${SEES.map(([v, t]) => `<option value="${v}"${v === seesItems(b, r) ? ' selected' : ''}>${esc(T(t))}</option>`).join('')}</select></td>`).join('')}</tr>`;
     return `<div class="sw-grid"><div class="sw-main">
-<p class="in-hint">${icon('Draft', 18)}<span>${T('Each change here is a change of the draft: it takes effect when the version is published.')}</span></p>
+<p class="in-hint">${icon('Draft', 18)}<span>${T('Takes effect when the version is published.')}</span></p>
 <h3>${T('Fields')}</h3>
 <div class="sw-wrap"><table class="sw-t"><thead>${head(T('Field'))}</thead><tbody>${rows}</tbody></table></div>
-<h3>${T('Reads the history of other blocks')}</h3><p class="hint">${T('Whether the role reads what happened to an item before it came here: why the script was sent back, say.')}</p>
+<h3 title="${T('Whether the role reads what happened to an item before it came here: why the script was sent back, say.')}">${T('Reads the history of other blocks')}</h3>
 <div class="hs">${histRows}</div>
-<h3>${T('Actions')}</h3><p class="hint">${T('The same list in every organization, because the server checks it on every request. Packs alone add to it.')}</p>
+<h3 title="${T('The same list in every organization, because the server checks it on every request. Packs alone add to it.')}">${T('Actions')}</h3>
 <div class="sw-wrap"><table class="sw-t sw-a"><thead>${head(T('Action'))}</thead><tbody>${actRows}${seesRow}</tbody></table></div>
 </div><aside class="sw-pv" aria-labelledby="sw-pv-h">${preview(b)}</aside></div>`;
   }
@@ -593,7 +593,7 @@ ${not.length ? `<p class="pv-n">${T('Does not see')}</p><ul class="pv-l off">${n
       : removedNow ? `<button type="button" class="btn" data-keep>${icon('Undo', 18)}<span>${T('Keep the block')}</span></button>`
         : b.state === 'pub' ? `<button type="button" class="btn quiet" data-remove>${icon('Discard', 18)}<span>${T('Remove the block in the draft')}</span></button>`
           : b.state === 'removed' ? `<p class="hint">${esc(NO.t('Removed in the draft. When you publish, the publish page asks where its live jobs go.'))}</p>` : '';
-    return `<p class="in-hint">${icon('Draft', 18)}<span>${T('Each setting is a change of the draft: it takes effect when the version is published.')}</span></p>
+    return `<p class="in-hint">${icon('Draft', 18)}<span>${T('Takes effect when the version is published.')}</span></p>
 <div class="set-f">
 <div class="field"><label for="set-name">${T('Name')}</label><input id="set-name" data-set="name" value="${esc(T(b.name))}" maxlength="40" autocomplete="off"></div>
 <div class="field"><label for="set-dept">${T('Department')}</label><select id="set-dept" data-set="dept">${opts(O.departments.map((d) => [d.id, T(d.name)]), b.dept)}</select></div>

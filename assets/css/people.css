@@ -9,7 +9,21 @@ main.pp { background: #fff; }
 .pp-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-8); padding-block: var(--s-8) var(--s-6); }
 .pp-eye { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .pp-ht h1 { font-size: var(--t-xl); line-height: var(--lh-xl); letter-spacing: -0.015em; }
-.pp-sum { margin-block-start: var(--s-1); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+.pp-sum { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-block-start: var(--s-2); font-size: 15px; line-height: 22px; color: var(--iqaa-n700); }
+/* a number beside its icon (the words are for the screen reader and the tooltip) */
+.pp-st-n { display: inline-flex; align-items: center; gap: 6px; }
+.pp-st-n svg { flex: none; color: var(--iqaa-n600); }
+.pp-st-n b { font-family: 'Fragment Mono', monospace; font-weight: 400; color: var(--iqaa-ink); }
+.pp-stats { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); font-size: 13px; line-height: 18px; color: var(--iqaa-n700); }
+/* a department's people as a stack of faces */
+.pp-faces { display: flex; margin-block: var(--s-2) var(--s-1); }
+.pp-faces .me-av { width: 28px; height: 28px; font-size: 12px; box-shadow: 0 0 0 2px #fff; }
+.pp-faces .me-av + .me-av { margin-inline-start: -8px; }
+.pp-faces .me-av.more { background: var(--iqaa-n100); color: var(--iqaa-n700); font-family: 'Fragment Mono', monospace; font-size: 11px; }
+/* hours a week as a bar against a full week of 40 */
+.pp-hb { display: inline-flex; align-items: center; gap: var(--s-2); }
+.pp-hb i { display: block; width: 32px; height: 6px; border-radius: 3px; background: linear-gradient(to var(--pp-end, right), var(--iqaa-n500) calc(var(--h) * 100%), var(--iqaa-n100) 0); }
+[dir='rtl'] .pp-hb i { --pp-end: left; }
 .pp-acts { display: flex; flex-wrap: wrap; gap: var(--s-2); }
 .pp-acts[hidden] { display: none; }
 .pp-page .btn svg { flex: none; }
@@ -103,6 +117,7 @@ main.pp { background: #fff; }
 .pp-sks { display: flex; flex-wrap: wrap; gap: var(--s-1); }
 .pp-sk { padding: 0 6px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--iqaa-n200); font-size: 12px; line-height: 20px; color: var(--iqaa-n800); }
 .pp-c-h span:not(.pp-l):not(.sr) { white-space: nowrap; }
+.pp-c-h { padding-inline-end: var(--s-6); }
 .pp-none { color: var(--iqaa-n500); }
 .pp-l { display: none; }
 .pp-st { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }

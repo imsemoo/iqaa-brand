@@ -47,18 +47,23 @@ LL, LC, _ = hex_oklch(BRAND['lilac'])
 ALERT_HUE = 25
 RED = oklch_hex(VL, VC, ALERT_HUE)
 RED_DARK = oklch_hex(LL, LC, ALERT_HUE)
+# Caution: due today and not late yet, the plan's yellow for risk. The same rule at hue 65 (amber); sRGB clips its
+# chroma, and it keeps 4.5:1 on white, so it can set text as well as an icon.
+CAUTION_HUE = 65
+AMBER = oklch_hex(VL, VC, CAUTION_HUE)
+AMBER_DARK = oklch_hex(LL, LC, CAUTION_HUE)
 
 SEMANTIC_LIGHT = {
     'ground': NEUTRAL['0'], 'ground-quiet': NEUTRAL['50'], 'fill': NEUTRAL['100'],
     'rule': NEUTRAL['200'], 'rule-strong': NEUTRAL['400'],
     'text': NEUTRAL['950'], 'text-2': NEUTRAL['700'], 'text-3': None,
-    'machine': NEUTRAL['950'], 'person': BRAND['violet'], 'alert': RED, 'test': NEUTRAL['500'],
+    'machine': NEUTRAL['950'], 'person': BRAND['violet'], 'alert': RED, 'caution': AMBER, 'test': NEUTRAL['500'],
 }
 SEMANTIC_DARK = {
     'ground': NEUTRAL['950'], 'ground-quiet': NEUTRAL['900'], 'fill': NEUTRAL['800'],
     'rule': NEUTRAL['800'], 'rule-strong': NEUTRAL['600'],
     'text': NEUTRAL['100'], 'text-2': NEUTRAL['300'], 'text-3': None,
-    'machine': NEUTRAL['0'], 'person': BRAND['lilac'], 'alert': RED_DARK, 'test': NEUTRAL['400'],
+    'machine': NEUTRAL['0'], 'person': BRAND['lilac'], 'alert': RED_DARK, 'caution': AMBER_DARK, 'test': NEUTRAL['400'],
 }
 
 
@@ -75,10 +80,10 @@ def lightest_text(ground, reverse=False):
 SEMANTIC_LIGHT['text-3'] = NEUTRAL[lightest_text(NEUTRAL['50'])]
 SEMANTIC_DARK['text-3'] = NEUTRAL[lightest_text(NEUTRAL['900'], reverse=True)]
 
-TEXTS = ['ink', 'n700', 'n600', 'n500', 'violet', 'red', 'white', 'lilac', 'lavender', 'red-dark', 'n300', 'n400']
+TEXTS = ['ink', 'n700', 'n600', 'n500', 'violet', 'red', 'amber', 'white', 'lilac', 'lavender', 'red-dark', 'amber-dark', 'n300', 'n400']
 GROUNDS = ['white', 'n50', 'lavender', 'ink', 'n900']
 SWATCH = {'ink': BRAND['ink'], 'violet': BRAND['violet'], 'lilac': BRAND['lilac'], 'lavender': BRAND['lavender'],
-          'white': '#FFFFFF', 'red': RED, 'red-dark': RED_DARK}
+          'white': '#FFFFFF', 'red': RED, 'red-dark': RED_DARK, 'amber': AMBER, 'amber-dark': AMBER_DARK}
 SWATCH.update({f'n{k}': v for k, v in NEUTRAL.items()})
 
 
@@ -166,6 +171,7 @@ def build():
         'brand': {k: describe(v) for k, v in BRAND.items()},
         'neutral': NEUTRAL,
         'alert': {'light': describe(RED), 'dark': describe(RED_DARK), 'hue': ALERT_HUE},
+        'caution': {'light': describe(AMBER), 'dark': describe(AMBER_DARK), 'hue': CAUTION_HUE},
         'semantic': {'light': SEMANTIC_LIGHT, 'dark': SEMANTIC_DARK},
         'contrast': matrix(),
         'type': {'family': {'sans': 'Atkinson Hyperlegible Next', 'mono': 'Fragment Mono'},
@@ -187,6 +193,8 @@ def build():
         css.append(f'  --iqaa-n{k}: {v};')
     css.append(f'  --iqaa-red: {RED};')
     css.append(f'  --iqaa-red-dark: {RED_DARK};')
+    css.append(f'  --iqaa-amber: {AMBER};')
+    css.append(f'  --iqaa-amber-dark: {AMBER_DARK};')
     for k, v in SEMANTIC_LIGHT.items():
         css.append(f'  --c-{k}: {v};')
     css.append(f'  --beat: {BEAT_PX}px;')
@@ -213,7 +221,7 @@ if __name__ == '__main__':
     os.makedirs(os.path.join(ROOT, 'assets', 'css'), exist_ok=True)
     t = build()
     print('neutral', t['neutral'])
-    print('red', RED, 'red-dark', RED_DARK)
+    print('red', RED, 'red-dark', RED_DARK, 'amber', AMBER, 'amber-dark', AMBER_DARK)
     print('text-3 light', SEMANTIC_LIGHT['text-3'], 'dark', SEMANTIC_DARK['text-3'])
     print('stem_em', t['type']['stem_em'], 'icon stroke', t['icon']['stroke'])
     print('scale', {k: (v['size'], v['line']) for k, v in t['type']['scale'].items()})

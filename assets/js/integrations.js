@@ -92,7 +92,7 @@
       // a problem says since when and what waits for it; GitHub says how its checks are read
       let why = '';
       if (off) why = `<p class="ig-why bad">${esc([x.since ? T('Expired {when}', { when: FLOW.when(x.since) }) : '', waits ? N(waits, '{n} post waits for it', '{n} posts wait for it') : T('What goes to it waits until it is reconnected.')].filter(Boolean).join(' · '))}</p>`;
-      else if ((x.use || {}).checks) why = `<p class="ig-why">${esc(T('Checks are read from GitHub Check Runs, so any tool that posts there is read too.'))}</p>`;
+      else if ((x.use || {}).checks) why = `<span class="sr">${esc(T('Checks are read from GitHub Check Runs, so any tool that posts there is read too.'))}</span>`;
       return `<li class="ig-con${off ? ' is-bad' : ''}" data-int="${esc(x.id)}"><span class="ig-ic" aria-hidden="true">${icon(KIND[x.id] || 'Link', 20)}</span>
 <span class="ig-ct"><b>${esc(x.name)}</b><span>${account(x.account)}</span>${facts.length ? `<small>${esc(facts.join(' · '))}</small>` : ''}</span><span class="ig-cs">${state}${fix}</span>${why}</li>`;
     }).join('') : `<li class="ig-empty">${esc(T('Nothing is connected yet.'))}</li>`;
@@ -149,7 +149,23 @@
     }, 8000);
   }
   const flash = (el) => { if (el && !window.Beats.reduce()) el.animate([{ backgroundColor: 'rgba(25, 23, 46, 0.06)' }, { backgroundColor: 'rgba(25, 23, 46, 0)' }], { duration: M.beat * 2, easing: M.ease_leave }); };
-  function render() { connections(); log(); }
+  // today on one line from 00:00 to now: a mark at each event's hour, in ink when it came in, ringed when it went out,
+  // red when it failed; the hours under it, and the counts as the legend
+  function dayline() {
+    const today = events().filter((e) => FLOW.dayOf(e.at) === 0);
+    const el = $('[data-dayline]');
+    if (!today.length) { el.innerHTML = ''; return; }
+    // the line spans the hours the day's events fall in, from the first event's hour to the hour after now
+    const hr = (iso) => +iso.slice(11, 13) + +iso.slice(14, 16) / 60;
+    const start = Math.floor(Math.min(...today.map((e) => hr(e.at)))), end = Math.max(start + 2, Math.ceil(hr(window.WORLD.now)));
+    const at = (e) => (hr(e.at) - start) / (end - start) * 100;
+    const marks = today.map((e) => `<i class="${e.state === 'failed' ? 'bad' : e.dir}" style="--x:${at(e).toFixed(2)}" title="${esc(`${e.at.slice(11, 16)} · ${sentence(e, false)}`)}"></i>`).join('');
+    const ticks = [...Array(end - start + 1).keys()].map((i) => `<span style="--x:${(i / (end - start) * 100).toFixed(2)}">${String(start + i).padStart(2, '0')}:00</span>`).join('');
+    const n = (k) => today.filter((e) => (k === 'bad' ? e.state === 'failed' : e.dir === k && e.state !== 'failed')).length;
+    el.innerHTML = `<div class="ig-dl" role="img" aria-label="${esc(T('Today: {n} events', { n: today.length }))}"><div class="ig-dl-t">${marks}</div><div class="ig-dl-h" dir="ltr">${ticks}</div></div>`
+      + `<p class="ig-dl-k" aria-hidden="true"><span class="in"><i></i>${T('In')} ${n('in')}</span><span class="out"><i></i>${T('Out')} ${n('out')}</span>${n('bad') ? `<span class="bad"><i></i>${T('Failed')} ${n('bad')}</span>` : ''}</p>`;
+  }
+  function render() { connections(); dayline(); log(); }
 
   function rerun(key) {
     const e = events().find((x) => x.key === key);

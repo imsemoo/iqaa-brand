@@ -18,7 +18,7 @@ def automate():
 <div class="au-ht"><h1 data-name></h1><p class="au-state" data-state aria-live="polite"></p></div>
 <div class="au-act" data-act hidden></div>
 </div>
-<p class="au-lede">{t('Any block can be done by a person or turned over to the machine, one step at a time. The line, its items and its log stay the same; only who does the step changes.')}</p>
+
 </header>
 <div class="au-bars ap-wrap">
 <div class="au-bar au-alert" data-problems role="alert" hidden></div>

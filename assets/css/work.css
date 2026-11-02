@@ -26,8 +26,11 @@ main.wk { background: #fff; }
 .wk-sh h2 span { margin-inline-start: var(--s-1); font-family: 'Fragment Mono', monospace; font-size: 13px; font-weight: 400; color: var(--iqaa-n600); }
 .wk-sh p { font-size: 13px; line-height: 20px; color: var(--iqaa-n700); }
 .wk-list { list-style: none; margin: 0; padding: 0; }
-.wk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'top act' 'where act' 'ev act'; gap: var(--s-2) var(--s-6); align-items: center;
+.wk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'top act' 'stg act' 'where act' 'ev act'; gap: var(--s-2) var(--s-6); align-items: center;
   padding-block: var(--s-4); border-block-end: 1px solid var(--iqaa-n100); }
+/* the line's stage names on what is in progress: done, here (underlined), ahead in the dashed pen (app.css .stg) */
+.wk-stg { grid-area: stg; max-width: 640px; padding-block: var(--s-1); }
+.wk-row.has-stg .wk-where { display: none; }
 .wk-top { grid-area: top; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s-1) var(--s-4); min-width: 0; }
 .wk-title { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--iqaa-ink); text-decoration: none; overflow-wrap: anywhere; }
 .wk-title:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -36,18 +39,35 @@ main.wk { background: #fff; }
 .wk-flag svg { flex: none; color: var(--iqaa-n600); }
 .wk-flag.late { color: var(--iqaa-red); font-weight: 700; }
 .wk-flag.late svg { color: var(--iqaa-red); }
+.wk-flag.soon { color: var(--iqaa-amber); font-weight: 700; }
+.wk-flag.soon svg { color: var(--iqaa-amber); }
 .wk-where { grid-area: where; display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-2) var(--s-3); min-width: 0; }
 .wk-at { font-size: 13px; line-height: 20px; font-weight: 700; color: var(--iqaa-ink); }
 .wk-where code { font-family: 'Fragment Mono', monospace; font-size: 12px; line-height: 20px; color: var(--iqaa-n600); }
 .wk-ev { grid-area: ev; font-size: 14px; line-height: 20px; color: var(--iqaa-n700); max-width: 72ch; overflow-wrap: anywhere; }
+.wk-ev code { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--iqaa-n600); }
+.wk-ev code + span::before { content: ' · '; color: var(--iqaa-n500); }
 .wk-row.is-back .wk-ev { color: var(--iqaa-ink); }
 .wk-act { grid-area: act; display: flex; gap: var(--s-2); }
 .wk-act .btn { white-space: nowrap; }
 .wk-act .btn svg { flex: none; }
+/* a phone: the one pen strip instead of the names, and one compact action beside what happened last */
 @media (max-width: 700px) {
-  .wk-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'where' 'ev' 'act'; padding-block: var(--s-4); }
-  .wk-act .btn { flex: 1; justify-content: center; min-height: 44px; }
+  .wk-row { grid-template-areas: 'top top' 'where where' 'ev act'; gap: var(--s-2) var(--s-4); align-items: end; }
+  .wk-row.has-stg .wk-stg { display: none; }
+  .wk-row.has-stg .wk-where { display: flex; }
+  .wk-act .btn { min-height: 44px; }
 }
+/* the latest notice, at the top while the side sits under the lists */
+.wk-flash { margin-block-end: var(--s-4); }
+.wk-flash a { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-radius: 12px; background: var(--iqaa-n50);
+  font-size: 14px; line-height: 20px; color: var(--iqaa-ink); text-decoration: none; }
+.wk-flash a svg { flex: none; color: var(--iqaa-n600); }
+.wk-flash a span { flex: 1; min-width: 0; }
+.wk-flash time { flex: none; font-size: 12px; color: var(--iqaa-n600); }
+.wk-flash a:focus-visible { outline: 2px solid var(--iqaa-violet); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .wk-flash a:hover span { text-decoration: underline; text-underline-offset: 3px; } }
+@media (min-width: 1101px) { .wk-flash { display: none; } }
 .wk-empty { padding: var(--s-8) 0; max-width: 56ch; }
 .wk-empty p + p { margin-block-start: var(--s-2); color: var(--iqaa-n700); }
 

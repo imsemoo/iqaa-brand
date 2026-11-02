@@ -318,7 +318,8 @@
       "few": "{n} تذاكر حية تكمل على النسخة {old}؛ والتذاكر الجديدة تبدأ على النسخة {v}.",
       "many": "{n} تذكرة حية تكمل على النسخة {old}؛ والتذاكر الجديدة تبدأ على النسخة {v}.",
       "other": "{n} تذكرة حية تكمل على النسخة {old}؛ والتذاكر الجديدة تبدأ على النسخة {v}."
-    }
+    },
+    "Nothing is live, and nobody is invited yet.": "لا شيء حي بعد، ولم يدع أحد."
   },
   "tr": {
     "Write your organization and its idea, and your production line is ready on the canvas": "Kuruluşunu ve fikrini yaz, üretim hattın tuvalde hazır olsun",
@@ -497,6 +498,7 @@
     "{n} pieces went from {from} to {to}.": "{n} içerik {from} bloğundan {to} bloğuna geçti.",
     "{n} tickets went from {from} to {to}.": "{n} talep {from} bloğundan {to} bloğuna geçti.",
     "{n} live pieces finish on version {old}; new pieces start on version {v}.": "{n} canlı içerik {old}. sürümde biter; yeni içerikler {v}. sürümde başlar.",
-    "{n} live tickets finish on version {old}; new tickets start on version {v}.": "{n} açık talep {old}. sürümde biter; yeni talepler {v}. sürümde başlar."
+    "{n} live tickets finish on version {old}; new tickets start on version {v}.": "{n} açık talep {old}. sürümde biter; yeni talepler {v}. sürümde başlar.",
+    "Nothing is live, and nobody is invited yet.": "Henüz hiçbir şey canlı değil ve kimse davet edilmedi."
   }
 }

@@ -159,7 +159,19 @@
     "Nadia Qasem": "نادية قاسم",
     "Expected publishing": "النشر المتوقع",
     "Change the music here": "غير الموسيقى هنا",
-    "The seller’s name is wrong": "اسم البائع خطأ"
+    "The seller’s name is wrong": "اسم البائع خطأ",
+    "days": "يوما",
+    "Where the journey’s time goes": "أين يذهب وقت الرحلة",
+    "{n} hours from start to end, on average": {
+      "one": "ساعة واحدة من البداية إلى النهاية في المتوسط",
+      "two": "ساعتان من البداية إلى النهاية في المتوسط",
+      "few": "{n} ساعات من البداية إلى النهاية في المتوسط",
+      "many": "{n} ساعة من البداية إلى النهاية في المتوسط",
+      "other": "{n} ساعة من البداية إلى النهاية في المتوسط"
+    },
+    "Why work comes back": "لماذا يرجع العمل",
+    "Engagement by kind": "التفاعل حسب النوع",
+    "Visual": "مرئي"
   },
   "tr": {
     "Reports of the {line}": "Raporlar: {line}",
@@ -278,6 +290,12 @@
     "Nadia Qasem": "Nadia Qasem",
     "Expected publishing": "Beklenen yayın",
     "Change the music here": "Burada müziği değiştirin",
-    "The seller’s name is wrong": "Satıcının adı yanlış"
+    "The seller’s name is wrong": "Satıcının adı yanlış",
+    "days": "gün",
+    "Where the journey’s time goes": "Yolculuğun süresi nereye gidiyor",
+    "{n} hours from start to end, on average": "Baştan sona ortalama {n} saat",
+    "Why work comes back": "İş neden geri dönüyor",
+    "Engagement by kind": "Türe göre etkileşim",
+    "Visual": "Görsel"
   }
 }

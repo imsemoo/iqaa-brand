@@ -216,10 +216,14 @@ main.it { background: #fff; }
   .it-page.has-act .it-note { position: fixed; z-index: 19; inset-inline: var(--s-4); inset-block-end: calc(68px + 61px + var(--s-2) + env(safe-area-inset-bottom, 0px)); margin: 0;
     box-shadow: 0 0 0 1px rgba(25, 23, 46, 0.08), 0 8px 24px -12px rgba(25, 23, 46, 0.3); }
   .it-backf { padding: var(--s-4); }
-  .it-line { padding-block: var(--s-2) var(--s-6); overflow-x: auto; scrollbar-width: none; }
-  .it-line::-webkit-scrollbar { display: none; }
-  .it-line .stg { min-width: 520px; }
+  /* a phone shows where the item is and its two neighbours, as the owner's phone design does; the hand-off strokes at
+     the edges say the line goes on */
+  .it-line { padding-block: var(--s-2) var(--s-6); }
+  .it-line .stg li:not(.now):not(:has(+ li.now)):not(li.now + li) { display: none; }
   .it-tabs { margin-inline: calc(var(--s-4) * -1); padding-inline: var(--s-4); }
+  /* the tabs scroll sideways: the end fades so the next tab reads as more */
+  .it-tabs { -webkit-mask-image: linear-gradient(to left, transparent, #000 var(--s-8)); mask-image: linear-gradient(to left, transparent, #000 var(--s-8)); }
+  [dir='rtl'] .it-tabs { -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--s-8)); mask-image: linear-gradient(to right, transparent, #000 var(--s-8)); }
   .it-tabs button { padding: 0 var(--s-2); font-size: 14px; }
   .it-vrow .btn { margin-inline-start: 0; }
   .it-log li { grid-template-columns: 24px minmax(0, 1fr); }

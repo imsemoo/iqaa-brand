@@ -259,3 +259,8 @@ div.au-sb { cursor: default; }
 }
 @media (pointer: coarse) { .au-page .btn.small { min-height: 44px; } }
 @media (prefers-reduced-motion: reduce) { .au-t, .au-dot circle { transition: none; } }
+
+/* how much of a limit is used, under its field */
+.ai-use { display: block; height: 6px; margin-block-start: var(--s-2); border-radius: 3px; background: var(--iqaa-n100); overflow: hidden; }
+.ai-use i { display: block; height: 100%; width: calc(var(--f) * 1%); border-radius: 3px; background: var(--iqaa-n500); }
+.ai-use.soon i { background: var(--iqaa-amber); }

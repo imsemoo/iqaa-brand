@@ -141,3 +141,18 @@ body.app .so-page .btn[aria-disabled='true']:active { transform: none; }
   .sd-mx .btn { margin-block: 2px; }
 }
 @media (pointer: coarse) { .so-page .btn.small { min-height: 44px; } }
+
+/* today's attempts as one bar split by outcome: items ink, duplicates and turned away grey, failures red */
+.sd-split { display: flex; gap: 2px; height: 10px; margin-block: var(--s-3) var(--s-2); }
+.sd-split i { display: block; border-radius: 5px; background: var(--iqaa-n300); }
+.sd-split i.is-item { background: var(--iqaa-ink); }
+.sd-split i.is-duplicate { background: var(--iqaa-n400); }
+.sd-split i.is-failed { background: var(--iqaa-red); }
+.sd-key { list-style: none; margin: 0 0 var(--s-3); padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.sd-key li { display: inline-flex; align-items: center; gap: 6px; }
+.sd-key i { display: block; width: 10px; height: 10px; border-radius: 3px; background: var(--iqaa-n300); }
+.sd-key .is-item i { background: var(--iqaa-ink); }
+.sd-key .is-duplicate i { background: var(--iqaa-n400); }
+.sd-key .is-failed i { background: var(--iqaa-red); }
+.sd-key .is-failed { color: var(--iqaa-red); font-weight: 700; }
+.so-r small .stats { gap: var(--s-1) var(--s-3); }

@@ -80,7 +80,7 @@
     const rows = O.departments.map((d) => ({ d, bs: B.filter((b) => b.dept === d.id) })).map(({ d, bs }) => `<li><span class="bt-dh"><b>${esc(T(d.name))}</b><span class="bt-gs">${bs.map((b) => glyph(b.stroke)).join('')}</span></span>
 <small>${bs.length ? esc(list(bs.map(name))) : esc(T('No block yet'))}</small></li>`).join('');
     return `<section class="bt-sec" aria-labelledby="bt-dp-h"><h2 id="bt-dp-h">${icon('Company', 18)}${esc(N(O.departments.length, '{n} department', '{n} departments'))}</h2>
-<p class="bt-hint">${esc(T('Suggested from your idea. Rename them or add one on the canvas.'))}</p><ul class="bt-dl">${rows}</ul></section>`;
+<span class="sr">${esc(T('Suggested from your idea. Rename them or add one on the canvas.'))}</span><ul class="bt-dl">${rows}</ul></section>`;
   }
   const KIND = { text: 'Long text', file: 'File', choice: 'Choice', money: 'Amount', duration: 'Duration', pr: 'Pull request', link: 'Link' };
   function fields() {
@@ -91,7 +91,7 @@
     }).join('');
     const secret = keys.some((k) => O.fields[k].secret);
     return `<section class="bt-sec" aria-labelledby="bt-fd-h"><h2 id="bt-fd-h">${icon('Files', 18)}${esc(NO.n(keys.length, 'The job carries {n} field', 'The job carries {n} fields'))}</h2>
-<p class="bt-hint">${esc(secret ? T('A sensitive field is hidden from everyone until a role is given it.') : T('Watar found nothing sensitive to hide.'))}</p><ul class="bt-fl">${rows}</ul></section>`;
+<span class="sr">${esc(secret ? T('A sensitive field is hidden from everyone until a role is given it.') : T('Watar found nothing sensitive to hide.'))}</span><ul class="bt-fl">${rows}</ul></section>`;
   }
   // one invitation per role Watar made, in the order the line first needs it, with what the role does where
   function invitations() {
@@ -109,7 +109,7 @@
       return `<li>${icon('Invite', 18)}<span><b>${esc(T(x.role))}</b><small>${esc(does)}</small></span></li>`;
     }).join('');
     return `<section class="bt-sec" aria-labelledby="bt-iv-h"><h2 id="bt-iv-h">${icon('Invite', 18)}${esc(T('Suggested invitations'))} <span class="bt-n">${roles.length}</span></h2>
-<p class="bt-hint">${esc(T('One for each role Watar made. You don’t need to invite everyone now, but a block with nobody in it holds up publishing.'))}</p><ul class="bt-il">${rows}</ul></section>`;
+<span class="sr">${esc(T('One for each role Watar made. You don’t need to invite everyone now, but a block with nobody in it holds up publishing.'))}</span><ul class="bt-il">${rows}</ul></section>`;
   }
 
   // ---------- who may do what: a row per role in each block ----------
@@ -128,16 +128,16 @@
       }).join('')}</tbody>`;
     }).join('');
     return `<section class="bt-sec bt-who" aria-labelledby="bt-wh-h"><h2 id="bt-wh-h">${icon('Lock', 18)}${esc(T('Who may do what'))}</h2>
-<p class="bt-hint">${esc(T('Watar hides the sensitive fields from the people who do the work. You can change every row on the canvas.'))}</p>
+<span class="sr">${esc(T('Watar hides the sensitive fields from the people who do the work. You can change every row on the canvas.'))}</span>
 <table class="bt-t"><thead><tr><th scope="col">${esc(L1)}</th><th scope="col">${esc(L2)}</th><th scope="col">${esc(L3)}</th><th scope="col">${esc(L4)}</th></tr></thead>${rows}</table></section>`;
   }
 
   // ---------- the page ----------
   const checked = window.CHECK.rows(window.CHECK.line(B));
   $('[data-line]').innerHTML = `<span class="bt-g" aria-hidden="true">${IQ.glyph('held', { test: true })}</span><span>${esc(T(L.name))} · ${esc(T('Built by Watar, as a draft'))}</span>`;
-  $('[data-sum]').textContent = T('Watar built this from your idea. Nothing is live, and nobody is invited yet.');
+  $('[data-sum]').textContent = T('Nothing is live, and nobody is invited yet.');
   $('[data-act]').innerHTML = `<a class="btn" href="${C.href('lines.html')}">${icon('Line', 18)}<span>${esc(T('Edit on the canvas'))}</span></a>${soon(T('Looks right, invite the team'), 'primary', 'Invite')}`;
-  $('[data-prop]').innerHTML = `<p class="bt-pen">${esc(T('Everything Watar proposes is drawn in the dashed grey pen until you accept it.'))}</p>
+  $('[data-prop]').innerHTML = `<span class="sr">${esc(T('Everything Watar proposes is drawn in the dashed grey pen until you accept it.'))}</span>
 <section class="bt-wr" aria-labelledby="bt-wr-h"><h2 id="bt-wr-h">${icon('Ask Watar', 18)}${esc(T('What Watar built'))}</h2>
 <div class="bt-story">${story().map((p) => `<p>${esc(p)}</p>`).join('')}</div>${drawn()}
 <ul class="bt-ck">${checked.map((x) => `<li${x.ok ? '' : ' class="is-bad"'}>${x.ok ? icon('Done', 18) : `<span class="bt-g" aria-hidden="true">${IQ.glyph('failed')}</span>`}<span>${esc(x.text)}</span></li>`).join('')}</ul></section>

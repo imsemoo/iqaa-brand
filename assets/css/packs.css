@@ -122,3 +122,11 @@ body.app .pk-page .btn[aria-disabled='true']:active { transform: none; }
   .pk-side .pk-sec { padding: var(--s-4); }
 }
 @media (pointer: coarse) { .pk-page .btn.small { min-height: 44px; } }
+
+/* a pack's numbers and its integrations as chips */
+.pk-facts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-4); margin-block-start: var(--s-3); font-size: 13px; }
+.pk-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-1); }
+.pk-chips li { padding: 2px 8px; border-radius: 999px; background: var(--iqaa-n50); box-shadow: inset 0 0 0 1px var(--iqaa-n200); font-size: 12px; line-height: 18px; color: var(--iqaa-n700); }
+/* the example numbers, said in one word */
+.pk-ex { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.pk-ex svg { flex: none; color: var(--iqaa-n600); }

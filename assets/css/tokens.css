@@ -19,6 +19,8 @@
   --iqaa-n950: #19172E;
   --iqaa-red: #E20025;
   --iqaa-red-dark: #FF9890;
+  --iqaa-amber: #AC6600;
+  --iqaa-amber-dark: #F3A656;
   --c-ground: #FFFFFF;
   --c-ground-quiet: #F5F4FA;
   --c-fill: #ECE9F5;
@@ -30,6 +32,7 @@
   --c-machine: #19172E;
   --c-person: #8845F8;
   --c-alert: #E20025;
+  --c-caution: #AC6600;
   --c-test: #807E91;
   --beat: 16px;
   --s-1: 4px;
@@ -74,5 +77,6 @@
   --c-machine: #FFFFFF;
   --c-person: #C9A4FF;
   --c-alert: #FF9890;
+  --c-caution: #F3A656;
   --c-test: #9A97A9;
 }

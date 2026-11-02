@@ -33,8 +33,9 @@
   const first = C.path[0], last = C.path[C.path.length - 1], done = through[last.id] || 0;
 
   // numbers in one divided strip, as on Home; a value that is a word is set in the text face
-  const tiles = (label, list) => `<ul class="rp-kpi" aria-label="${esc(label)}">${list.map((x) => `<li><span class="rp-k">${icon(x.ic, 18)}<span>${esc(x.k)}</span></span>`
-    + `<span class="rp-n${x.word ? ' word' : ''}">${esc(x.n)}${x.u ? ` <small>${esc(x.u)}</small>` : ''}</span>${x.s ? `<span class="rp-s">${esc(x.s)}</span>` : ''}</li>`).join('')}</ul>`;
+  const tiles = (label, list) => `<ul class="rp-kpi" aria-label="${esc(label)}">${list.map((x) => `<li${x.s && x.f != null ? ` title="${esc(x.s)}"` : ''}><span class="rp-k">${icon(x.ic, 18)}<span>${esc(x.k)}</span></span>`
+    + `<span class="rp-n${x.word ? ' word' : ''}${x.hot ? ' hot' : ''}">${esc(x.n)}${x.u ? ` <small>${esc(x.u)}</small>` : ''}</span>`
+    + `${x.f != null ? `<span class="rp-share" style="--f:${(x.f * 100).toFixed(1)}" aria-hidden="true"><i></i></span><span class="sr">${esc(x.s)}</span>` : x.s ? `<span class="rp-s">${esc(x.s)}</span>` : ''}</li>`).join('')}</ul>`;
   const panel = (id, ic, title, sub, body) => `<section class="rp-pn" aria-labelledby="${id}"><div class="rp-ph"><h2 id="${id}">${icon(ic, 18)}${esc(title)}</h2>${sub || ''}</div>${body}</section>`;
 
   // ---------- the line: the core's numbers, then each block against what it expects ----------
@@ -44,13 +45,38 @@
     const m = C.path.find((x) => (x.after || []).some((a) => (b.after || []).includes(a)));
     return m ? T('beside {block}', { block: T(m.name) }) : '';
   }
+  // where the journey's time goes: the main path's blocks as one bar, each as wide as the hours it keeps an item; the
+  // bottleneck is the alert colour, the rest alternate two greys so neighbours part; names sit under wide enough parts
+  function journey(rows, neck) {
+    const parts = rows.filter((r) => !r.b.side && r.avg != null), total = parts.reduce((a, r) => a + r.avg, 0);
+    if (!total) return '';
+    const seg = parts.map((r, i) => {
+      const w = (r.avg / total) * 100;
+      return `<li class="${r === neck ? 'hot' : i % 2 ? 'b' : 'a'}" style="--w:${w.toFixed(2)}" title="${esc(`${T(r.b.name)} · ${span(r.avg)}`)}">`
+        + `<i></i>${w >= 7 ? `<span>${esc(T(r.b.name))}</span><b>${esc(span(r.avg))}</b>` : ''}</li>`;
+    }).join('');
+    const sr = parts.map((r) => `${T(r.b.name)}: ${span(r.avg)}`).join(T(', '));
+    return panel('rp-jt-h', 'History', T('Where the journey’s time goes'), `<p>${esc(N(Math.round(total), '{n} hour from start to end, on average', '{n} hours from start to end, on average'))}</p>`,
+      `<ol class="rp-jt" aria-label="${esc(sr)}">${seg}</ol>`);
+  }
+  // why work comes back: each road back (from where, to where, over which field), ranked by how many it carried
+  function backs() {
+    const list = (R.back || []).filter((x) => C.block(x.from) && C.block(x.to)).sort((a, b) => b.n - a.n);
+    if (!list.length) return '';
+    const most = list[0].n;
+    const rows = list.map((x) => ({
+      name: `<span class="rp-rd"><b>${esc(T(C.block(x.from).name))}</b>${icon('Handoff', 14)}<b>${esc(T(C.block(x.to).name))}</b></span>${O.fields[x.field] ? `<small>${esc(T(O.fields[x.field].name))}</small>` : ''}`,
+      f: (x.n / most) * 100, v: NO.n(x.n, '{n} job', '{n} jobs'),
+    }));
+    return panel('rp-bk-h', 'Undo', T('Why work comes back'), '', `<div class="rp-wide">${ranked(rows)}</div>`);
+  }
   function lineTab() {
     if (!P.hours || !done) return `<p class="rp-none">${esc(NO.t('No job has finished in the last {days} days yet. The numbers start with the first one.', { days }))}</p>`;
     const kpi = tiles(T('The line in numbers'), [
-      { k: NO.t('Finished jobs'), ic: 'Done', n: done, s: T('through {block}, the line’s last block', { block: T(last.name) }) },
-      { k: T('The whole journey'), ic: 'History', n: one(P.journey / 24), s: T('days on average, from {first} to {last}', { first: T(first.name), last: T(last.name) }) },
-      { k: T('Sent back'), ic: 'Undo', n: pct(P.backOnce / done), s: NO.t('{n} of {of} jobs came back at least once', { n: P.backOnce, of: done }) },
-      { k: T('On time'), ic: 'Date', n: pct(P.onTime / done), s: NO.t('{n} of {of} jobs kept every due time', { n: P.onTime, of: done }) },
+      { k: NO.t('Finished jobs'), ic: 'Done', n: done },
+      { k: T('The whole journey'), ic: 'History', n: one(P.journey / 24), u: T('days') },
+      { k: T('Sent back'), ic: 'Undo', n: pct(P.backOnce / done), f: P.backOnce / done, s: NO.t('{n} of {of} jobs came back at least once', { n: P.backOnce, of: done }) },
+      { k: T('On time'), ic: 'Date', n: pct(P.onTime / done), f: P.onTime / done, s: NO.t('{n} of {of} jobs kept every due time', { n: P.onTime, of: done }) },
     ]);
     // each block: went through, kept them how long on average, expects how long, and the share that came back to it
     const rows = C.blocks.map((b) => {
@@ -78,9 +104,8 @@
     const legend = `<p class="rp-lg" aria-hidden="true"><span><i class="rp-lg-b"></i>${esc(T('Time in the block, on average'))}</span><span><i class="rp-lg-t"></i>${esc(T('What the block expects'))}</span></p>`;
     const table = `<table class="rp-t"><caption class="sr">${esc(T('Each block of {line}, last {days} days', { line: T(C.line.name), days }))}</caption>
 <thead><tr><th scope="col">${esc(T('Block'))}</th><th scope="col">${esc(K.n)}</th><th scope="col">${esc(K.avg)}</th><th scope="col">${esc(K.exp)}</th><th scope="col">${esc(K.back)}</th></tr></thead>
-<tbody>${rows.map(tr).join('')}</tbody></table>
-<p class="rp-fn">${esc(T('Counted from the line’s log, the same way for every organization, with nothing to set up. Expected is the time each block is given on the line.'))}</p>`;
-    return kpi + panel('rp-bl-h', 'Line', T('Each block: how long it takes and how much comes back'), `<p>${esc(T(C.line.name))}</p>${legend}`, table);
+<tbody>${rows.map(tr).join('')}</tbody></table>`;
+    return kpi + journey(rows, neck) + panel('rp-bl-h', 'Line', T('Each block: how long it takes and how much comes back'), `<p>${esc(T(C.line.name))}</p>${legend}`, table) + backs();
   }
 
   // ---------- the results after delivery: the pack's own, in the pack's words ----------
@@ -94,9 +119,13 @@
       const out = [tiles(T('Results in numbers'), [
         Object.assign({ k: T('Reach'), ic: 'People', s: N(plats.length, 'people, on {n} platform', 'people, on {n} platforms') }, bigOf(total)),
         { k: T('Best platform'), ic: 'Publish', n: T(plats[0][0]), word: true, s: T('{pct} of the reach', { pct: pct(plats[0][1] / total) }) },
-        e.visual != null ? { k: T('Engagement of visual content'), ic: 'Video', n: `${one(e.visual)}%`, s: e.text != null ? T('Text posts: {pct}', { pct: `${one(e.text)}%` }) : '' } : null,
+        e.visual != null ? { k: T('Engagement of visual content'), ic: 'Video', n: `${one(e.visual)}%` } : null,
       ].filter(Boolean))];
       const cols = [panel('rp-pl-h', 'Publish', T('Reach by platform'), '', ranked(plats.map((p) => ({ name: esc(T(p[0])), f: (p[1] / plats[0][1]) * 100, v: big(p[1]) }))))];
+      if (e.visual != null && e.text != null) {
+        const top = Math.max(e.visual, e.text);
+        cols.push(panel('rp-en-h', 'Video', T('Engagement by kind'), '', ranked([[T('Visual'), e.visual], [T('Text'), e.text]].map(([k, v]) => ({ name: esc(k), f: (v / top) * 100, v: `${one(v)}%` })))));
+      }
       // the piece that reached the most people: finished, so it lives in the saved archive, which comes later
       if (best) {
         cols.push(panel('rp-bp-h', 'Video', NO.t('The best job of the month'), '', `<div class="rp-best"><p class="rp-bt"><b>${esc(T(best.title))}</b><code dir="ltr">${esc(best.code)}</code></p>

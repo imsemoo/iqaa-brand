@@ -108,3 +108,22 @@ body.app .ig-page .btn[aria-disabled='true']:active { transform: none; }
   .ig-head > div:last-child, .ig-head > div:last-child .btn { width: 100%; }
   .ig-sec + .ig-sec { margin-block-start: var(--s-8); }
 }
+
+/* today on one line: a mark at each event's hour (times read left to right in every language) */
+.ig-dayline { margin-block: var(--s-3) var(--s-4); }
+.ig-dl { padding: var(--s-3) var(--s-4) var(--s-2); border-radius: 12px; background: var(--iqaa-n50); }
+.ig-dl-t { position: relative; height: 24px; direction: ltr; }
+.ig-dl-t::before { content: ''; position: absolute; inset-inline: 0; inset-block-start: 11px; height: 2px; border-radius: 1px; background: var(--iqaa-n200); }
+.ig-dl-t i { position: absolute; inset-block-start: 6px; left: calc(var(--x) * 1% - 6px); width: 12px; height: 12px; border-radius: 50%; background: var(--iqaa-ink); box-shadow: 0 0 0 2px var(--iqaa-n50); }
+.ig-dl-t i.out { background: #fff; box-shadow: inset 0 0 0 3px var(--iqaa-ink), 0 0 0 2px var(--iqaa-n50); }
+.ig-dl-t i.bad { background: var(--iqaa-red); }
+.ig-dl-h { position: relative; height: 16px; margin-block-start: 2px; font-family: 'Fragment Mono', monospace; font-size: 11px; color: var(--iqaa-n600); }
+.ig-dl-h span { position: absolute; left: calc(var(--x) * 1%); transform: translateX(-50%); }
+.ig-dl-h span:first-child { transform: none; }
+.ig-dl-h span:last-child { transform: translateX(-100%); }
+.ig-dl-k { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin-block-start: var(--s-2); font-size: 12px; line-height: 16px; color: var(--iqaa-n700); }
+.ig-dl-k span { display: inline-flex; align-items: center; gap: 6px; }
+.ig-dl-k i { display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--iqaa-ink); }
+.ig-dl-k .out i { background: #fff; box-shadow: inset 0 0 0 2px var(--iqaa-ink); }
+.ig-dl-k .bad { color: var(--iqaa-red); font-weight: 700; }
+.ig-dl-k .bad i { background: var(--iqaa-red); }

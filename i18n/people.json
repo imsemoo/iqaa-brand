@@ -120,7 +120,8 @@
     "Voice-over": "التعليق الصوتي",
     "The internal archive": "الأرشيف الداخلي",
     "The pack is on": "مفعلة",
-    "Client member": "عميل"
+    "Client member": "عميل",
+    "A new member inherits their team’s permissions.": "العضو الجديد يرث صلاحيات فريقه."
   },
   "tr": {
     "Departments": "Departmanlar",
@@ -229,6 +230,7 @@
     "Voice-over": "Seslendirme",
     "The internal archive": "İç arşiv",
     "The pack is on": "Açık",
-    "Client member": "Müşteri"
+    "Client member": "Müşteri",
+    "A new member inherits their team’s permissions.": "Yeni üye, ekibinin yetkilerini devralır."
   }
 }

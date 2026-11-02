@@ -37,6 +37,11 @@ main.pb { background: #fff; }
 /* the line the version makes, block by block (app.css .stg): what it adds in the dashed pen, and the hand-offs into and
    out of it in the same pen; it scrolls sideways on its own when the screen is narrower than the line */
 .pb-line { overflow-x: auto; padding-block: var(--s-2) var(--s-1); }
+/* on a phone the line runs past the edge: the end fades so it reads as more to scroll */
+@media (max-width: 700px) {
+  .pb-line { -webkit-mask-image: linear-gradient(to left, transparent, #000 var(--s-8)); mask-image: linear-gradient(to left, transparent, #000 var(--s-8)); }
+  [dir='rtl'] .pb-line { -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--s-8)); mask-image: linear-gradient(to right, transparent, #000 var(--s-8)); }
+}
 .pb-sig { min-width: calc(var(--n) * 88px); max-width: calc(var(--n) * 136px); }
 .pb-sig li.new::before, .pb-sig li.new + li::before { background: repeating-linear-gradient(to right, var(--iqaa-n500) 0 4.5px, transparent 4.5px 9px); }
 .pb-sig li.new .stg-n { color: var(--iqaa-ink); font-weight: 700; }
